@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EchoVault - Template</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+</head>
+<body class="h-full bg-gray-900 text-white">
+
+<div id="navbar-container"></div>
+<div class="flex max-h-screen bg-gray-900">
+    <div id="sidebar-container" class="flex-shrink-0"></div>
+
+<!-- Main Content -->
+<main class="flex-1 pt-8 pb-12">
+
+    <!-- Hero Section -->
+    <section class="max-w-7xl mx-auto text-center mb-16">
+        <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
+            Welcome to EchoVault
+        </h1>
+        <p class="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
+            A modern web application with responsive design.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <button id="primary-btn"
+                    class="px-6 py-3 rounded-lg font-semibold bg-[#55A5F8] text-white hover:bg-[#3F8CE0] focus:outline-none focus:ring-2 focus:ring-[#55A5F8] focus:ring-offset-gray-900 transition-all duration-200">
+                Get Started
+            </button>
+            <button id="secondary-btn"
+                    class="px-6 py-3 rounded-lg font-semibold bg-gray-700 text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-gray-900 transition-all duration-200">
+                Learn More
+            </button>
+        </div>
+    </section>
+
+    <!-- Features Grid -->
+    <section class="max-w-7xl mx-auto mb-16">
+        <h2 class="text-3xl font-bold text-center text-white mb-12">Features</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+            <div class="bg-gray-800 rounded-lg shadow-lg p-8 transition-colors duration-300">
+                <div class="mb-4">
+                    <h3 class="text-xl font-semibold text-white">Dark Theme</h3>
+                </div>
+                <div class="text-gray-400">
+                    <p>Clean dark interface for better user experience.</p>
+                </div>
+            </div>
+            <div class="bg-gray-800 rounded-lg shadow-lg p-8 transition-colors duration-300">
+                <div class="mb-4">
+                    <h3 class="text-xl font-semibold text-white">Modern UI</h3>
+                </div>
+                <div class="text-gray-400">
+                    <p>Clean, modern interface built with Tailwind CSS.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="../js/main.js"></script>
+    <script type="module">
+        import { loadNavbar } from '../js/navigation/navbar.js';
+        import {loadSidebar} from "../js/navigation/sidebar.js";
+        loadNavbar('navbar-container');
+        loadSidebar('sidebar-container')
+    </script>
+</body>
+</html>
