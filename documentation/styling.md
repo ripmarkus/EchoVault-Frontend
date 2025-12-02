@@ -1,91 +1,92 @@
+Her er din **EchoVault Frontend - Styling Guide** oversat til dansk:
+
+---
+
 # EchoVault Frontend - Styling Guide
 
-## Using the Template
+## Brug af skabelonen
 
-### Basic Setup
+### Grundlæggende opsætning
 
-1. **Copy template.html** to create new pages
-2. **Update the title** and meta information
-3. **Modify the main content** section as needed
-4. **Import required JavaScript modules**
-
-### Template Features
-
-- **Responsive Layout**: Flexbox-based layout with sidebar and main content
-- **Dark Theme**: Pre-configured dark mode styling
-- **Component Loading**: Automatic navbar and sidebar loading
-- **Tailwind CSS**: Utility-first CSS framework included
-
-### Creating a New Page
-
-1. **Copy the template**:
-   ```bash
-   cp html/template.html html/your-page.html
+1. **Kopiér `template.html`** for at oprette nye sider
+2. **Opdater titel** og meta-information
+3. **Rediger hovedindholdet** efter behov
+4. **Importer nødvendige JavaScript-moduler** (Navbar og sidebar skal altid loades, udover på login siden)
+    ```html
+    <script type="module">
+        import { loadNavbar } from '../js/navigation/navbar.js';
+        import {loadSidebar} from "../js/navigation/sidebar.js";
+        loadNavbar('navbar-container');
+        loadSidebar('sidebar-container')
+    </script>
    ```
 
-2. **Update the page title**:
+### Skabelonfunktioner
+
+* **Responsivt layout**: Flexbox-baseret layout med sidebar og hovedindhold
+* **Mørkt tema**: Forudkonfigureret mørk tilstand
+* **Komponentindlæsning**: Automatisk indlæsning af navbar og sidebar
+* **Tailwind CSS**: Utility-first CSS-ramme inkluderet
+
+### Oprettelse af en ny side
+
+1. **Kopiér skabelonen**:
+
+2. **Opdater sidens titel**:
+
    ```html
-   <title>EchoVault - Your Page Name</title>
+   <title>EchoVault - Din Side</title>
    ```
 
-3. **Replace the main content**:
+3. **Erstat hovedindholdet**:
+
    ```html
    <main class="flex-1 pt-8 pb-12">
-       <!-- Your page content here -->
+       <!-- Dit sideindhold her -->
    </main>
    ```
 
-4. **Add page-specific JavaScript**:
-   ```html
-   <script type="module">
-       import { loadNavbar } from '../js/navigation/navbar.js';
-       import { loadSidebar } from '../js/navigation/sidebar.js';
-       import { initializePage } from '../js/pages/your-page.js';
-       
-       loadNavbar('navbar-container');
-       loadSidebar('sidebar-container');
-       initializePage();
-   </script>
-   ```
 
-### Component Integration
+### Komponentintegration
 
-The template automatically loads:
-- **Navbar**: Top navigation component
-- **Sidebar**: Side navigation component
-- **Main.js**: Application-wide functionality
+Skabelonen indlæser automatisk:
 
-To add new components:
-1. Create the component in the appropriate `js/` subdirectory
-2. Export the necessary functions
-3. Import and initialize in your page script
+* **Navbar**: Topnavigation
+* **Sidebar**: Sidnavigation
 
-### Best Practices
+For at tilføje nye komponenter:
 
-1. **Keep components small** and focused
-2. **Use semantic HTML** elements
-3. **Test on desktop and laptop** screens (primary target)
-4. **Maintain consistent spacing** and layout patterns
-5. **Comment complex functionality** when necessary
+1. Opret komponenten i den relevante `js/`-mappe
+2. Eksporter de nødvendige funktioner
+3. Importer og initialiser i dit sidescript
 
-## Design System
+---
 
-### Color Scheme
+## Designsystem
 
-The application uses a dark theme with the following color palette:
+Vi bruger ikke en css fil, men i stedet bruger vi tailwind classes direkte i tagsene. Derfor skal der IKKE laves en
+css fil.
 
-- **Primary Background**: `bg-gray-900` - Main application background
-- **Secondary Background**: `bg-gray-800` - Cards, modals, elevated surfaces
-- **Text Colors**: 
-  - Primary: `text-white` - Main content text
-  - Secondary: `text-gray-400` - Descriptions, subtitles
-- **Accent Colors**:
-  - Primary Button: `bg-[#55A5F8]` with `hover:bg-[#3F8CE0]`
-  - Secondary Button: `bg-gray-700` with `hover:bg-gray-600`
+### Farveskema
 
-### Layout System
+Applikationen bruger et mørkt tema med følgende farvepalette:
 
-#### Main Layout Structure
+* **Primær baggrund**: `bg-[#121212]` – Hovedbaggrund
+* **Sekundær baggrund**: `bg-gray-800` – Kort, modaler, forhøjede overflader
+* **Tekstfarver**:
+
+    * Primær: `text-white` – Hovedtekst
+    * Sekundær: `text-gray-400` – Beskrivelser, undertekster
+* **Accentfarver**:
+
+    * Primær knap: `bg-[#55A5F8]` med `hover:bg-[#3F8CE0]`
+    * Sekundær knap: `bg-gray-700` med `hover:bg-gray-600`
+
+---
+
+### Layoutsystem
+
+#### Hovedlayoutstruktur
 
 ```html
 <body class="h-full bg-gray-900 text-white">
@@ -93,167 +94,188 @@ The application uses a dark theme with the following color palette:
   <div class="flex max-h-screen bg-gray-900">
     <div id="sidebar-container" class="flex-shrink-0"></div>
     <main class="flex-1 pt-8 pb-12">
-      <!-- Page content -->
+      <!-- Sideindhold -->
     </main>
   </div>
 </body>
 ```
 
-#### Content Containers
+#### Indholdsbokse
 
-- **Max Width**: Use `max-w-7xl mx-auto` for content containers
-- **Main Padding**: `pt-8 pb-12` for consistent vertical spacing
-- **No Horizontal Padding**: Content sits flush against sidebar for desktop/laptop optimization
+* **Max bredde**: Brug `max-w-7xl mx-auto` til indholdsbokse
+* **Hovedpadding**: `pt-8 pb-12` for ensartet vertikal afstand
+* **Ingen horisontal padding**: Indhold flugter med sidebar på desktop/laptop
 
-### Typography
+---
 
-#### Headings
+### Typografi
+
+#### Overskrifter
 
 ```html
-<!-- Page Title -->
+<!-- Sidetitel -->
 <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
 
-<!-- Section Heading -->
+<!-- Sektion Overskrift -->
 <h2 class="text-3xl font-bold text-center text-white mb-12">
 
-<!-- Card Title -->
+<!-- Korttitel -->
 <h3 class="text-xl font-semibold text-white">
 ```
 
-#### Body Text
+#### Brødtekst
 
 ```html
-<!-- Primary Text -->
+<!-- Primær tekst -->
 <p class="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
 
-<!-- Description Text -->
+<!-- Beskrivelsestekst -->
 <p class="text-gray-400">
 ```
 
-### Component Styling
+---
 
-#### Buttons
+### Komponentstil
 
-**Primary Button:**
+#### Knapper
+
+**Primær knap:**
+
 ```html
 <button class="px-6 py-3 rounded-lg font-semibold bg-[#55A5F8] text-white hover:bg-[#3F8CE0] focus:outline-none focus:ring-2 focus:ring-[#55A5F8] focus:ring-offset-gray-900 transition-all duration-200">
 ```
 
-**Secondary Button:**
+**Sekundær knap:**
+
 ```html
 <button class="px-6 py-3 rounded-lg font-semibold bg-gray-700 text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-gray-900 transition-all duration-200">
 ```
 
-#### Cards
+#### Kort
 
 ```html
 <div class="bg-gray-800 rounded-lg shadow-lg p-8 transition-colors duration-300">
-  <!-- Card content -->
+  <!-- Kortindhold -->
 </div>
 ```
 
-#### Grid Layouts
+#### Grid-layouts
 
 ```html
-<!-- Two Column Grid -->
+<!-- To-kolonne grid -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-  <!-- Grid items -->
+  <!-- Grid-elementer -->
 </div>
 ```
 
-### Responsive Guidelines
+---
 
-#### Target Devices
-- **Primary**: Desktop and laptop screens
-- **Breakpoints**: Use `md:` and `lg:` prefixes for responsive behavior
-- **No Mobile**: Skip `sm:` classes unless specifically needed
+### Responsive retningslinjer
 
-#### Layout Behavior
+#### Målrettede enheder
+
+* **Breakpoints**: Brug `md:` og `lg:` til responsiv adfærd
+
+#### Layoutadfærd
+
 ```html
-<!-- Responsive Button Container -->
+<!-- Responsiv knapcontainer -->
 <div class="flex flex-col sm:flex-row gap-4 justify-center">
 
-<!-- Responsive Text Size -->
+<!-- Responsiv tekststørrelse -->
 <h1 class="text-4xl md:text-6xl font-bold">
 ```
 
-### Interactive States
+---
 
-#### Hover Effects
+### Interaktive tilstande
+
+#### Hover-effekter
+
 ```css
-/* Button Hover */
+/* Knap hover */
 hover:bg-[#3F8CE0]
 hover:bg-gray-600
 
-/* Card Hover (optional) */
+/* Kort hover (valgfrit) */
 transition-colors duration-300
 ```
 
-#### Focus States
+#### Fokus-tilstande
+
 ```css
-/* Button Focus */
+/* Knap fokus */
 focus:outline-none 
 focus:ring-2 
 focus:ring-[#55A5F8] 
 focus:ring-offset-gray-900
 ```
 
-### Spacing System
+---
 
-#### Margins
-- **Section Spacing**: `mb-16` between major sections
-- **Content Spacing**: `mb-6`, `mb-8`, `mb-12` for content hierarchy
-- **Small Spacing**: `mb-4` for related elements
+### Afstandssystem
+
+#### Margener
+
+* **Sektion-afstand**: `mb-16` mellem større sektioner
+* **Indholdsafstand**: `mb-6`, `mb-8`, `mb-12` for indholdshierarki
+* **Lille afstand**: `mb-4` til relaterede elementer
 
 #### Padding
-- **Card Padding**: `p-8` for card interiors
-- **Button Padding**: `px-6 py-3` for standard buttons
-- **Main Content**: `pt-8 pb-12` for page content
 
-### Shadows and Effects
+* **Kort-padding**: `p-8`
+* **Knap-padding**: `px-6 py-3`
+* **Hovedindhold**: `pt-8 pb-12`
 
-#### Shadows
+---
+
+### Skygger og effekter
+
+#### Skygger
+
 ```css
-/* Card Shadow */
+/* Kort-skygge */
 shadow-lg
 
-/* Custom shadows (if needed) */
+/* Valgfri brugerdefineret skygge */
 shadow-xl
 ```
 
-#### Transitions
+#### Overgange
+
 ```css
-/* Standard Transition */
+/* Standard transition */
 transition-all duration-200
 
-/* Color Transitions */
+/* Farveovergange */
 transition-colors duration-300
 ```
 
-### Best Practices
+---
 
-1. **Consistency**: Always use the established color palette
-2. **Accessibility**: Maintain proper contrast ratios
-3. **Performance**: Use Tailwind's utility classes for optimal CSS delivery
-4. **Dark Theme**: Ensure all components work with the dark theme
-5. **Spacing**: Follow the established spacing system for visual harmony
-6. **Desktop First**: Optimize layouts for desktop/laptop viewing
+### Bedste praksis
 
-### Quick Reference
+1. **Konsistens**: Brug altid etableret farvepalette
+2. **Tilgængelighed**: Bevar korrekt kontrast
+3. **Performance**: Brug Tailwinds utility-klasser for optimal CSS
+4. **Mørkt tema**: Sørg for alle komponenter fungerer i mørk tilstand
+5. **Spacing**: Følg etableret spacing-system for visuel harmoni
+
+---
+
+### Hurtig reference
 
 ```html
-<!-- Standard Page Container -->
+<!-- Standard sidecontainer -->
 <section class="max-w-7xl mx-auto text-center mb-16">
 
-<!-- Standard Card -->
+<!-- Standard kort -->
 <div class="bg-gray-800 rounded-lg shadow-lg p-8">
 
-<!-- Standard Button Group -->
+<!-- Standard knapgruppe -->
 <div class="flex flex-col sm:flex-row gap-4 justify-center">
   <button class="px-6 py-3 rounded-lg font-semibold bg-[#55A5F8] text-white hover:bg-[#3F8CE0] focus:outline-none focus:ring-2 focus:ring-[#55A5F8] focus:ring-offset-gray-900 transition-all duration-200">
-    Primary Action
+    Primær handling
   </button>
 </div>
 ```
-
-This styling system ensures consistent, professional appearance across all pages while maintaining the dark theme aesthetic.

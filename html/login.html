@@ -1,10 +1,105 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full dark">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EchoVault - Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
 </head>
-<body>
+<body class="h-full bg-gray-900 text-white">
+
+<div class="flex h-screen">
+
+    <!-- Left Side: Login / Welcome (50%) -->
+    <div class="w-1/2 flex flex-col justify-center items-center px-12 bg-[#121212]">
+
+        <!-- Card Container -->
+        <div class="w-full max-w-xl bg-gray-800 rounded-xl shadow-lg p-12 space-y-8 min-h-[600px]">
+        <!-- Header -->
+            <div class="text-center">
+                <h1 class="text-7xl font-bold mb-2">EchoVault</h1>
+                <h2 class="text-2xl font-semibold text-gray-300">Login</h2>
+            </div>
+
+            <!-- Login Form -->
+            <form class="space-y-6">
+                <!-- Google Login -->
+                <a href="/oauth2/authorization/google"
+                   class="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-lg font-semibold bg-[#55A5F8] text-white hover:bg-[#3F8CE0] focus:outline-none focus:ring-2 focus:ring-[#55A5F8] focus:ring-offset-gray-900 transition-all duration-200">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24">
+                        <!-- SVG paths here -->
+                    </svg>
+                    <span>Continue with Google</span>
+                </a>
+
+                <!-- OR Divider -->
+                <div class="flex items-center my-6">
+                    <div class="flex-1 border-t border-gray-600"></div>
+                    <span class="mx-4 text-gray-400">OR</span>
+                    <div class="flex-1 border-t border-gray-600"></div>
+                </div>
+
+                <!-- Email Input -->
+                <div class="space-y-4">
+                    <div>
+                        <label for="email" class="block text-gray-300 mb-1">Email</label>
+                        <div class="flex items-center bg-gray-700 border border-gray-600 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-500">
+                        <span class="flex items-center justify-center px-3 text-gray-400">
+                            <img src="../imgs/login/icons8-email-100.png" alt="email" class="w-5 h-5">
+                        </span>
+                            <input type="email" id="email" placeholder="Email"
+                                   class="flex-1 bg-gray-700 text-white px-3 py-2 focus:outline-none"
+                                   required autofocus>
+                        </div>
+                    </div>
+
+                    <!-- Password Input -->
+                    <div>
+                        <label for="password" class="block text-gray-300 mb-1">Password</label>
+                        <div class="flex items-center bg-gray-700 border border-gray-600 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-500">
+                        <span class="flex items-center justify-center px-3 text-gray-400">
+                            <img src="../imgs/login/icons8-lock-100.png" alt="lock" class="w-5 h-5">
+                        </span>
+                            <input type="password" id="password" placeholder="Password"
+                                   class="flex-1 bg-gray-700 text-white px-3 py-2 focus:outline-none"
+                                   required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Remember Me -->
+                <div class="flex items-center space-x-2">
+                    <input type="checkbox" name="remember-me" id="remember-me" class="h-4 w-4">
+                    <label for="remember-me" class="text-gray-300">Remember me</label>
+                </div>
+
+                <!-- Login Button -->
+                <button type="submit"
+                        class="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-lg font-semibold bg-[#55A5F8] text-white hover:bg-[#3F8CE0] focus:outline-none focus:ring-2 focus:ring-[#55A5F8] focus:ring-offset-gray-900 transition-all duration-200">
+                    Login
+                </button>
+
+                <!-- Forgot Password -->
+                <div class="text-center mt-4">
+                    <a href="#" class="text-blue-400 hover:underline">Forgot your password?</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Right Side: Image (50%) -->
+    <div class="w-1/2 bg-cover bg-center relative"
+         style="background-image: url('../imgs/login/pexels-wendywei-1190297.jpg');">
+        <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+    </div>
+
+</div>
 
 </body>
 </html>
