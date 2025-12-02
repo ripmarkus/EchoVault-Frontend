@@ -23,6 +23,7 @@ EchoVault-Frontend/
 2. **ES6 Modules**: Use import/export for module management
 3. **Folder Organization**: Group related functionality in subdirectories
 4. **Naming Conventions**: Use descriptive names that reflect functionality
+5. **Image File Structure**: Place images in imgs in a subfolder with the same name as the html page
 
 ### Recommended Package Structure
 
