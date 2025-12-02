@@ -1,6 +1,6 @@
 // sidebar.js
 const sidebarHTML = `
-<div class="flex max-h-screen bg-gray-900 p-8">
+<div class="flex max-h-screen bg-[#121212] p-8">
     <!-- Sidebar Container -->
     <aside class="w-64 bg-gray-800 text-white rounded-2xl shadow-xl flex flex-col p-6 space-y-6
                  min-h-[900px] max-h-[90vh] overflow-y-auto">

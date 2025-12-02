@@ -71,7 +71,7 @@ css fil.
 
 Applikationen bruger et mørkt tema med følgende farvepalette:
 
-* **Primær baggrund**: `bg-gray-900` – Hovedbaggrund
+* **Primær baggrund**: `bg-[#121212]` – Hovedbaggrund
 * **Sekundær baggrund**: `bg-gray-800` – Kort, modaler, forhøjede overflader
 * **Tekstfarver**:
 

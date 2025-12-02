@@ -1,6 +1,6 @@
 // navbar.js
 const navbarHTML = `
-<nav class="bg-gray-800">
+<nav class="bg-[#121212]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center h-16 justify-between">
             <!-- Left side: Logo + Links -->
