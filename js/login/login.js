@@ -14,18 +14,26 @@ document.addEventListener('DOMContentLoaded', function() {
         passwordField.type = isPassword ? 'text' : 'password';
 
         if (isPassword) {
-            // Show "eye-slash" icon when password is visible
             eyeIcon.innerHTML = '<path d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"/>';
         } else {
-            // Show "eye" icon when password is hidden
             eyeIcon.innerHTML = '<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>';
         }
     });
 
-    // Check if user is already logged in
     AuthManager.getCurrentUser().then(user => {
-        if (user) window.location.href = '/dashboard';
+        if (user) window.location.href = '../html/dashboard.html';
     });
+
+    // Auto-fill remembered email
+    const rememberedEmail = AuthManager.getRememberedEmail();
+    if (rememberedEmail) {
+        const emailField = document.getElementById('email');
+        const rememberCheckbox = document.getElementById('remember-me');
+        if (emailField && rememberCheckbox) {
+            emailField.value = rememberedEmail;
+            rememberCheckbox.checked = true;
+        }
+    }
 
     // Form submission
     loginForm.addEventListener('submit', async function(e) {
@@ -33,6 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const email = document.getElementById('email').value.trim();
         const password = passwordField.value;
+        const rememberMe = document.getElementById('remember-me').checked;
 
         if (!email || !password) {
             showError('Please fill in all fields');
@@ -49,9 +58,9 @@ document.addEventListener('DOMContentLoaded', function() {
         spinner.classList.remove('hidden');
 
         try {
-            await AuthManager.loginUser(email, password);
+            await AuthManager.loginUser(email, password, rememberMe);
             showSuccess('Login successful!');
-            setTimeout(() => window.location.href = '/dashboard', 1000);
+            setTimeout(() => window.location.href = '../html/dashboard.html', 1000);
         } catch (error) {
             showError(error.message || 'Login failed');
             submitBtn.disabled = false;
@@ -73,7 +82,7 @@ const loginContainer = `
             <form id="login-form" class="space-y-6">
                 <!-- Google Login -->
                 <div class="space-y-4">
-                    <a href="/oauth2/authorization/google"
+                    <a href="http://localhost:8080/oauth2/authorization/google"
                        class="flex items-center bg-gray-700 border border-gray-600 overflow-hidden
               px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-gray-600 transition-all duration-200">
                         <!-- Icon -->

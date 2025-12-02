@@ -5,8 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8de2ecd9-4aff-49d5-b4f4-66633757bb29" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/documentation/styling.md" beforeDir="false" afterPath="$PROJECT_DIR$/documentation/styling.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/html/dashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/login/auth-utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/login/auth-utils.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/login/login.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/login/login.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/login/registration.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/login/registration.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,6 +42,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "DefaultHtmlFileTemplate": "HTML File",
+    "JavaScript Debug.login.html.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
@@ -46,7 +50,7 @@
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "development",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/home/vss/Downloads/TailAdmin - Free Tailwind CSS Dashboard Admin Template (2)/tailadmin-free-tailwind-dashboard-template-main",
+    "last_opened_file_path": "/home/vss/Dropbox/Skole/KEA/Datamatiker/Semester 3/Java/EchoVault-Backend",
     "list.type.of.created.stylesheet": "CSS",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -59,7 +63,13 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/imgs/login" />
+      <recent name="$PROJECT_DIR$/imgs" />
       <recent name="$PROJECT_DIR$" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/js/login" />
+      <recent name="$PROJECT_DIR$/imgs/login" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -78,6 +88,9 @@
       <option name="presentableId" value="Default" />
       <updated>1764667673834</updated>
       <workItem from="1764667674978" duration="5275000" />
+      <workItem from="1764703368312" duration="621000" />
+      <workItem from="1764704836170" duration="23000" />
+      <workItem from="1764705016472" duration="1599000" />
     </task>
     <servers />
   </component>

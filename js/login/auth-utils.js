@@ -1,8 +1,14 @@
 // Simple auth utilities for Spring Security/OAuth2
 class AuthManager {
+    static getBaseURL() {
+        return window.location.hostname === 'localhost' && window.location.port === '63342' 
+            ? 'http://localhost:8080' 
+            : '';
+    }
+
     static async getCurrentUser() {
         try {
-            const response = await fetch('/api/auth/user', { credentials: 'include' });
+            const response = await fetch(this.getBaseURL() + '/api/auth/user', { credentials: 'include' });
             return response.ok ? await response.json() : null;
         } catch {
             return null;
@@ -11,29 +17,43 @@ class AuthManager {
 
     static async logout() {
         try {
-            await fetch('/logout', { method: 'POST', credentials: 'include' });
+            await fetch(this.getBaseURL() + '/logout', { method: 'POST', credentials: 'include' });
         } finally {
+            // Clear remembered email if user logs out
+            localStorage.removeItem('rememberedEmail');
             window.location.href = '/login';
         }
     }
 
-    static async loginUser(email, password) {
-        const response = await fetch('/api/auth/login', {
+    static async loginUser(email, password, rememberMe = false) {
+        const response = await fetch(this.getBaseURL() + '/api/auth/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify({ email, password, rememberMe })
         });
 
         if (!response.ok) {
             const error = await response.json();
             throw new Error(error.message || 'Login failed');
         }
+
+        // Handle remember me functionality
+        if (rememberMe) {
+            localStorage.setItem('rememberedEmail', email);
+        } else {
+            localStorage.removeItem('rememberedEmail');
+        }
+
         return response.json();
     }
 
+    static getRememberedEmail() {
+        return localStorage.getItem('rememberedEmail');
+    }
+
     static async registerUser(email, name, password) {
-        const response = await fetch('/api/auth/register', {
+        const response = await fetch(this.getBaseURL() + '/api/auth/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, name, password })
