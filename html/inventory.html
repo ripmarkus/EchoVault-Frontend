@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EchoVault - Inventory</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+</head>
+<body class="h-full bg-[#121212] text-white">
+
+<div id="navbar-container"></div>
+<div class="flex max-h-screen bg-[#121212]">
+    <div id="sidebar-container" class="flex-shrink-0"></div>
+
+    <!-- Main Content -->
+    <main class="flex-1 pt-8 pb-12">
+
+        <!-- Inventory Section -->
+        <section class="max-w-7xl mx-auto mb-16">
+            <h1 class="text-4xl font-bold text-center mb-10">Inventory</h1>
+
+            <div class="overflow-x-auto rounded-xl shadow-lg">
+                <table class="min-w-full bg-gray-800 text-left text-white">
+                    <thead class="bg-gray-700">
+                    <tr>
+                        <th class="px-6 py-3">Select</th>
+                        <th class="px-6 py-3">ID</th>
+                        <th class="px-6 py-3">Name</th>
+                        <th class="px-6 py-3">Quantity</th>
+                        <th class="px-6 py-3">Rental Price</th>
+                        <th class="px-6 py-3">Category</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Example Row (You can remove these placeholders later) -->
+                    <tr class="border-b border-gray-700">
+                        <td class="px-6 py-4"><input type="checkbox" class="h-4 w-4"></td>
+                        <td class="px-6 py-4">#1</td>
+                        <td class="px-6 py-4">Allen & Health C1500</td>
+                        <td class="px-6 py-4">5</td>
+                        <td class="px-6 py-4">1500 DKK</td>
+                        <td class="px-6 py-4">Mixer</td>
+                    </tr>
+                    <tr class="border-b border-gray-700">
+                        <td class="px-6 py-4"><input type="checkbox" class="h-4 w-4"></td>
+                        <td class="px-6 py-4">#67</td>
+                        <td class="px-6 py-4">Shure SM57</td>
+                        <td class="px-6 py-4">8</td>
+                        <td class="px-6 py-4">150 DKK</td>
+                        <td class="px-6 py-4">Microphone</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <script src="../js/main.js"></script>
+        <script type="module">
+            import { loadNavbar } from '../js/navigation/navbar.js';
+            import { loadSidebar } from "../js/navigation/sidebar.js";
+            loadNavbar('navbar-container');
+            loadSidebar('sidebar-container');
+        </script>
+</body>
+</html>
