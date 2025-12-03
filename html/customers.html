@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EchoVault - Template</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }    
+    </script>
+</head>
+<body class="h-full bg-[#121212] text-white">
+
+<div id="navbar-container"></div>
+<div class="flex max-h-screen bg-[#121212]">
+    <div id="sidebar-container" class="flex-shrink-0"></div>
+
+    <!-- Main Content -->
+    <main class="flex-1 pt-8 pb-12">
+
+        <!-- Features Grid -->
+        <section class="max-w-7xl mx-auto mb-16">
+            <h2 class="text-3xl font-bold text-center text-white mb-12">Customers</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+
+                <!-- Customers Table -->
+                <section class="max-w-7xl mx-auto mb-16">
+                    <div class="overflow-x-auto">
+
+                        <!-- Search Bar -->
+                        <div class="flex justify-center mb-6">
+                            <input id="search-input" type="text" placeholder="Search customers..."
+                                   class="px-4 py-2 rounded-l-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-400 w-64">
+                            <button id="search-btn"
+                                    class="px-4 py-2 rounded-r-lg bg-[#55A5F8] text-white hover:bg-[#3F8CE0] transition-all">
+                                Search
+                            </button>
+                        </div>
+
+                        <table class="min-w-full bg-gray-800 rounded-lg shadow-lg table-auto">
+                            <thead>
+                                <tr class="text-left text-gray-300 border-b border-gray-700">
+                                    <th class="p-7">Select</th>
+                                    <th class="p-7">ID</th>
+                                    <th class="p-7">Name</th>
+                                    <th class="p-7">CVR</th>
+                                    <th class="p-7">Address</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customers-table-body">
+                                <!-- Data kommer her via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+            </div>
+        </section>
+
+        <!-- Ikke module (medmindre main.js selv bruger import/export) -->
+        <script src="../js/main.js"></script>
+
+        <!-- Module-fil til customers-side -->
+        <script src="../js/pages/customers.js" type="module"></script>
+
+        <!-- Inline module til navigation -->
+        <script type="module">
+            import { loadNavbar } from '../js/navigation/navbar.js';
+            import { loadSidebar } from '../js/navigation/sidebar.js';
+
+            document.addEventListener("DOMContentLoaded", () => {
+                loadNavbar('navbar-container');
+                loadSidebar('sidebar-container');
+            });
+        </script>
+
+    </main>
+</div>
+
+</body>
+</html>
