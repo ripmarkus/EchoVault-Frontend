@@ -22,8 +22,8 @@ const sidebarHTML = `
 `;
 
 export function loadSidebar(containerId) {
-    const container = document.getElementById(containerId);
-    if (container) {
-        container.innerHTML = sidebarHTML;
-    }
+  const container = document.getElementById(containerId);
+  if (container) {
+    container.innerHTML = sidebarHTML;
+  }
 }
