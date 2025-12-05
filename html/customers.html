@@ -24,31 +24,39 @@
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-3xl font-bold text-white">Customers</h2>
 
-                <!-- Create-knap -->
-                <button
-                    id="create-customer-btn"
-                    class="px-4 py-2 rounded-lg bg-[#55A5F8] text-white font-semibold hover:bg-[#3F8CE0] transition"
-                >
-                    + New customer
-                </button>
+
             </div>
 
             <!-- Customers "card" -->
-            <div class="bg-gray-900 rounded-2xl shadow-lg p-6">
-                <!-- Search Bar -->
-                <div class="flex mb-6">
-                    <input id="search-input" type="text" placeholder="Search customers..."
-                           class="px-4 py-2 rounded-l-lg bg-gray-700 text-white
-                                  focus:outline-none focus:ring-2 focus:ring-blue-400 w-64">
-                    <button id="search-btn"
-                            class="px-4 py-2 rounded-r-lg bg-[#55A5F8] text-white hover:bg-[#3F8CE0] transition-all">
-                        Search
+            <div class="bg-gray-900 rounded-t-2xl shadow-lg p-6">
+                <!-- Search Bar + Create Button -->
+                <div class="flex items-center justify-between mb-6">
+
+                    <!-- Left: Search -->
+                    <div class="flex">
+                        <input id="search-input" type="text" placeholder="Search customers..."
+                               class="px-4 py-2 rounded-l-lg bg-gray-700 text-white
+                          focus:outline-none focus:ring-2 focus:ring-blue-400 w-64">
+                        <button id="search-btn"
+                                class="px-4 py-2 rounded-r-lg bg-[#55A5F8] text-white
+                           hover:bg-[#3F8CE0] transition-all">
+                            Search
+                        </button>
+                    </div>
+
+                    <!-- Right: Create Button -->
+                    <button id="create-customer-btn"
+                            class="px-4 py-2 rounded-lg bg-[#55A5F8] text-white font-semibold
+                       hover:bg-[#3F8CE0] transition">
+                        + New customer
                     </button>
+
                 </div>
+            </div>
 
                 <!-- Tabel -->
                 <div class="overflow-x-auto">
-                    <table class="w-full bg-gray-800 rounded-lg table-auto">
+                    <table class="w-full bg-gray-800 rounded-b-lg table-auto">
                         <thead>
                         <tr class="text-left text-gray-300 border-b border-gray-700">
                             <th class="p-7">Select</th>
