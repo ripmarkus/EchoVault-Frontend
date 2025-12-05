@@ -252,6 +252,8 @@ function openCustomerFormModalForCreate() {
   document.getElementById("form-addressLine").value = "";
   document.getElementById("form-postalCode").value = "";
   document.getElementById("form-city").value = "";
+  document.getElementById("form-parentId").value = "";
+  document.getElementById("form-contactId").value = "";
 
   modal.classList.remove("hidden");
   modal.classList.add("flex");
@@ -274,6 +276,8 @@ async function openCustomerFormModalForEdit(id) {
     document.getElementById("form-addressLine").value = data.addressLine ?? "";
     document.getElementById("form-postalCode").value = data.postalCode ?? "";
     document.getElementById("form-city").value = data.city ?? "";
+    document.getElementById("form-parentId").value = data.parent ?? "";
+    document.getElementById("form-contactId").value = data.contact?.id ?? "";
 
     modal.classList.remove("hidden");
     modal.classList.add("flex");
@@ -300,10 +304,9 @@ async function submitCustomerForm(e) {
     postalCode: document.getElementById("form-postalCode").value || null,
     city: document.getElementById("form-city").value || null,
 
-    // Lige nu sætter vi ikke parent/contact fra UI,
-    // så de sendes som null (ingen ændring ved PATCH).
-    parentId: null,
-    contactId: null,
+    // NU hentes de rigtigt fra formularen
+    parentId: document.getElementById("form-parentId")?.value || null,
+    contactId: document.getElementById("form-contactId")?.value || null,
   };
 
   let url = API_BASE;
@@ -337,6 +340,7 @@ async function submitCustomerForm(e) {
     // Her kan du evt. vise en fejlmeddelelse i modal'en.
   }
 }
+
 
 
 function closeCustomerFormModal() {

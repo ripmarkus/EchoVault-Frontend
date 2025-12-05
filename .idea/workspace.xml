@@ -5,11 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8de2ecd9-4aff-49d5-b4f4-66633757bb29" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/html/dashboard.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/login/auth-utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/login/auth-utils.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/login/login.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/login/login.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/login/registration.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/login/registration.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/navbar + sidebar" beforeDir="false" afterPath="$PROJECT_DIR$/navbar + sidebar" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,9 +45,12 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
     "git-widget-placeholder": "development",
+    "ignore.virus.scanning.warn.message": "true",
+    "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/home/vss/Dropbox/Skole/KEA/Datamatiker/Semester 3/Java/EchoVault-Backend",
+    "last_opened_file_path": "C:/Users/tiv17/Desktop/eksamens projekt/echovault-frontend",
     "list.type.of.created.stylesheet": "CSS",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -58,6 +58,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "preferences.general",
+    "to.speed.mode.migration.done": "true",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -75,8 +76,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.28238.7" />
-        <option value="bundled-js-predefined-d6986cc7102b-a71380e98a7c-JavaScript-IU-252.28238.7" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.27397.103" />
+        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.27397.103" />
       </set>
     </attachedChunks>
   </component>
@@ -91,6 +92,8 @@
       <workItem from="1764703368312" duration="621000" />
       <workItem from="1764704836170" duration="23000" />
       <workItem from="1764705016472" duration="1599000" />
+      <workItem from="1764927361563" duration="640000" />
+      <workItem from="1764928102813" duration="526000" />
     </task>
     <servers />
   </component>
