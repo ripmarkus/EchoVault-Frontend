@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" class="h-full dark">
 <head>
@@ -25,10 +26,10 @@
         <section class="w-full pl-8 pr-8 mb-16">
             <div class="flex items-center justify-between mb-6">
                 <h1 class="text-4xl font-bold text-center mb-10">Inventory</h1>
-            <!-- Create-knap -->
+                <!-- Create-knap -->
                 <button id="create-equipment-btn"
                         class="px-4 py-2 rounded-lg bg-[#55A5F8] text-white font-semibold hover:bg-[#3F8CE0] transition">
-                + Add equipment
+                    + Add equipment
                 </button>
             </div>
 
@@ -46,23 +47,41 @@
 
 
                 <!-- View modal -->
-                <div id="equipment-modal"
-                     class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60">
-                    <div class="bg-gray-900 rounded-2xl shadow-xl w-full max-w-xl p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 id="equipment-modal-title" class="text-xl font-semibold text-white">
-                                Equipment details
-                            </h3>
+                <div id="equipment-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60">
+                    <div class="bg-gray-900 rounded-2xl shadow-xl w-full max-w-xl p-6 flex flex-col items-center">
+                        <div class="flex items-center justify-between w-full mb-4">
+                            <h3 id="equipment-modal-title" class="text-xl font-semibold text-white">Equipment details</h3>
                             <button id="equipment-modal-close"
                                     class="w-8 h-8 flex items-center justify-center rounded bg-gray-800 hover:bg-gray-700 text-gray-300">
                                 ✕
                             </button>
                         </div>
-                        <div id="equipment-modal-content" class="space-y-2 text-sm text-gray-200">
-                            <!-- udfyldes via JS -->
+
+                        <!-- Image -->
+                        <img id="equipment-modal-image" src="" alt="Equipment Image" class="w-48 h-48 object-cover rounded mb-4"/>
+
+                        <!-- Details -->
+                        <div id="equipment-modal-details" class="space-y-2 text-sm text-gray-200 mb-4">
+                            <!-- Filled dynamically -->
                         </div>
+
+                        <!-- Add piece section -->
+                        <div class="flex gap-2 w-full items-center mb-2">
+                            <input id="new-piece-serial" type="text" placeholder="Serial number"
+                                   class="flex-1 px-3 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                            <button id="add-piece-btn"
+                                    class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-500">
+                                Add Piece
+                            </button>
+                        </div>
+
+                        <!-- Pieces list -->
+                        <ul id="equipment-pieces-list" class="w-full text-gray-200 text-sm space-y-1 max-h-40 overflow-y-auto">
+                            <!-- Filled dynamically -->
+                        </ul>
                     </div>
                 </div>
+
 
                 <!-- Create/Update modal (form) -->
                 <div id="equipment-form-modal"
@@ -111,11 +130,6 @@
                                 </div>
                                 <div class="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label class="block text-sm text-gray-300 mb-1">Status</label>
-                                        <input id="form-status" type="text"
-                                               class="w-full px-3 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    </div>
-                                    <div>
                                         <label class="block text-sm text-gray-300 mb-1">Image-URL</label>
                                         <input id="form-imageURL" type="text"
                                                class="w-full px-3 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -144,7 +158,7 @@
                             <th class="px-6 py-3">Select</th>
                             <th class="px-6 py-3">ID</th>
                             <th class="px-6 py-3">Name</th>
-                            <th class="px-6 py-3">Quantity</th>
+                            <th class="px-6 py-3">Pieces</th>
                             <th class="px-6 py-3">Rental Price</th>
                             <th class="px-6 py-3">Category</th>
                         </tr>
@@ -155,23 +169,24 @@
         </section>
     </main>
 
-    <!-- Ikke module (medmindre main.js selv bruger import/export) -->
-    <script src="../js/main.js"></script>
-
-    <!-- Module-fil til equipment-side -->
-    <script src="../js/pages/equipment.js" type="module"></script>
-
-    <!-- Inline module til navigation -->
-    <script type="module">
-        import { loadNavbar } from '../js/navigation/navbar.js';
-        import { loadSidebar } from '../js/navigation/sidebar.js';
-
-        document.addEventListener("DOMContentLoaded", () => {
-            loadNavbar('navbar-container');
-            loadSidebar('sidebar-container');
-        });
-    </script>
-
 </div>
+
+<!-- Ikke module (medmindre main.js selv bruger import/export) -->
+<script src="../js/main.js"></script>
+
+<!-- Module-fil til equipment-side -->
+<script src="../js/pages/equipment.js" type="module"></script>
+
+<!-- Inline module til navigation -->
+<script type="module">
+    import { loadNavbar } from '../js/navigation/navbar.js';
+    import { loadSidebar } from '../js/navigation/sidebar.js';
+
+    document.addEventListener("DOMContentLoaded", () => {
+        loadNavbar('navbar-container');
+        loadSidebar('sidebar-container');
+    });
+</script>
 </body>
 </html>
+
