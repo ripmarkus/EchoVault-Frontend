@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title class="project-title"></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+</head>
+<body class="h-full bg-[#121212] text-white">
+
+<div id="navbar-container"></div>
+<div class="flex max-h-screen bg-[#121212]">
+    <div id="sidebar-container" class="flex-shrink-0"></div>
+<!-- Main Content -->
+<main class="flex-1 pt-2 pb-12">
+    <div class="grid gap-8 grid-cols-2 lg:grid-cols-[20%,auto,25%] p-6" id="main-grid">
+
+            <!-- Column 1 (25%) -->
+            <div class="space-y-2">
+                <div class="bg-gray-800 rounded-lg shadow-lg p-8 min-h-[450px]">
+                    <h4 id="project-title"class="text-2xl font-bold text-blue-400 mb-4">Project Name</h4>
+                    <p class="text-lg text-blue-400">Total: <span id="project-total" class="text-white"></span></p>
+                    <p class="text-lg text-blue-400 mb-8">Confirmed on: <span id="project-confirmation-date" class="text-white"></span></p>
+                    <h3 class="text-2xl font-semibold text-blue-400 mb-6">About this project</h3>
+                    <p class ="text-lg text-blue-400">Project Manager</p>
+                    <p id="project-manager" class="mb-4">Project Manager </p>
+                    <p class ="text-lg text-blue-400">Type </p>
+                    <p id="project-type" class="mb-4">Type </p>
+                    <p class ="text-lg text-blue-400">Phase</p>
+                    <p id="project-phase" class="mb-4">Phase </p>
+                </div>
+            </div>
+
+            <!-- Column 2 (Orders/Equipment) -->
+        <div class="col-span-1" id="middle-column">
+            <!-- Tab navigation -->
+            <div class="flex border-b border-gray-600">
+                <button id="order-summary-tab" class="tab-button px-4 py-2 text-blue-400 border-b-2 border-blue-400 font-semibold">
+                    Order Summary
+                </button>
+                <button id="equipment-tab" class="tab-button px-4 py-2 text-gray-400 hover:text-blue-400 font-semibold">
+                    Equipment View
+                </button>
+            </div>
+
+            <!-- Order Summary Content -->
+            <div id="order-summary-content" class="tab-content space-y-2">
+                <!-- Orders Card -->
+                <div class="bg-gray-800 rounded-b-lg shadow-lg p-8 min-h-[500px] flex flex-col">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-semibold text-white">Orders</h3>
+                        <a href="#" class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1 rounded">+Add</a>
+                    </div>
+                    <div id="orders-list" class="flex flex-col gap-2 overflow-y-auto flex-1"></div>
+                </div>
+
+                <!-- Activities Card -->
+                <div class="bg-gray-800 rounded-lg shadow-lg p-8 min-h-[490px] flex flex-col">
+                    <h3 class="text-xl font-semibold text-white mb-4">Activities</h3>
+                    <div id="activities-list" class="flex flex-col gap-2 overflow-y-auto flex-1"></div>
+                </div>
+            </div>
+            
+            <!-- Equipment Content -->
+            <div id="equipment-content" class="tab-content hidden">
+                <div class="bg-gray-800 rounded-b-lg shadow-lg p-8 min-h-[1020px] flex flex-col">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-semibold text-white">Equipment</h3>
+                        <a href="#" class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1 rounded">+Add</a>
+                    </div>
+                    <div id="equipment-list" class="flex flex-col gap-2 overflow-y-auto flex-1"></div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Column 3 (Contacts/Customers) -->
+            <div class="space-y-8" id="right-column">
+                <div class="bg-gray-800 rounded-lg shadow-lg p-8 min-h-[350px]">
+                    <!-- Header row: Contacts + +Add -->
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-semibold text-white">Contacts</h3>
+                        <a href="#" class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1 rounded">+Add</a>
+                    </div>
+
+                    <div id="contact-list" class="flex flex-col gap-4 overflow-y-auto flex-1"></div>
+                </div>
+
+                <div class="bg-gray-800 rounded-lg shadow-lg p-8 min-h-[350px] flex flex-col">
+                    <!-- Header row: Customers + +Add -->
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-semibold text-white">Customers</h3>
+                        <a href="#" class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1 rounded">+Add</a>
+                    </div>
+
+                    <div id="customers-list" class="flex flex-col gap-4 overflow-y-auto flex-1"></div>
+                </div>
+            </div>
+        </div>
+</main>
+
+</div>
+    <script type="module" src="../js/pages/project.js"></script>
+    <script src="../js/main.js"></script>
+    <script type="module">
+        import { loadNavbar } from '../js/navigation/navbar.js';
+        import {loadSidebar} from "../js/navigation/sidebar.js";
+        loadNavbar('navbar-container');
+        loadSidebar('sidebar-container')
+    </script>
+</body>
+</html>
