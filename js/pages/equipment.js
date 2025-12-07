@@ -94,6 +94,7 @@ function setupFormModal() {
 function openFormModal(mode, equipment = null) {
     const modal = document.getElementById("equipment-form-modal");
     modal.classList.remove("hidden");
+    modal.classList.add("flex"); // ensure flex display
 
     document.getElementById("equipment-form-mode").value = mode;
 
