@@ -27,6 +27,8 @@ const projectInfo = {
     confirmationDate: "2025-12-10",
     type: "Rental",
     phase: "Planning",
+    rentalStartDate: "2025.12.10 9:00 GMT +2",
+    rentalEndDate: "2025.12.10 9:00 GMT +2",
 };
 
 const customersList = document.getElementById("customers-list");
@@ -227,14 +229,16 @@ const projectPhase = document.getElementById("project-phase");
 const projectTitle = document.getElementById("project-title");
 const projectTotal = document.getElementById("project-total");
 const projectConfirmationDate = document.getElementById("project-confirmation-date");
+const rentalStartDate = document.getElementById("project-rental-start");
+const rentalEndDate = document.getElementById("project-rental-end");
 
 // Show skeleton loaders for project info sections
-[projectManager, projectType, projectPhase, projectTitle, projectTotal, projectConfirmationDate]
+[projectManager, projectType, projectPhase, projectTitle, projectTotal, projectConfirmationDate, rentalStartDate, rentalEndDate]
     .filter(element => element) // Only process elements that exist
     .forEach(element => showSkeleton(element, 1));
 
 // Hide skeleton loaders and populate project info
-[projectManager, projectType, projectPhase, projectTitle, projectTotal, projectConfirmationDate]
+[projectManager, projectType, projectPhase, projectTitle, projectTotal, projectConfirmationDate, rentalStartDate, rentalEndDate]
     .filter(element => element)
     .forEach(element => hideSkeleton(element));
 
@@ -244,3 +248,5 @@ projectPhase.textContent = `${projectInfo.phase}`;
 projectTitle.textContent = `${projectInfo.projectName}`;
 projectTotal.textContent = `${projectInfo.projectTotal}`;
 projectConfirmationDate.textContent = `${projectInfo.confirmationDate}`;
+rentalStartDate.textContent = `${projectInfo.rentalStartDate}`;
+rentalEndDate.textContent = `${projectInfo.rentalEndDate}`;
