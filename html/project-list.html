@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EchoVault - Projects</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+</head>
+<body class="h-full bg-[#121212] text-white">
+
+<div id="navbar-container"></div>
+
+<div class="flex max-h-screen bg-[#121212]">
+    <div id="sidebar-container" class="flex-shrink-0"></div>
+
+    <main class="flex-1 pt-8 pb-12">
+        <!-- Alt content venstrejusteret, fylder hele main -->
+        <section class="w-full pl-8 pr-8 mb-16">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-3xl font-bold text-white">Projects</h2>
+
+
+            </div>
+
+            <!-- Projects "card" -->
+            <div class="bg-gray-900 rounded-t-2xl shadow-lg p-6">
+                <!-- Search Bar + Create Button -->
+                <div class="flex items-center justify-between mb-6">
+
+                    <!-- Left: Search -->
+                    <div class="flex">
+                        <input id="search-input" type="text" placeholder="Search projects..."
+                               class="px-4 py-2 rounded-l-lg bg-gray-700 text-white
+                          focus:outline-none focus:ring-2 focus:ring-blue-400 w-64">
+                        <button id="search-btn"
+                                class="px-4 py-2 rounded-r-lg bg-[#55A5F8] text-white
+                           hover:bg-[#3F8CE0] transition-all">
+                            Search
+                        </button>
+                    </div>
+
+                    <!-- Right: Filter Button -->
+                    <button id="manage-status-btn"
+                            class="px-4 py-2 rounded-lg bg-[#55A5F8] text-white font-semibold
+                       hover:bg-[#3F8CE0] transition">
+                        Filter
+                    </button>
+
+                </div>
+            </div>
+
+                <!-- Tabel -->
+                <div class="overflow-x-auto">
+                    <table class="w-full bg-gray-800 rounded-b-lg table-auto">
+                        <thead>
+                        <tr class="text-left text-gray-300 border-b border-gray-700">
+                            <th class="p-7">Select</th>
+                            <th class="p-7">Status</th>
+                            <th class="p-7">ID</th>
+                            <th class="p-7">Customer</th>
+                            <th class="p-7">Actions</th>
+                            <th class="p-7">Start Date</th>
+                            <th class="p-7">End Date</th>
+                        </tr>
+                        </thead>
+                        <tbody id="projects-table-body">
+                        <!-- Data via JS -->
+                        </tbody>
+                    </table>
+                </div>
+        </section>
+    </main>
+
+    <!-- View modal -->
+    <div id="project-modal"
+         class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60">
+        <div class="bg-gray-900 rounded-2xl shadow-xl w-full max-w-xl p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 id="project-modal-title" class="text-xl font-semibold text-white">
+                    Project details
+                </h3>
+                <button id="project-modal-close"
+                        class="w-8 h-8 flex items-center justify-center rounded bg-gray-800 hover:bg-gray-700 text-gray-300">
+                    ✕
+                </button>
+            </div>
+            <div id="project-modal-content" class="space-y-2 text-sm text-gray-200">
+                <!-- udfyldes via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter modal -->
+    <div id="status-form-modal"
+         class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60">
+        <div class="bg-gray-900 rounded-2xl shadow-xl w-full max-w-xl p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 id="status-form-title" class="text-xl font-semibold text-white">
+                    Filter Projects
+                </h3>
+                <button id="status-form-close"
+                        class="w-8 h-8 flex items-center justify-center rounded bg-gray-800 hover:bg-gray-700 text-gray-300">
+                    ✕
+                </button>
+            </div>
+
+            <form id="status-form" class="space-y-4">
+                <input type="hidden" id="status-form-id" value=""/>
+
+                <div class="grid grid-cols-1 gap-4">
+                    <div>
+                        <label class="block text-sm text-gray-300 mb-1">Customer</label>
+                        <select id="form-customer"
+                                class="w-full px-3 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <!-- options udfyldes via JS -->
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm text-gray-300 mb-1">Start Date (from)</label>
+                            <input id="form-startDate" type="date"
+                                   class="w-full px-3 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-300 mb-1">End Date (until)</label>
+                            <input id="form-endDate" type="date"
+                                   class="w-full px-3 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-300 mb-1">Status</label>
+                        <select id="form-status"
+                                class="w-full px-3 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">All statuses</option>
+                            <option value="REQUESTED">Requested</option>
+                            <option value="IN_PROGRESS">In Progress</option>
+                            <option value="COMPLETED">Completed</option>
+                            <option value="CANCELLED">Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-4">
+                    <button type="button" id="status-form-cancel"
+                            class="px-4 py-2 rounded bg-gray-700 text-gray-200 hover:bg-gray-600">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="px-4 py-2 rounded bg-[#55A5F8] text-white font-semibold hover:bg-[#3F8CE0]">
+                        Apply Filters
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Ikke module (medmindre main.js selv bruger import/export) -->
+<script src="../js/main.js"></script>
+
+<!-- Module-fil til projects-side -->
+<script src="../js/pages/projects.js" type="module"></script>
+
+<!-- Inline module til navigation -->
+<script type="module">
+    import { loadNavbar } from '../js/navigation/navbar.js';
+    import { loadSidebar } from '../js/navigation/sidebar.js';
+
+    document.addEventListener("DOMContentLoaded", () => {
+        loadNavbar('navbar-container');
+        loadSidebar('sidebar-container');
+    });
+</script>
+
+</body>
+</html>

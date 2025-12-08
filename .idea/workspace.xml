@@ -1,118 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="AutoImportSettings">
-    <option name="autoReloadType" value="SELECTIVE" />
-  </component>
   <component name="ChangeListManager">
-    <list default="true" id="8de2ecd9-4aff-49d5-b4f4-66633757bb29" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/js/pages/equipment.js" afterDir="false" />
+    <list default="true" id="a2092ff4-972e-4c1b-bb61-a48615663264" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/html/project-list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/pages/project.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/pages/project.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="CSS File" />
-        <option value="HTML File" />
-        <option value="JavaScript File" />
-      </list>
-    </option>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="KubernetesApiPersistence">{}</component>
-  <component name="KubernetesApiProvider">{
-  &quot;isMigrated&quot;: true
-}</component>
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 3
-}</component>
-  <component name="ProjectId" id="36Hdx1VF3PNCUxmFoSkrzK7lRq0" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
-  <component name="ProjectViewState">
-    <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showLibraryContents" value="true" />
-  </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "JavaScript Debug.customer-profile.html.executor": "Run",
-    "JavaScript Debug.inventory.html.executor": "Run",
-    "JavaScript Debug.login.html.executor": "Run",
-    "JavaScript Debug.template.html.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "feature/customerprofile",
-    "ignore.virus.scanning.warn.message": "true",
-    "junie.onboarding.icon.badge.shown": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/tiv17/Desktop/eksamens projekt/echovault-frontend",
-    "list.type.of.created.stylesheet": "CSS",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.general",
-    "to.speed.mode.migration.done": "true",
-    "vue.rearranger.settings.migration": "true"
+    "git-widget-placeholder": "feat/project-list-view",
+    "last_opened_file_path": "/home/vss/Dropbox/Skole/KEA/Datamatiker/Semester 3/Java/EchoVault-Frontend/html"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/imgs/login" />
-      <recent name="$PROJECT_DIR$/imgs" />
-      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/html" />
     </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/js/login" />
-      <recent name="$PROJECT_DIR$/imgs/login" />
-    </key>
-  </component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
-        <option value="bundled-js-predefined-d6986cc7102b-b598e85cdad2-JavaScript-IU-252.25557.131" />
-      </set>
-    </attachedChunks>
   </component>
   <component name="TaskManager">
-    <task active="true" id="Default" summary="Default task">
-      <changelist id="8de2ecd9-4aff-49d5-b4f4-66633757bb29" name="Changes" comment="" />
-      <created>1764667673834</created>
-      <option name="number" value="Default" />
-      <option name="presentableId" value="Default" />
-      <updated>1764667673834</updated>
-      <workItem from="1764667674978" duration="5275000" />
-      <workItem from="1764703368312" duration="621000" />
-      <workItem from="1764704836170" duration="23000" />
-      <workItem from="1764705016472" duration="1599000" />
-      <workItem from="1764845875308" duration="353000" />
-      <workItem from="1764938719824" duration="1510000" />
-      <workItem from="1765180576257" duration="3742000" />
-    </task>
     <servers />
-  </component>
-  <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="3" />
-  </component>
-  <component name="github-copilot-workspace">
-    <instructionFileLocations>
-      <option value=".github/instructions" />
-    </instructionFileLocations>
-    <promptFileLocations>
-      <option value=".github/prompts" />
-    </promptFileLocations>
   </component>
 </project>
