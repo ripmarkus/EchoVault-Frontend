@@ -61,13 +61,11 @@ function switchTab(activeTab, activeContent) {
     
     // Handle layout transitions
     if (activeContent === equipmentContent) {
-        // Equipment tab: hide right column and expand grid
-        rightColumn.style.display = "none";
-        mainGrid.className = "grid gap-8 grid-cols-1 lg:grid-cols-[20%,auto] p-8";
+        // Equipment tab: hide right column content but keep space
+        rightColumn.style.visibility = "hidden";
     } else {
-        // Order Summary tab: show right column and restore 3-column layout
-        rightColumn.style.display = "block";
-        mainGrid.className = "grid gap-8 grid-cols-2 lg:grid-cols-[20%,auto,25%] p-8";
+        // Order Summary tab: show right column
+        rightColumn.style.visibility = "visible";
     }
 }
 
