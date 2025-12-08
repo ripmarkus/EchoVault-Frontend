@@ -1,5 +1,14 @@
 const API_BASE = "http://localhost:8080/api/customers";
 
+const CONTACTS_API_BASE = "http://localhost:8080/api/contacts"; // tilpas hvis dit endpoint hedder noget andet
+
+let allCustomers = []; // alle kunder (eksterne)
+
+
+let allContacts = []; // alle interne users
+   // alle interne users
+
+
 // Gruppér kunder efter parent (string som "cust-1")
 function groupCustomers(customers) {
   const parents = [];
@@ -237,7 +246,6 @@ async function openCustomerModal(id) {
   }
 }
 
-// Åbn form-modal til "create"
 function openCustomerFormModalForCreate() {
   const modal = document.getElementById("customer-form-modal");
   document.getElementById("customer-form-title").textContent = "New customer";
@@ -253,9 +261,14 @@ function openCustomerFormModalForCreate() {
   document.getElementById("form-postalCode").value = "";
   document.getElementById("form-city").value = "";
 
+  // dropdowns
+  populateParentDropdown(null, null);
+  populateContactDropdown(null);
+
   modal.classList.remove("hidden");
   modal.classList.add("flex");
 }
+
 async function openCustomerFormModalForEdit(id) {
   const modal = document.getElementById("customer-form-modal");
   document.getElementById("customer-form-title").textContent = "Edit customer";
@@ -275,12 +288,17 @@ async function openCustomerFormModalForEdit(id) {
     document.getElementById("form-postalCode").value = data.postalCode ?? "";
     document.getElementById("form-city").value = data.city ?? "";
 
+    // udfyld dropdowns med korrekt selected values
+    populateParentDropdown(data.id, data.parent ?? null);
+    populateContactDropdown(data.contact?.id ?? null);
+
     modal.classList.remove("hidden");
     modal.classList.add("flex");
   } catch (err) {
     console.error("Error loading customer for edit:", err);
   }
 }
+
 
 
 
@@ -300,10 +318,9 @@ async function submitCustomerForm(e) {
     postalCode: document.getElementById("form-postalCode").value || null,
     city: document.getElementById("form-city").value || null,
 
-    // Lige nu sætter vi ikke parent/contact fra UI,
-    // så de sendes som null (ingen ændring ved PATCH).
-    parentId: null,
-    contactId: null,
+    // NU hentes de rigtigt fra formularen
+    parentId: document.getElementById("form-parentId")?.value || null,
+    contactId: document.getElementById("form-contactId")?.value || null,
   };
 
   let url = API_BASE;
@@ -337,6 +354,7 @@ async function submitCustomerForm(e) {
     // Her kan du evt. vise en fejlmeddelelse i modal'en.
   }
 }
+
 
 
 function closeCustomerFormModal() {
@@ -380,8 +398,72 @@ async function handleDeleteCustomer(id) {
 }
 
 
+async function loadContacts() {
+  try {
+    const resp = await fetch(CONTACTS_API_BASE);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const contacts = await resp.json();
+    allContacts = contacts;
+  } catch (err) {
+    console.error("Error loading contacts:", err);
+  }
+}
 
-// Loader alle kunder
+
+function populateParentDropdown(
+  currentCustomerId = null,
+  selectedParentId = null
+) {
+  const select = document.getElementById("form-parentId");
+  if (!select) return;
+
+  // ryd eksisterende options
+  select.innerHTML = "";
+
+  // Første option: ingen parent
+  const noneOpt = document.createElement("option");
+  noneOpt.value = "";
+  noneOpt.textContent = "No parent customer";
+  select.appendChild(noneOpt);
+
+  // Tilføj alle kunder som kan være parent
+  allCustomers.forEach((cust) => {
+    // valgfrit: undgå at en kunde bliver parent til sig selv
+    if (currentCustomerId && cust.id === currentCustomerId) return;
+
+    const opt = document.createElement("option");
+    opt.value = cust.id; // det er ID, vi sender til backend
+    opt.textContent = cust.name; // det er navn, vi viser i UI
+    if (selectedParentId && selectedParentId === cust.id) {
+      opt.selected = true;
+    }
+    select.appendChild(opt);
+  });
+}
+function populateContactDropdown(selectedContactId = null) {
+  const select = document.getElementById("form-contactId");
+  if (!select) return;
+
+  select.innerHTML = "";
+
+  const noneOpt = document.createElement("option");
+  noneOpt.value = "";
+  noneOpt.textContent = "No contact person";
+  select.appendChild(noneOpt);
+
+  allContacts.forEach((contact) => {
+    const opt = document.createElement("option");
+    opt.value = contact.id; // Long id fra ContactDto
+    opt.textContent = contact.name || contact.email || contact.id;
+    if (selectedContactId && selectedContactId === contact.id) {
+      opt.selected = true;
+    }
+    select.appendChild(opt);
+  });
+}
+
+
+
 async function loadCustomers() {
   try {
     const response = await fetch(API_BASE);
@@ -389,11 +471,13 @@ async function loadCustomers() {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const customers = await response.json();
+    allCustomers = customers; // cache alle kunder til dropdown
     renderCustomers(customers);
   } catch (error) {
     console.error("Error loading customers:", error);
   }
 }
+
 
 // Loader kunder med søgning
 async function loadCustomerSearch(query = "") {
@@ -413,6 +497,8 @@ async function loadCustomerSearch(query = "") {
 document.addEventListener("DOMContentLoaded", () => {
   // Load all initially
   loadCustomers();
+  loadContacts();
+
 
   const searchBtn = document.getElementById("search-btn");
   const searchInput = document.getElementById("search-input");
