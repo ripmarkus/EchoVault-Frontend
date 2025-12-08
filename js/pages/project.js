@@ -61,11 +61,13 @@ function switchTab(activeTab, activeContent) {
     
     // Handle layout transitions
     if (activeContent === equipmentContent) {
-        // Equipment tab: hide right column content but keep space
-        rightColumn.style.visibility = "hidden";
+        // Equipment tab: hide right column and expand middle column
+        rightColumn.style.display = "none";
+        document.getElementById("middle-column").style.gridColumn = "2 / 4"; // span from column 2 to 4
     } else {
-        // Order Summary tab: show right column
-        rightColumn.style.visibility = "visible";
+        // Order Summary tab: show right column and reset middle column
+        rightColumn.style.display = "block";
+        document.getElementById("middle-column").style.gridColumn = "auto";
     }
 }
 
