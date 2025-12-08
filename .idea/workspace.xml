@@ -7,7 +7,6 @@
     <list default="true" id="8de2ecd9-4aff-49d5-b4f4-66633757bb29" name="Changes" comment="">
       <change afterPath="$PROJECT_DIR$/js/pages/equipment.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/html/inventory.html" beforeDir="false" afterPath="$PROJECT_DIR$/html/inventory.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,6 +43,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "DefaultHtmlFileTemplate": "HTML File",
+    "JavaScript Debug.customer-profile.html.executor": "Run",
     "JavaScript Debug.inventory.html.executor": "Run",
     "JavaScript Debug.login.html.executor": "Run",
     "JavaScript Debug.template.html.executor": "Run",
@@ -52,8 +52,7 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "inventory-equipment",
+    "git-widget-placeholder": "feature/customerprofile",
     "ignore.virus.scanning.warn.message": "true",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
@@ -83,8 +82,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.28238.7" />
-        <option value="bundled-js-predefined-d6986cc7102b-a71380e98a7c-JavaScript-IU-252.28238.7" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
+        <option value="bundled-js-predefined-d6986cc7102b-b598e85cdad2-JavaScript-IU-252.25557.131" />
       </set>
     </attachedChunks>
   </component>
@@ -99,10 +98,9 @@
       <workItem from="1764703368312" duration="621000" />
       <workItem from="1764704836170" duration="23000" />
       <workItem from="1764705016472" duration="1599000" />
-      <workItem from="1764927361563" duration="640000" />
-      <workItem from="1764928102813" duration="526000" />
-      <workItem from="1765028022450" duration="9942000" />
-      <workItem from="1765177502664" duration="1428000" />
+      <workItem from="1764845875308" duration="353000" />
+      <workItem from="1764938719824" duration="1510000" />
+      <workItem from="1765180576257" duration="3742000" />
     </task>
     <servers />
   </component>
