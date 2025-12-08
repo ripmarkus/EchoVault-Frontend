@@ -235,25 +235,71 @@ function openEquipmentDetails(equipment) {
     const quantityList = document.getElementById("equipment-quantity-list");
 
     // Function to load quantity from backend
+// Function to load quantity from backend
     async function loadQuantity() {
         try {
             const res = await fetch(`${API_BASE}/${equipment.id}/pieces`);
             const pieces = await res.json();
 
             quantityList.innerHTML = '';
+
             if (pieces.length === 0) {
                 quantityList.innerHTML = '<li class="text-gray-400 italic">No pieces added yet</li>';
-            } else {
-                pieces.forEach(p => {
-                    quantityList.innerHTML += `
-                    <li class="px-2 py-1 bg-gray-800 rounded">${p.serial_number}</li>
-                `;
-                });
+                return;
             }
+
+            pieces.forEach(p => {
+                const li = document.createElement("li");
+                li.className = "flex items-center justify-between px-2 py-1 bg-gray-800 rounded mb-1";
+
+                li.innerHTML = `
+                <span>${p.serial_number}</span>
+                <button
+                    class="delete-piece bg-red-0 hover:bg-red-600 text-white px-2 py-0.5 rounded text-xs"
+                    data-id="${p.id}">
+                    ❌
+                </button>
+            `;
+
+                // DELETE button logic
+                li.querySelector(".delete-piece").addEventListener("click", async (ev) => {
+                    ev.stopPropagation(); // do NOT trigger parent click
+
+                    const confirmed = confirm(
+                        `Delete piece with serial: "${p.serial_number}"?\n\nThis cannot be undone.`
+                    );
+
+                    if (!confirmed) return;
+
+                    try {
+                        const resp = await fetch(`http://localhost:8080/api/pieces/${p.id}`, {
+                            method: "DELETE",
+                        });
+
+                        if (!resp.ok && resp.status !== 204) {
+                            console.error("Failed to delete:", await resp.text());
+                            alert("Failed to delete piece.");
+                            return;
+                        }
+
+                        await loadQuantity(); // refresh list
+                        await loadEquipment(); // refresh table counts
+
+                    } catch (err) {
+                        console.error("Error deleting piece:", err);
+                        alert("Error deleting piece");
+                    }
+                });
+
+                quantityList.appendChild(li);
+            });
+
         } catch (e) {
+            console.error(e);
             quantityList.innerHTML = '<li class="text-red-500">Failed to load pieces</li>';
         }
     }
+
 
 
     // Show/Hide add piece field
