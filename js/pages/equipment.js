@@ -33,9 +33,65 @@ async function renderEquipmentTable(list) {
             <td class="px-6 py-3">${pieces.length}</td>
             <td class="px-6 py-3">${e.pricePerDay ?? "-"}</td>
             <td class="px-6 py-3">${e.category ?? "-"}</td>
+            <td class="px-6 py-3 space-x-2">
+                <button
+                    class="edit-equipment px-3 py-1 text-xs rounded bg-blue-600 hover:bg-blue-500 text-white"
+                    data-id="${e.id}">
+                    Edit
+                </button>
+                <button
+                    class="delete-equipment px-3 py-1 text-xs rounded bg-red-600 hover:bg-red-500 text-white"
+                    data-id="${e.id}">
+                    Delete
+                </button>
+            </td>
         `;
 
         row.addEventListener("click", () => openEquipmentDetails(e));
+
+        const editBtn = row.querySelector(".edit-equipment");
+        editBtn.addEventListener("click", (ev) => {
+            ev.stopPropagation(); // prevent row-click
+            openFormModal("edit", e);
+        });
+
+        const deleteBtn = row.querySelector(".delete-equipment");
+        deleteBtn.addEventListener("click", async (ev) => {
+            ev.stopPropagation(); // prevent row-click
+
+            try {
+                // Check quantity before deletion
+                const qResp = await fetch(`${API_BASE}/${e.id}/quantity`);
+                const quantity = await qResp.json();
+
+                const confirmed = window.confirm(
+                    `WARNING!\n\n` +
+                    `You are about to delete "${e.name}" (ID ${e.id}).\n` +
+                    `This equipment has ${quantity} attached pieces.\n\n` +
+                    `This action is PERMANENT and CANNOT be undone.\n\n` +
+                    `Are you absolutely sure you want to continue?`
+                );
+
+            if (!confirmed) return;
+
+            const resp = await fetch(`${API_BASE}/${e.id}`, {
+                method: "DELETE",
+            });
+
+            if (!resp.ok && resp.status !== 204) {
+                console.error("Delete failed:", await resp.text());
+                alert("Failed to delete equipment.");
+                return;
+            }
+
+                alert(`"${e.name}" and all related pieces have been permanently deleted.`);
+                await loadEquipment();
+
+            } catch (err) {
+                console.error("Error deleting equipment:", err);
+                alert("An error occurred while deleting. Check the console for details.");
+            }
+        });
 
         tbody.appendChild(row);
     }
