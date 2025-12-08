@@ -17,7 +17,7 @@ async function loadEquipment() {
     let tbody = document.createElement("tbody");
 
     for (let e of equipmentList) {
-        const pieces = await fetch(`${API_BASE}/${e.id}/pieces`).then(r => r.json());
+        const quantity = await fetch(`${API_BASE}/${e.id}/quantity`).then(r => r.json());
 
         const row = document.createElement("tr");
         row.className = "border-b border-gray-700 hover:bg-gray-700 cursor-pointer";
@@ -26,7 +26,7 @@ async function loadEquipment() {
             <td class="px-6 py-3"><input type="checkbox"></td>
             <td class="px-6 py-3">${e.id}</td>
             <td class="px-6 py-3">${e.name}</td>
-            <td class="px-6 py-3">${pieces.length}</td>
+            <td class="px-6 py-3">${quantity.length}</td>
             <td class="px-6 py-3">${e.pricePerDay ?? "-"}</td>
             <td class="px-6 py-3">${e.category ?? "-"}</td>
         `;
@@ -146,34 +146,34 @@ function openEquipmentDetails(equipment) {
         <p><b>Retail price:</b> ${equipment.retailPrice ?? "-"}</p>
     `;
 
-    // Pieces list container
-    const piecesList = document.getElementById("equipment-pieces-list");
+    // Quantity list container
+    const quantityList = document.getElementById("equipment-quantity-list");
 
-    // Function to load pieces from backend
-    async function loadPieces() {
+    // Function to load quantity from backend
+    async function loadQuantity() {
         try {
-            const res = await fetch(`${API_BASE}/${equipment.id}/pieces`);
-            const pieces = await res.json();
+            const res = await fetch(`${API_BASE}/${equipment.id}/quantity`);
+            const quantity = await res.json();
 
-            piecesList.innerHTML = ''; // clear existing
-            if (pieces.length === 0) {
-                piecesList.innerHTML = '<li class="text-gray-400 italic">No pieces added yet</li>';
+            quantityList.innerHTML = ''; // clear existing
+            if (quantity.length === 0) {
+                quantityList.innerHTML = '<li class="text-gray-400 italic">No quantity added yet</li>';
             } else {
-                pieces.forEach(p => {
+                quantity.forEach(p => {
                     const li = document.createElement("li");
                     li.textContent = p.serial_number; // match backend property
                     li.className = "px-2 py-1 bg-gray-800 rounded";
-                    piecesList.appendChild(li);
+                    quantityList.appendChild(li);
                 });
             }
         } catch (err) {
-            console.error("Failed to load pieces:", err);
-            piecesList.innerHTML = '<li class="text-red-500">Failed to load pieces</li>';
+            console.error("Failed to load quantity:", err);
+            quantityList.innerHTML = '<li class="text-red-500">Failed to load quantity</li>';
         }
     }
 
     // Initial load
-    loadPieces();
+    loadQuantity();
 
     // Add piece button
     const addBtn = document.getElementById("add-piece-btn");
@@ -183,7 +183,7 @@ function openEquipmentDetails(equipment) {
         if (!serial) return alert("Please enter a serial number");
 
         try {
-            const response = await fetch(`${API_BASE}/${equipment.id}/pieces`, {
+            const response = await fetch(`${API_BASE}/${equipment.id}/quantity`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ serial_number: serial })
@@ -191,7 +191,7 @@ function openEquipmentDetails(equipment) {
 
             if (response.ok) {
                 serialInput.value = "";
-                loadPieces(); // reload the list
+                loadQuantity(); // reload the list
             } else {
                 const text = await response.text();
                 console.error("Failed to add piece:", response.status, text);
