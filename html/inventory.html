@@ -47,8 +47,8 @@
 
 
                 <!-- View modal -->
-                <div id="equipment-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60">
-                    <div class="bg-gray-900 rounded-2xl shadow-xl w-full max-w-xl p-6 flex flex-col items-center">
+                <div id="equipment-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60">
+                <div class="bg-gray-900 rounded-2xl shadow-xl w-full max-w-xl p-6 flex flex-col items-center">
                         <div class="flex items-center justify-between w-full mb-4">
                             <h3 id="equipment-modal-title" class="text-xl font-semibold text-white">Equipment details</h3>
                             <button id="equipment-modal-close"
@@ -65,15 +65,23 @@
                             <!-- Filled dynamically -->
                         </div>
 
-                        <!-- Add piece section -->
-                        <div class="flex gap-2 w-full items-center mb-2">
+                    <!-- Add piece section -->
+                    <div class="w-full mb-4">
+                        <button id="show-add-piece"
+                                class="px-4 py-2 rounded bg-blue-600 hover:bg-blue-500 text-white">
+                            + Add Piece
+                        </button>
+
+                        <div id="add-piece-container" class="mt-3 hidden flex gap-2">
                             <input id="new-piece-serial" type="text" placeholder="Serial number"
                                    class="flex-1 px-3 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"/>
                             <button id="add-piece-btn"
-                                    class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-500">
-                                Add Piece
+                                    class="px-4 py-2 rounded bg-green-600 hover:bg-green-500 text-white">
+                                Save
                             </button>
                         </div>
+                    </div>
+
 
                         <!-- Pieces list -->
                         <ul id="equipment-quantity-list" class="w-full text-gray-200 text-sm space-y-1 max-h-40 overflow-y-auto">

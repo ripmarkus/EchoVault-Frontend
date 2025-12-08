@@ -17,7 +17,7 @@ async function loadEquipment() {
     let tbody = document.createElement("tbody");
 
     for (let e of equipmentList) {
-        const quantity = await fetch(`${API_BASE}/${e.id}/quantity`).then(r => r.json());
+        const pieces = await fetch(`${API_BASE}/${e.id}/pieces`).then(r => r.json());
 
         const row = document.createElement("tr");
         row.className = "border-b border-gray-700 hover:bg-gray-700 cursor-pointer";
@@ -26,7 +26,7 @@ async function loadEquipment() {
             <td class="px-6 py-3"><input type="checkbox"></td>
             <td class="px-6 py-3">${e.id}</td>
             <td class="px-6 py-3">${e.name}</td>
-            <td class="px-6 py-3">${quantity.length}</td>
+            <td class="px-6 py-3">${pieces.length}</td>
             <td class="px-6 py-3">${e.pricePerDay ?? "-"}</td>
             <td class="px-6 py-3">${e.category ?? "-"}</td>
         `;
@@ -152,25 +152,31 @@ function openEquipmentDetails(equipment) {
     // Function to load quantity from backend
     async function loadQuantity() {
         try {
-            const res = await fetch(`${API_BASE}/${equipment.id}/quantity`);
-            const quantity = await res.json();
+            const res = await fetch(`${API_BASE}/${equipment.id}/pieces`);
+            const pieces = await res.json();
 
-            quantityList.innerHTML = ''; // clear existing
-            if (quantity.length === 0) {
-                quantityList.innerHTML = '<li class="text-gray-400 italic">No quantity added yet</li>';
+            quantityList.innerHTML = '';
+            if (pieces.length === 0) {
+                quantityList.innerHTML = '<li class="text-gray-400 italic">No pieces added yet</li>';
             } else {
-                quantity.forEach(p => {
-                    const li = document.createElement("li");
-                    li.textContent = p.serial_number; // match backend property
-                    li.className = "px-2 py-1 bg-gray-800 rounded";
-                    quantityList.appendChild(li);
+                pieces.forEach(p => {
+                    quantityList.innerHTML += `
+                    <li class="px-2 py-1 bg-gray-800 rounded">${p.serial_number}</li>
+                `;
                 });
             }
-        } catch (err) {
-            console.error("Failed to load quantity:", err);
-            quantityList.innerHTML = '<li class="text-red-500">Failed to load quantity</li>';
+        } catch (e) {
+            quantityList.innerHTML = '<li class="text-red-500">Failed to load pieces</li>';
         }
     }
+
+
+    // Show/Hide add piece field
+    const addContainer = document.getElementById("add-piece-container");
+    document.getElementById("show-add-piece").onclick = () => {
+        addContainer.classList.toggle("hidden");
+    };
+
 
     // Initial load
     loadQuantity();
@@ -183,7 +189,7 @@ function openEquipmentDetails(equipment) {
         if (!serial) return alert("Please enter a serial number");
 
         try {
-            const response = await fetch(`${API_BASE}/${equipment.id}/quantity`, {
+            const response = await fetch(`${API_BASE}/${equipment.id}/pieces`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ serial_number: serial })
