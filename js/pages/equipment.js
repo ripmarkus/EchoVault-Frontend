@@ -4,19 +4,23 @@ document.addEventListener("DOMContentLoaded", () => {
     loadEquipment();
     setupCreateButton();
     setupFormModal();
+    setupSearch()
 });
 
 async function loadEquipment() {
-    const table = document.querySelector("table");
+    const response = await fetch(API_BASE);
+    const equipmentList = await response.json();
+    renderEquipmentTable(equipmentList);
+}
 
-    let response = await fetch(API_BASE);
-    let equipmentList = await response.json();
+async function renderEquipmentTable(list) {
+    const table = document.querySelector("table");
 
     // Clear old rows
     table.querySelectorAll("tbody").forEach(tbody => tbody.remove());
-    let tbody = document.createElement("tbody");
+    const tbody = document.createElement("tbody");
 
-    for (let e of equipmentList) {
+    for (let e of list) {
         const pieces = await fetch(`${API_BASE}/${e.id}/pieces`).then(r => r.json());
 
         const row = document.createElement("tr");
@@ -37,6 +41,31 @@ async function loadEquipment() {
     }
 
     table.appendChild(tbody);
+}
+
+// ---------------------- SEARCH -------------------------
+
+function setupSearch() {
+    document.getElementById("search-btn").addEventListener("click", async () => {
+        const query = document.getElementById("search-input").value.trim().toLowerCase();
+
+        // Empty search -> reload all
+        if (query === "") {
+            loadEquipment();
+            return;
+        }
+
+        const response = await fetch(API_BASE);
+        const equipmentList = await response.json();
+
+        const filtered = equipmentList.filter(e =>
+            (e.name && e.name.toLowerCase().includes(query)) ||
+            (e.category && e.category.toLowerCase().includes(query)) ||
+            String(e.id).includes(query)
+        );
+
+        renderEquipmentTable(filtered);
+    });
 }
 
 // --------------------- MODALS -------------------------
@@ -198,6 +227,7 @@ function openEquipmentDetails(equipment) {
             if (response.ok) {
                 serialInput.value = "";
                 loadQuantity(); // reload the list
+                loadEquipment()
             } else {
                 const text = await response.text();
                 console.error("Failed to add piece:", response.status, text);
