@@ -19,22 +19,18 @@ export function updateGanttChart(projectData, formatDateToEU) {
     if (rentalStart && rentalEnd) {
         const rentalPosition = calculateBarPosition(rentalStart, rentalEnd, timelineRange);
         updatePeriodBar('rental-period-bar', rentalPosition);
-        document.getElementById("rental-period-text").textContent = 
-            `${formatDateToEU(projectData.startDate)} - ${formatDateToEU(projectData.endDate)}`;
     } else {
-        document.getElementById("rental-period-bar").style.display = "none";
-        document.getElementById("rental-period-text").textContent = "Not set";
+        const rentalBar = document.getElementById("rental-period-bar");
+        if (rentalBar) rentalBar.style.display = "none";
     }
     
     // Update usage period
     if (usageStart && usageEnd) {
         const usagePosition = calculateBarPosition(usageStart, usageEnd, timelineRange);
         updatePeriodBar('usage-period-bar', usagePosition);
-        document.getElementById("usage-period-text").textContent = 
-            `${formatDateToEU(projectData.usageStartDate)} - ${formatDateToEU(projectData.usageEndDate)}`;
     } else {
-        document.getElementById("usage-period-bar").style.display = "none";
-        document.getElementById("usage-period-text").textContent = "Not set";
+        const usageBar = document.getElementById("usage-period-bar");
+        if (usageBar) usageBar.style.display = "none";
     }
 }
 
@@ -64,12 +60,6 @@ export function updateExampleGanttChart(formatDateToEU) {
     
     updatePeriodBar('rental-period-bar', rentalPosition);
     updatePeriodBar('usage-period-bar', usagePosition);
-    
-    // Update text displays
-    document.getElementById("rental-period-text").textContent = 
-        `${formatDateToEU(rentalStart.toISOString().split('T')[0])} - ${formatDateToEU(rentalEnd.toISOString().split('T')[0])}`;
-    document.getElementById("usage-period-text").textContent = 
-        `${formatDateToEU(usageStart.toISOString().split('T')[0])} - ${formatDateToEU(usageEnd.toISOString().split('T')[0])}`;
 }
 
 // Calculate the optimal timeline range based on project dates
