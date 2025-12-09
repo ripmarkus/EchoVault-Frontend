@@ -211,7 +211,7 @@ function openEquipmentDetails(equipment) {
     const modal = document.getElementById("equipment-modal");
     modal.classList.remove("hidden");
 
-    // Close button
+    // Close btn
     document.getElementById("equipment-modal-close").onclick = () => modal.classList.add("hidden");
 
     // Title
@@ -223,19 +223,23 @@ function openEquipmentDetails(equipment) {
     img.alt = equipment.name;
 
     // Details
+// LEFT
     const details = document.getElementById("equipment-modal-details");
     details.innerHTML = `
-        <p><b>Category:</b> ${equipment.category ?? "-"}</p>
-        <p><b>Description:</b> ${equipment.description ?? "-"}</p>
-        <p><b>Price per day:</b> ${equipment.pricePerDay ?? "-"}</p>
-        <p><b>Retail price:</b> ${equipment.retailPrice ?? "-"}</p>
-    `;
+    <p><b>Category:</b> ${equipment.category ?? "-"}</p>
+    <p><b>Price per day:</b> ${equipment.pricePerDay ?? "-"} DKK</p>
+    <p><b>Retail price:</b> ${equipment.retailPrice ?? "-"} DKK</p>
+`;
+
+// RIGHT
+    document.getElementById("equipment-modal-description").innerText =
+        equipment.description || "No description available.";
+
 
     // Quantity list container
     const quantityList = document.getElementById("equipment-quantity-list");
 
-    // Function to load quantity from backend
-// Function to load quantity from backend
+    // Quantity counter
     async function loadQuantity() {
         try {
             const res = await fetch(`${API_BASE}/${equipment.id}/pieces`);
@@ -261,7 +265,7 @@ function openEquipmentDetails(equipment) {
                 </button>
             `;
 
-                // DELETE button logic
+                // DELETE btn
                 li.querySelector(".delete-piece").addEventListener("click", async (ev) => {
                     ev.stopPropagation(); // do NOT trigger parent click
 
@@ -301,18 +305,15 @@ function openEquipmentDetails(equipment) {
     }
 
 
-
     // Show/Hide add piece field
     const addContainer = document.getElementById("add-piece-container");
     document.getElementById("show-add-piece").onclick = () => {
         addContainer.classList.toggle("hidden");
     };
 
-
-    // Initial load
     loadQuantity();
 
-    // Add piece button
+    // Add btn
     const addBtn = document.getElementById("add-piece-btn");
     addBtn.onclick = async () => {
         const serialInput = document.getElementById("new-piece-serial");
@@ -328,7 +329,7 @@ function openEquipmentDetails(equipment) {
 
             if (response.ok) {
                 serialInput.value = "";
-                loadQuantity(); // reload the list
+                loadQuantity();
                 loadEquipment()
             } else {
                 const text = await response.text();
