@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Project</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+</head>
+<body class="h-full bg-[#121212] text-white">
+
+<div id="navbar-container"></div>
+<div class="flex max-h-screen bg-[#121212]">
+    <div id="sidebar-container" class="flex-shrink-0"></div>
+    
+    <!-- Main Content -->
+    <main class="flex-1 pt-2 pb-20">
+        <div class="grid gap-4 grid-cols-2 lg:grid-cols-[20%,auto,20%] p-6" id="main-grid">
+
+            <!-- Column 1 (25%) - Project Details Form -->
+            <div class="space-y-2">
+                <div class="bg-gray-800 rounded-lg shadow-lg p-8 min-h-[450px]">
+                    <h4 class="text-2xl font-bold text-blue-400 mb-4">New Project</h4>
+                    
+                    <form id="project-form" class="space-y-6">
+                        <div>
+                            <label class="block text-lg text-blue-400 mb-2">Project Manager</label>
+                            <div class="flex gap-2">
+                                <div class="flex-1">
+                                    <div id="project-manager-display" class="w-full p-3 bg-gray-700 text-white rounded border border-gray-600 min-h-[48px] flex items-center">
+                                        <span class="text-gray-400">No project manager selected</span>
+                                    </div>
+                                </div>
+                                <button type="button" id="select-project-manager-btn"
+                                    class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                                    Select
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-lg text-blue-400 mb-2">Type</label>
+                            <select id="project-type" name="projectType" 
+                                class="w-full p-3 bg-gray-700 text-white rounded border border-gray-600 focus:border-blue-400">
+                                <option value="Rental">Rental</option>
+                                <option value="Sale">Sale</option>
+                                <option value="Service">Service</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-lg text-blue-400 mb-2">Rental Date Span</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="date" id="rental-start" name="rentalStart" 
+                                    class="p-3 bg-gray-700 text-white rounded border border-gray-600 focus:border-blue-400">
+                                <input type="date" id="rental-end" name="rentalEnd" 
+                                    class="p-3 bg-gray-700 text-white rounded border border-gray-600 focus:border-blue-400">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-lg text-blue-400 mb-2">Usage Date Span</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="date" id="usage-start" name="usageStart" 
+                                    class="p-3 bg-gray-700 text-white rounded border border-gray-600 focus:border-blue-400">
+                                <input type="date" id="usage-end" name="usageEnd" 
+                                    class="p-3 bg-gray-700 text-white rounded border border-gray-600 focus:border-blue-400">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Column 2 (Equipment) -->
+            <div class="col-span-1" id="middle-column">
+                <div class="bg-gray-800 rounded-lg shadow-lg p-8 min-h-[500px] flex flex-col">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-semibold text-white">Equipment</h3>
+                        <button id="add-equipment-btn" 
+                            class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1 rounded">+Add Equipment</button>
+                    </div>
+                    <div id="equipment-list" class="flex flex-col gap-2 overflow-y-auto flex-1"></div>
+                </div>
+            </div>
+
+            <!-- Column 3 (Contacts/Customers) -->
+            <div class="space-y-8" id="right-column">
+                <div class="bg-gray-800 rounded-lg shadow-lg p-8 min-h-[350px]">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-semibold text-white">Contacts</h3>
+                        <button id="add-contact-btn" 
+                            class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1 rounded">+Add Contact</button>
+                    </div>
+                    <div id="contact-list" class="flex flex-col gap-4 overflow-y-auto flex-1"></div>
+                </div>
+
+                <div class="bg-gray-800 rounded-lg shadow-lg p-8 min-h-[350px] flex flex-col">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-semibold text-white">Customer</h3>
+                        <button id="add-customer-btn" 
+                            class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1 rounded">+Add Customer</button>
+                    </div>
+                    <div id="customer-container" class="flex flex-col gap-4 overflow-y-auto flex-1">
+                        <p class="text-gray-400">No customer selected</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Floating Footer Bar -->
+    <div class="fixed bottom-0 left-0 right-0 bg-gray-900 border-t border-gray-700 p-4 flex justify-end gap-4">
+        <button id="cancel-btn" 
+            class="px-6 py-2 text-gray-400 hover:text-white border border-gray-600 rounded-lg transition-colors">
+            Discard
+        </button>
+        <button id="save-btn" 
+            class="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold transition-colors">
+            Save Project
+        </button>
+    </div>
+</div>
+
+<!-- Project Manager Selection Modal -->
+<div id="project-manager-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+    <div class="bg-gray-800 rounded-lg p-6 w-full max-w-4xl mx-4 max-h-[80vh] overflow-hidden">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-semibold text-white">Select Project Manager</h2>
+            <button id="close-project-manager-modal" class="text-gray-400 hover:text-white">✕</button>
+        </div>
+        <div class="mb-4">
+            <input type="text" id="project-manager-search" placeholder="Search users..." 
+                class="w-full p-3 bg-gray-700 text-white rounded border border-gray-600">
+        </div>
+        <div id="project-manager-modal-list" class="overflow-y-auto max-h-96 space-y-2"></div>
+    </div>
+</div>
+
+<!-- Contact Selection Modal -->
+<div id="contact-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+    <div class="bg-gray-800 rounded-lg p-6 w-full max-w-4xl mx-4 max-h-[80vh] overflow-hidden">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-semibold text-white">Select Contact</h2>
+            <button id="close-contact-modal" class="text-gray-400 hover:text-white">✕</button>
+        </div>
+        <div class="mb-4">
+            <input type="text" id="contact-search" placeholder="Search contacts..." 
+                class="w-full p-3 bg-gray-700 text-white rounded border border-gray-600">
+        </div>
+        <div id="contact-modal-list" class="overflow-y-auto max-h-96 space-y-2"></div>
+    </div>
+</div>
+
+<!-- Customer Selection Modal -->
+<div id="customer-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+    <div class="bg-gray-800 rounded-lg p-6 w-full max-w-4xl mx-4 max-h-[80vh] overflow-hidden">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-semibold text-white">Select Customer</h2>
+            <button id="close-customer-modal" class="text-gray-400 hover:text-white">✕</button>
+        </div>
+        <div class="mb-4">
+            <input type="text" id="customer-search" placeholder="Search customers..." 
+                class="w-full p-3 bg-gray-700 text-white rounded border border-gray-600">
+        </div>
+        <div id="customer-modal-list" class="overflow-y-auto max-h-96 space-y-2"></div>
+    </div>
+</div>
+
+<!-- Equipment Selection Modal -->
+<div id="equipment-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+    <div class="bg-gray-800 rounded-lg p-6 w-full max-w-4xl mx-4 max-h-[80vh] overflow-hidden">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-semibold text-white">Select Equipment</h2>
+            <button id="close-equipment-modal" class="text-gray-400 hover:text-white">✕</button>
+        </div>
+        <div class="mb-4">
+            <input type="text" id="equipment-search" placeholder="Search equipment..." 
+                class="w-full p-3 bg-gray-700 text-white rounded border border-gray-600">
+        </div>
+        <div id="equipment-modal-list" class="overflow-y-auto max-h-96 space-y-2"></div>
+    </div>
+</div>
+
+    <script type="module" src="../js/pages/project-crud.js"></script>
+    <script src="../js/main.js"></script>
+    <script type="module">
+        import { loadNavbar } from '../js/navigation/navbar.js';
+        import {loadSidebar} from "../js/navigation/sidebar.js";
+        loadNavbar('navbar-container');
+        loadSidebar('sidebar-container')
+    </script>
+</body>
+</html>

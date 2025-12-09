@@ -9,6 +9,112 @@ let projectCache = new Map();
 let projectCacheTimestamp = new Map();
 const PROJECT_CACHE_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
 
+// Get project ID from URL parameters
+const params = new URLSearchParams(window.location.search);
+const projectId = params.get("id");
+
+if (!projectId) {
+    console.error("Missing ?id=project-X");
+}
+
+// Inline editing functionality - similar to customer-profile.js
+document.addEventListener("click", async (e) => {
+    const btn = e.target.closest("[data-edit-field]");
+    if (!btn) return;
+
+    const field = btn.dataset.editField;
+    let valueEl;
+    
+    // Map field to the correct element ID
+    switch(field) {
+        case 'projectManager':
+            valueEl = document.getElementById("project-manager");
+            break;
+        case 'projectType':
+            valueEl = document.getElementById("project-type");
+            break;
+        case 'status':
+            valueEl = document.getElementById("project-phase");
+            break;
+        case 'startDate':
+            valueEl = document.getElementById("project-rental-start");
+            break;
+        case 'endDate':
+            valueEl = document.getElementById("project-rental-end");
+            break;
+        case 'usageStartDate':
+            valueEl = document.getElementById("project-usage-start");
+            break;
+        case 'usageEndDate':
+            valueEl = document.getElementById("project-usage-end");
+            break;
+        default:
+            return;
+    }
+
+    if (!valueEl) return;
+
+    // Create input
+    const oldValue = valueEl.textContent.trim();
+    let input;
+    
+    // For project manager field, create a user selection interface
+    if (field === 'projectManager') {
+        // Create a simple modal or dropdown for user selection
+        // For now, we'll use a simple text input with a note
+        input = document.createElement("input");
+        input.value = oldValue !== 'Not assigned' ? oldValue : '';
+        input.placeholder = "Enter project manager name";
+    } else if (field === 'status') {
+        input = document.createElement("select");
+        input.innerHTML = `
+            <option value="REQUESTED">REQUESTED</option>
+            <option value="CONFIRMED">CONFIRMED</option>
+            <option value="CANCELLED">CANCELLED</option>
+        `;
+        input.value = oldValue;
+    } else if (field === 'startDate' || field === 'endDate' || field === 'usageStartDate' || field === 'usageEndDate') {
+        input = document.createElement("input");
+        input.type = "date";
+        // Convert display format to date input format if needed
+        input.value = oldValue !== 'N/A' ? oldValue : '';
+    } else {
+        input = document.createElement("input");
+        input.value = oldValue !== 'N/A' ? oldValue : '';
+    }
+    
+    input.className = "px-2 py-1 rounded bg-gray-800 text-white border border-gray-600 w-full";
+
+    // Replace text with input
+    valueEl.replaceWith(input);
+    input.focus();
+
+    // Save on Enter or blur
+    async function save() {
+        const newValue = input.value.trim();
+
+        try {
+            await fetch(`${API_BASE}/${projectId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ [field]: newValue })
+            });
+
+            // Reload project info
+            await loadProjectData(projectId);
+        } catch (error) {
+            console.error("Error updating project:", error);
+            alert("Failed to update project");
+        }
+    }
+
+    input.addEventListener("keydown", (ev) => {
+        if (ev.key === "Enter") save();
+    });
+
+    input.addEventListener("blur", save);
+});
+
 // Function to check if individual project cache is valid
 function isProjectCacheValid(projectId) {
   const timestamp = projectCacheTimestamp.get(projectId);
@@ -66,13 +172,15 @@ function populateProjectInfo() {
     if (!projectData) return;
     
     document.getElementById("project-title").textContent = `Project ${projectData.id}`;
-    document.getElementById("project-manager").textContent = "Project Manager"; // Not in API model
-    document.getElementById("project-type").textContent = "Rental"; // Not in API model
+    document.getElementById("project-manager").textContent = projectData.projectManager ? projectData.projectManager.name : "Not assigned"; 
+    document.getElementById("project-type").textContent = projectData.projectType || "Rental"; 
     document.getElementById("project-phase").textContent = projectData.status || "Unknown";
     document.getElementById("project-total").textContent = "N/A"; // Not in API model
     document.getElementById("project-confirmation-date").textContent = projectData.startDate || "N/A";
     document.getElementById("project-rental-start").textContent = projectData.startDate || "N/A";
     document.getElementById("project-rental-end").textContent = projectData.endDate || "N/A";
+    document.getElementById("project-usage-start").textContent = projectData.usageStartDate || "N/A";
+    document.getElementById("project-usage-end").textContent = projectData.usageEndDate || "N/A";
 }
 
 // Function to load related data (customers, contacts, etc.)
@@ -94,8 +202,10 @@ function loadExampleData() {
         confirmationDate: "2025-12-10",
         type: "Rental",
         phase: "Planning",
-        rentalStartDate: "2025.12.10 9:00 GMT +2",
-        rentalEndDate: "2025.12.10 9:00 GMT +2",
+        rentalStartDate: "2025.12.10",
+        rentalEndDate: "2025.12.20",
+        usageStartDate: "2025.12.11",
+        usageEndDate: "2025.12.19",
     };
     
     document.getElementById("project-title").textContent = exampleProjectInfo.projectName;
@@ -106,6 +216,8 @@ function loadExampleData() {
     document.getElementById("project-confirmation-date").textContent = exampleProjectInfo.confirmationDate;
     document.getElementById("project-rental-start").textContent = exampleProjectInfo.rentalStartDate;
     document.getElementById("project-rental-end").textContent = exampleProjectInfo.rentalEndDate;
+    document.getElementById("project-usage-start").textContent = exampleProjectInfo.usageStartDate;
+    document.getElementById("project-usage-end").textContent = exampleProjectInfo.usageEndDate;
 }
 
 function loadExampleRelatedData() {
@@ -177,15 +289,17 @@ function setupProjectInfoSkeleton() {
     const projectConfirmationDate = document.getElementById("project-confirmation-date");
     const rentalStartDate = document.getElementById("project-rental-start");
     const rentalEndDate = document.getElementById("project-rental-end");
+    const usageStartDate = document.getElementById("project-usage-start");
+    const usageEndDate = document.getElementById("project-usage-end");
 
     // Show skeleton loaders for project info sections
-    [projectManager, projectType, projectPhase, projectTitle, projectTotal, projectConfirmationDate, rentalStartDate, rentalEndDate]
+    [projectManager, projectType, projectPhase, projectTitle, projectTotal, projectConfirmationDate, rentalStartDate, rentalEndDate, usageStartDate, usageEndDate]
         .filter(element => element) // Only process elements that exist
         .forEach(element => showSkeleton(element, 1));
 
     // Hide skeleton loaders after short delay
     setTimeout(() => {
-        [projectManager, projectType, projectPhase, projectTitle, projectTotal, projectConfirmationDate, rentalStartDate, rentalEndDate]
+        [projectManager, projectType, projectPhase, projectTitle, projectTotal, projectConfirmationDate, rentalStartDate, rentalEndDate, usageStartDate, usageEndDate]
             .filter(element => element)
             .forEach(element => hideSkeleton(element));
     }, 1000);
