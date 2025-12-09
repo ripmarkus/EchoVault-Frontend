@@ -1,4 +1,5 @@
 import { showSkeleton, hideSkeleton, simulateLoading } from '../util/skeleton.js';
+import { updateGanttChart, updateExampleGanttChart } from './gantt.js';
 
 // Project data from API
 let projectData = null;
@@ -17,6 +18,7 @@ if (!projectId) {
     console.error("Missing ?id=project-X");
 }
 
+// Inline editing functionality
 document.addEventListener("click", async (e) => {
     const btn = e.target.closest("[data-edit-field]");
     if (!btn) return;
@@ -51,8 +53,6 @@ document.addEventListener("click", async (e) => {
             return;
     }
 
-    if (!valueEl) return;
-
     // Create input
     const oldValue = valueEl.textContent.trim();
     let input;
@@ -85,10 +85,6 @@ document.addEventListener("click", async (e) => {
     }
     
     input.className = "px-2 py-1 rounded bg-gray-800 text-white border border-gray-600 w-full";
-
-    // Replace text with input
-    valueEl.replaceWith(input);
-    input.focus();
 
     // Save on Enter or blur
     async function save() {
@@ -132,61 +128,61 @@ document.addEventListener("click", async (e) => {
         }
     }
 
-    input.addEventListener("keydown", (ev) => {
-        if (ev.key === "Enter") save();
+    function cancel() {
+        valueEl.innerHTML = oldValue;
+    }
+
+    input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            save();
+        } else if (e.key === "Escape") {
+            cancel();
+        }
     });
 
     input.addEventListener("blur", save);
+
+    valueEl.innerHTML = "";
+    valueEl.appendChild(input);
+    input.focus();
 });
 
-// Function to check if individual project cache is valid
-function isProjectCacheValid(projectId) {
-  const timestamp = projectCacheTimestamp.get(projectId);
-  return timestamp && (Date.now() - timestamp) < PROJECT_CACHE_DURATION;
-}
+// API Functions
+async function loadProjectData(id) {
+    if (!id) {
+        loadExampleData();
+        return;
+    }
 
-// Function to get project from cache or fetch from API
-async function getProjectFromCacheOrAPI(projectId) {
-  if (isProjectCacheValid(projectId) && projectCache.has(projectId)) {
-    console.log(`Using cached project data for ID: ${projectId}`);
-    return projectCache.get(projectId);
-  }
-  
-  console.log(`Fetching fresh project data for ID: ${projectId}`);
-  return await fetchProjectFromAPI(projectId);
-}
+    // Check cache first
+    if (projectCache.has(id)) {
+        const cached = projectCache.get(id);
+        const timestamp = projectCacheTimestamp.get(id);
+        
+        if (timestamp && (Date.now() - timestamp) < PROJECT_CACHE_DURATION) {
+            projectData = cached;
+            populateProjectInfo();
+            loadProjectRelatedData();
+            return;
+        }
+    }
 
-// Function to fetch project from API and update cache
-async function fetchProjectFromAPI(projectId) {
-  const response = await fetch(`${API_BASE}/${projectId}`);
-  if (!response.ok) {
-    throw new Error(`HTTP error! Status: ${response.status}`);
-  }
-  
-  const project = await response.json();
-  
-  // Update cache
-  projectCache.set(projectId, project);
-  projectCacheTimestamp.set(projectId, Date.now());
-  
-  return project;
-}
-
-// Function to get project ID from URL parameters
-function getProjectIdFromURL() {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('id');
-}
-
-// Function to load project data from API
-async function loadProjectData(projectId) {
     try {
-        projectData = await getProjectFromCacheOrAPI(projectId);
+        const response = await fetch(`${API_BASE}/${id}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        projectData = await response.json();
+        
+        // Update cache
+        projectCache.set(id, projectData);
+        projectCacheTimestamp.set(id, Date.now());
+        
         populateProjectInfo();
         loadProjectRelatedData();
     } catch (error) {
         console.error("Error loading project data:", error);
-        // Fall back to example data if API fails
         loadExampleData();
     }
 }
@@ -195,7 +191,9 @@ async function loadProjectData(projectId) {
 function populateProjectInfo() {
     if (!projectData) return;
     
-    document.getElementById("project-title").textContent = `Project ${projectData.id}`;
+    const projectTitle = projectData.name || `Project ${projectData.id}`;
+    document.getElementById("project-title").textContent = projectTitle;
+    document.querySelector('.project-title').textContent = `EchoVault - ${projectTitle}`;
     document.getElementById("project-manager").textContent = projectData.projectManager ? projectData.projectManager.name : "Not assigned"; 
     document.getElementById("project-type").textContent = projectData.projectType || "Rental"; 
     document.getElementById("project-phase").textContent = projectData.status || "Unknown";
@@ -207,7 +205,7 @@ function populateProjectInfo() {
     document.getElementById("project-usage-end").textContent = formatDateToEU(projectData.usageEndDate) || "N/A";
     
     // Update Gantt chart
-    updateGanttChart();
+    updateGanttChart(projectData, formatDateToEU);
 }
 
 // Format date to EU format (dd.MM.yyyy)
@@ -280,203 +278,6 @@ async function loadUsersForDropdown(selectElement, currentValue) {
     }
 }
 
-// Update Gantt chart with project data
-function updateGanttChart() {
-    if (!projectData) return;
-    
-    const rentalStart = projectData.startDate ? new Date(projectData.startDate) : null;
-    const rentalEnd = projectData.endDate ? new Date(projectData.endDate) : null;
-    const usageStart = projectData.usageStartDate ? new Date(projectData.usageStartDate) : null;
-    const usageEnd = projectData.usageEndDate ? new Date(projectData.usageEndDate) : null;
-    
-    // Calculate timeline range
-    const timelineRange = calculateTimelineRange(rentalStart, rentalEnd, usageStart, usageEnd);
-    
-    // Update timeline header with dynamic dates
-    updateTimelineHeader(timelineRange.start, timelineRange.end);
-    
-    // Update rental period
-    if (rentalStart && rentalEnd) {
-        const rentalPosition = calculateBarPosition(rentalStart, rentalEnd, timelineRange);
-        updatePeriodBar('rental-period-bar', rentalPosition);
-        document.getElementById("rental-period-text").textContent = 
-            `${formatDateToEU(projectData.startDate)} - ${formatDateToEU(projectData.endDate)}`;
-    } else {
-        document.getElementById("rental-period-bar").style.display = "none";
-        document.getElementById("rental-period-text").textContent = "Not set";
-    }
-    
-    // Update usage period
-    if (usageStart && usageEnd) {
-        const usagePosition = calculateBarPosition(usageStart, usageEnd, timelineRange);
-        updatePeriodBar('usage-period-bar', usagePosition);
-        document.getElementById("usage-period-text").textContent = 
-            `${formatDateToEU(projectData.usageStartDate)} - ${formatDateToEU(projectData.usageEndDate)}`;
-    } else {
-        document.getElementById("usage-period-bar").style.display = "none";
-        document.getElementById("usage-period-text").textContent = "Not set";
-    }
-}
-
-// Calculate the optimal timeline range based on project dates
-function calculateTimelineRange(rentalStart, rentalEnd, usageStart, usageEnd) {
-    const allDates = [rentalStart, rentalEnd, usageStart, usageEnd].filter(date => date !== null);
-    
-    if (allDates.length === 0) {
-        // Default to current month if no dates
-        const now = new Date();
-        const start = new Date(now.getFullYear(), now.getMonth(), 1);
-        const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-        return { start, end };
-    }
-    
-    const minDate = new Date(Math.min(...allDates));
-    const maxDate = new Date(Math.max(...allDates));
-    
-    // Add padding before and after
-    const padding = Math.max(7, Math.ceil((maxDate - minDate) / (1000 * 60 * 60 * 24)) * 0.2); // 20% padding or min 7 days
-    
-    const start = new Date(minDate);
-    start.setDate(start.getDate() - padding);
-    
-    const end = new Date(maxDate);
-    end.setDate(end.getDate() + padding);
-    
-    return { start, end };
-}
-
-// Update timeline header with dynamic dates
-function updateTimelineHeader(startDate, endDate) {
-    const headerContainer = document.querySelector('#gantt-chart .grid-cols-10');
-    if (!headerContainer) return;
-    
-    const totalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
-    const interval = Math.max(1, Math.floor(totalDays / 10));
-    
-    headerContainer.innerHTML = '';
-    
-    // Add today marker calculation
-    const today = new Date();
-    const todayPosition = ((today - startDate) / (endDate - startDate)) * 100;
-    
-    for (let i = 1; i < 10; i++) {
-        const currentDate = new Date(startDate);
-        currentDate.setDate(startDate.getDate() + (i * interval));
-        
-        const div = document.createElement('div');
-        div.className = 'text-center text-xs relative';
-        
-        // Highlight if this is close to today
-        const isToday = Math.abs(currentDate - today) < (24 * 60 * 60 * 1000);
-        if (isToday) {
-            div.className += ' text-yellow-400 font-semibold';
-        }
-        
-        div.textContent = formatDateShort(currentDate);
-        headerContainer.appendChild(div);
-    }
-    
-    // Add today marker line if within range
-    if (todayPosition >= 0 && todayPosition <= 100) {
-        addTodayMarker(todayPosition);
-    }
-}
-
-// Add today marker line
-function addTodayMarker(position) {
-    const chartContainer = document.getElementById('gantt-chart');
-    if (!chartContainer) return;
-    
-    // Remove existing today marker
-    const existingMarker = chartContainer.querySelector('.today-marker');
-    if (existingMarker) {
-        existingMarker.remove();
-    }
-    
-    // Add new today marker
-    const marker = document.createElement('div');
-    marker.className = 'today-marker absolute bg-yellow-400 opacity-70 z-10 pointer-events-none';
-    marker.style.width = '2px';
-    marker.style.left = `calc(16.666% + ${position * 0.833}%)`;
-    marker.style.top = '60px';
-    marker.style.bottom = '0px';
-    marker.title = `Today (${formatDateToEU(new Date().toISOString().split('T')[0])})`;
-    
-    chartContainer.style.position = 'relative';
-    chartContainer.appendChild(marker);
-}
-
-// Format date for timeline header (shorter format)
-function formatDateShort(date) {
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    return `${day}.${month}`;
-}
-
-// Calculate precise bar position and width
-function calculateBarPosition(startDate, endDate, timelineRange) {
-    const totalDuration = timelineRange.end - timelineRange.start;
-    const startOffset = startDate - timelineRange.start;
-    const duration = endDate - startDate;
-    
-    const leftPercent = Math.max(0, Math.min(100, (startOffset / totalDuration) * 100));
-    const widthPercent = Math.max(1, Math.min(100 - leftPercent, (duration / totalDuration) * 100));
-    
-    return {
-        left: leftPercent,
-        width: widthPercent
-    };
-}
-
-// Update period bar styling
-function updatePeriodBar(elementId, position) {
-    const bar = document.getElementById(elementId);
-    if (!bar) return;
-    
-    bar.style.display = 'block';
-    bar.style.left = `${position.left}%`;
-    bar.style.width = `${position.width}%`;
-    
-    // Add minimum width for visibility
-    if (position.width < 5) {
-        bar.style.minWidth = '20px';
-    }
-}
-
-// Enhanced example timeline update
-function updateExampleGanttChart() {
-    // Create example dates
-    const today = new Date();
-    const rentalStart = new Date(today);
-    rentalStart.setDate(today.getDate() + 5);
-    
-    const rentalEnd = new Date(rentalStart);
-    rentalEnd.setDate(rentalStart.getDate() + 14);
-    
-    const usageStart = new Date(rentalStart);
-    usageStart.setDate(rentalStart.getDate() + 2);
-    
-    const usageEnd = new Date(rentalEnd);
-    usageEnd.setDate(rentalEnd.getDate() - 2);
-    
-    // Calculate timeline
-    const timelineRange = calculateTimelineRange(rentalStart, rentalEnd, usageStart, usageEnd);
-    updateTimelineHeader(timelineRange.start, timelineRange.end);
-    
-    // Update bars
-    const rentalPosition = calculateBarPosition(rentalStart, rentalEnd, timelineRange);
-    const usagePosition = calculateBarPosition(usageStart, usageEnd, timelineRange);
-    
-    updatePeriodBar('rental-period-bar', rentalPosition);
-    updatePeriodBar('usage-period-bar', usagePosition);
-    
-    // Update text displays
-    document.getElementById("rental-period-text").textContent = 
-        `${formatDateToEU(rentalStart.toISOString().split('T')[0])} - ${formatDateToEU(rentalEnd.toISOString().split('T')[0])}`;
-    document.getElementById("usage-period-text").textContent = 
-        `${formatDateToEU(usageStart.toISOString().split('T')[0])} - ${formatDateToEU(usageEnd.toISOString().split('T')[0])}`;
-}
-
 // Function to load related data (customers, contacts, etc.)
 function loadProjectRelatedData() {
     // For now, use example data for related entities
@@ -514,7 +315,7 @@ function loadExampleData() {
     document.getElementById("project-usage-end").textContent = exampleProjectInfo.usageEndDate;
     
     // Update Gantt chart with enhanced example timeline
-    updateExampleGanttChart();
+    updateExampleGanttChart(formatDateToEU);
 }
 
 function loadExampleRelatedData() {
@@ -549,185 +350,70 @@ const customersList = document.getElementById("customers-list");
 const contactList = document.getElementById("contact-list");
 const ordersList = document.getElementById("orders-list");
 const activitiesList = document.getElementById("activities-list");
-const equipmentList = document.getElementById("equipment-list");
-
-// Tab elements
-const orderSummaryTab = document.getElementById("order-summary-tab");
-const equipmentTab = document.getElementById("equipment-tab");
-const orderSummaryContent = document.getElementById("order-summary-content");
-const equipmentContent = document.getElementById("equipment-content");
-const rightColumn = document.getElementById("right-column");
-const mainGrid = document.getElementById("main-grid");
-
-// Show skeleton loaders initially
-[customersList, contactList, ordersList, activitiesList].forEach(container => showSkeleton(container, 3));
-
-// Initialize the page
-document.addEventListener('DOMContentLoaded', function() {
-    const projectId = getProjectIdFromURL();
-    
-    if (projectId) {
-        loadProjectData(projectId);
-    } else {
-        // No project ID in URL, load example data
-        loadExampleData();
-    }
-    
-    setupTabFunctionality();
-    setupProjectInfoSkeleton();
-});
-
-function setupProjectInfoSkeleton() {
-    const projectManager = document.getElementById("project-manager");
-    const projectType = document.getElementById("project-type");
-    const projectPhase = document.getElementById("project-phase");
-    const projectTitle = document.getElementById("project-title");
-    const projectTotal = document.getElementById("project-total");
-    const projectConfirmationDate = document.getElementById("project-confirmation-date");
-    const rentalStartDate = document.getElementById("project-rental-start");
-    const rentalEndDate = document.getElementById("project-rental-end");
-    const usageStartDate = document.getElementById("project-usage-start");
-    const usageEndDate = document.getElementById("project-usage-end");
-
-    // Show skeleton loaders for project info sections
-    [projectManager, projectType, projectPhase, projectTitle, projectTotal, projectConfirmationDate, rentalStartDate, rentalEndDate, usageStartDate, usageEndDate]
-        .filter(element => element) // Only process elements that exist
-        .forEach(element => showSkeleton(element, 1));
-
-    // Hide skeleton loaders after short delay
-    setTimeout(() => {
-        [projectManager, projectType, projectPhase, projectTitle, projectTotal, projectConfirmationDate, rentalStartDate, rentalEndDate, usageStartDate, usageEndDate]
-            .filter(element => element)
-            .forEach(element => hideSkeleton(element));
-    }, 1000);
-}
-
-function setupTabFunctionality() {
-
-// Tab functionality
-function switchTab(activeTab, activeContent) {
-    // Reset all tabs to inactive state
-    [orderSummaryTab, equipmentTab].forEach(tab => {
-        tab.className = "tab-button px-4 py-2 text-gray-400 hover:text-blue-400 font-semibold";
-    });
-    
-    // Hide all content
-    [orderSummaryContent, equipmentContent].forEach(content => {
-        content.classList.add("hidden");
-    });
-    
-    // Activate selected tab and content
-    activeTab.className = "tab-button px-4 py-2 text-blue-400 border-b-2 border-blue-400 font-semibold";
-    activeContent.classList.remove("hidden");
-    
-    // Handle layout transitions
-    if (activeContent === equipmentContent) {
-        // Equipment tab: hide right column and expand middle column
-        rightColumn.style.display = "none";
-        document.getElementById("middle-column").style.gridColumn = "2 / 4"; // span from column 2 to 4
-    } else {
-        // Order Summary tab: show right column and reset middle column
-        rightColumn.style.display = "block";
-        document.getElementById("middle-column").style.gridColumn = "auto";
-    }
-}
-
-    // Tab event listeners
-    orderSummaryTab.addEventListener("click", () => {
-        switchTab(orderSummaryTab, orderSummaryContent);
-    });
-
-    equipmentTab.addEventListener("click", () => {
-        switchTab(equipmentTab, equipmentContent);
-    });
-}
-
-// Helper function to pick tag color based on role
-function getTagColor(role) {
-    role = role.toLowerCase();
-    if (role === "artist") return "bg-green-500";
-    if (role === "agency" || role === "agent" || role === "booking") return "bg-purple-500";
-    return "bg-gray-500";
-}
 
 // ---------- Customers ----------
 function renderCustomers(customers) {
-    const customersList = document.getElementById("customers-list");
     hideSkeleton(customersList);
     customersList.innerHTML = '';
     
-    customers.forEach(customer => {
+    customers.forEach(cust => {
         const card = document.createElement("div");
         card.className = "bg-gray-700 rounded-lg p-4 flex items-center gap-4 border border-gray-400";
 
-        const photoContainer = document.createElement("div");
-        photoContainer.className = "w-[82px] h-[82px] rounded-full overflow-hidden flex-shrink-0";
         const img = document.createElement("img");
-        img.src = customer.photo;
-        img.alt = customer.name;
-        img.className = "w-full h-full object-cover scale-125";
-        photoContainer.appendChild(img);
+        img.src = cust.photo;
+        img.alt = cust.name;
+        img.className = "w-14 h-14 rounded-full object-cover";
 
-        const info = document.createElement("div");
-        info.className = "flex flex-col space-y-1";
-        const name = document.createElement("a");
-        name.textContent = customer.name;
-        name.href = "#";
-        name.className = "text-2xl text-blue-400 font-semibold hover:underline";
-        const tag = document.createElement("span");
-        tag.textContent = customer.role;
-        tag.className = `text-xs font-medium ${getTagColor(customer.role)} text-white px-2 py-1 rounded-full w-max`;
-        info.appendChild(name);
-        info.appendChild(tag);
+        const content = document.createElement("div");
 
-        card.appendChild(photoContainer);
-        card.appendChild(info);
+        const name = document.createElement("p");
+        name.textContent = cust.name;
+        name.className = "text-lg font-semibold text-white";
+
+        const role = document.createElement("p");
+        role.textContent = cust.role;
+        role.className = "text-sm text-gray-400";
+
+        content.appendChild(name);
+        content.appendChild(role);
+
+        card.appendChild(img);
+        card.appendChild(content);
+
         customersList.appendChild(card);
     });
 }
 
 // ---------- Contacts ----------
 function renderContacts(contacts) {
-    const contactList = document.getElementById("contact-list");
     hideSkeleton(contactList);
     contactList.innerHTML = '';
     
     contacts.forEach(contact => {
         const card = document.createElement("div");
-        card.className = "bg-gray-700 rounded-lg p-4 flex items-start gap-4 border border-gray-400";
+        card.className = "bg-gray-700 rounded-lg p-4 border border-gray-400";
 
-        const info = document.createElement("div");
-        info.className = "flex flex-col space-y-2";
-
-        const nameTagRow = document.createElement("div");
-        nameTagRow.className = "flex items-center gap-4"; // horizontal row
-
-        const name = document.createElement("a");
+        const name = document.createElement("p");
         name.textContent = contact.name;
-        name.href = "#";
-        name.className = "text-2xl text-blue-400 font-semibold hover:underline";
+        name.className = "text-lg font-semibold text-white mb-1";
 
-        const tag = document.createElement("span");
-        tag.textContent = contact.role;
-        tag.className = `text-xs font-medium ${getTagColor(contact.role)} text-white px-2 py-1 rounded-full w-max mt-1`;
+        const role = document.createElement("p");
+        role.textContent = contact.role;
+        role.className = "text-sm text-gray-400 mb-2";
 
-        nameTagRow.appendChild(name);
-        nameTagRow.appendChild(tag);
-
-        const email = document.createElement("a");
+        const email = document.createElement("p");
         email.textContent = contact.email;
-        email.href = `mailto:${contact.email}`;
-        email.className = "text-sm text-gray-400 font-semibold";
+        email.className = "text-sm text-blue-400";
 
         const phone = document.createElement("p");
         phone.textContent = contact.phone;
-        phone.className = "text-sm text-gray-400 font-semibold";
+        phone.className = "text-sm text-gray-300";
 
-        info.appendChild(nameTagRow);
-        info.appendChild(email);
-        info.appendChild(phone);
-
-        card.appendChild(info);
+        card.appendChild(name);
+        card.appendChild(role);
+        card.appendChild(email);
+        card.appendChild(phone);
 
         contactList.appendChild(card);
     });
@@ -735,16 +421,15 @@ function renderContacts(contacts) {
 
 // ---------- Orders ----------
 function renderOrders(orders) {
-    const ordersList = document.getElementById("orders-list");
     hideSkeleton(ordersList);
     ordersList.innerHTML = '';
     
     orders.forEach(order => {
         const card = document.createElement("div");
-        card.className = "bg-gray-700 rounded-lg p-4 flex flex-col gap-2 border border-gray-400";
+        card.className = "bg-gray-700 rounded-lg p-4 flex flex-col gap-1 border border-gray-400";
 
         const name = document.createElement("p");
-        name.textContent = `Name: ${order.name}`;
+        name.textContent = order.name;
         name.className = "text-lg font-semibold text-white";
 
         const price = document.createElement("p");
@@ -770,7 +455,6 @@ function renderOrders(orders) {
 
 // ---------- Activities ----------
 function renderActivities(activities) {
-    const activitiesList = document.getElementById("activities-list");
     hideSkeleton(activitiesList);
     activitiesList.innerHTML = '';
     
@@ -798,3 +482,38 @@ function renderActivities(activities) {
     });
 }
 
+// Initialize page
+document.addEventListener("DOMContentLoaded", () => {
+    loadProjectData(projectId);
+});
+
+// Tab functionality
+document.addEventListener("DOMContentLoaded", () => {
+    const orderSummaryTab = document.getElementById("order-summary-tab");
+    const equipmentTab = document.getElementById("equipment-tab");
+    const orderSummaryContent = document.getElementById("order-summary-content");
+    const equipmentContent = document.getElementById("equipment-content");
+
+    if (orderSummaryTab && equipmentTab && orderSummaryContent && equipmentContent) {
+        function showTab(activeTab, activeContent, inactiveTab, inactiveContent) {
+            activeTab.classList.add("text-blue-400", "border-blue-400");
+            activeTab.classList.remove("text-gray-400");
+            inactiveTab.classList.remove("text-blue-400", "border-blue-400");
+            inactiveTab.classList.add("text-gray-400");
+
+            activeContent.style.display = "block";
+            inactiveContent.style.display = "none";
+        }
+
+        orderSummaryTab.addEventListener("click", () => {
+            showTab(orderSummaryTab, orderSummaryContent, equipmentTab, equipmentContent);
+        });
+
+        equipmentTab.addEventListener("click", () => {
+            showTab(equipmentTab, equipmentContent, orderSummaryTab, orderSummaryContent);
+        });
+
+        // Initialize with Order Summary tab active
+        showTab(orderSummaryTab, orderSummaryContent, equipmentTab, equipmentContent);
+    }
+});

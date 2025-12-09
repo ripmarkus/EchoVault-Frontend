@@ -431,8 +431,14 @@ async function createProject() {
         }
         
         const formData = new FormData(document.getElementById('project-form'));
+        const projectName = formData.get('projectName');
         const rentalStart = formData.get('rentalStart');
         const rentalEnd = formData.get('rentalEnd');
+        
+        if (!projectName || !projectName.trim()) {
+            alert('Please enter a project name');
+            return;
+        }
         
         if (!rentalStart || !rentalEnd) {
             alert('Please select rental start and end dates');
@@ -441,6 +447,7 @@ async function createProject() {
         
         // Prepare project data
         const projectData = {
+            name: projectName.trim(),
             customerId: selectedCustomer.id, // Send as string ID
             projectManagerId: selectedProjectManager ? selectedProjectManager.id : null,
             startDate: rentalStart,

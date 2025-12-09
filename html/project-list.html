@@ -59,10 +59,11 @@
                     <table class="w-full bg-gray-800 rounded-b-lg table-auto">
                         <thead>
                         <tr class="text-left text-gray-300 border-b border-gray-700">
-                            <th class="p-7">Select</th>
-                            <th class="p-7">Status</th>
                             <th class="p-7">ID</th>
+                            <th class="p-7">Name</th>
                             <th class="p-7">Customer</th>
+                            <th class="p-7">Contact Person</th>
+                            <th class="p-7">Status</th>
                             <th class="p-7">Rental Start Date</th>
                             <th class="p-7">Rental End Date</th>
                             <th class="p-7">Usage Start Date</th>
@@ -76,25 +77,6 @@
                 </div>
         </section>
     </main>
-
-    <!-- View modal -->
-    <div id="project-modal"
-         class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60">
-        <div class="bg-gray-900 rounded-2xl shadow-xl w-full max-w-xl p-6">
-            <div class="flex items-center justify-between mb-4">
-                <h3 id="project-modal-title" class="text-xl font-semibold text-white">
-                    Project details
-                </h3>
-                <button id="project-modal-close"
-                        class="w-8 h-8 flex items-center justify-center rounded bg-gray-800 hover:bg-gray-700 text-gray-300">
-                    ✕
-                </button>
-            </div>
-            <div id="project-modal-content" class="space-y-2 text-sm text-gray-200">
-                <!-- udfyldes via JS -->
-            </div>
-        </div>
-    </div>
 
     <!-- Filter modal -->
     <div id="status-form-modal"
