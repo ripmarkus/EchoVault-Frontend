@@ -441,10 +441,8 @@ async function createProject() {
         
         // Prepare project data
         const projectData = {
-            customer: {
-                id: selectedCustomer.id // This should be the string ID from CustomerResponse
-            },
-            projectManager: selectedProjectManager ? { id: selectedProjectManager.id } : null,
+            customerId: selectedCustomer.id, // Send as string ID
+            projectManagerId: selectedProjectManager ? selectedProjectManager.id : null,
             startDate: rentalStart,
             endDate: rentalEnd,
             usageStartDate: formData.get('usageStart') || null,
