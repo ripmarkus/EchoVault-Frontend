@@ -1,5 +1,12 @@
 const API_BASE = "http://localhost:8080/api/customers";
+const CONTACT_API = "http://localhost:8080/api/contacts";
 
+let allContacts = [];
+let linkedContacts = [];
+let contactTab = "all"; // "all" or "linked"
+let contactSearchQuery = "";
+
+// DEMO DATA FOR PERFORMANCE
 const DEMO_PERFORMANCE = {
     ordersFulfilled: 128,
     avgTurnaround: "4.2 days",
@@ -16,7 +23,6 @@ const DEMO_REVENUE = {
     values: [4200, 7500, 9200, 6100, 8800, 10400] // DKK
 };
 
-
 // Extract ID from URL: customer-profile.html?id=cust-5
 const params = new URLSearchParams(window.location.search);
 const customerId = params.get("id");
@@ -25,25 +31,27 @@ if (!customerId) {
     console.error("Missing ?id=cust-X");
 }
 
+// -----------------------------
+// INLINE EDIT HANDLER
+// -----------------------------
 document.addEventListener("click", async (e) => {
     const btn = e.target.closest("[data-edit-field]");
     if (!btn) return;
 
     const field = btn.dataset.editField;
-    const valueEl = document.getElementById("detail-" + field.replace("addressLine", "address"));
+    const valueEl = document.getElementById(
+        "detail-" + field.replace("addressLine", "address")
+    );
 
-    // Create input
     const oldValue = valueEl.textContent.trim();
     const input = document.createElement("input");
     input.value = oldValue;
     input.className =
         "px-2 py-1 rounded bg-gray-800 text-white border border-gray-600 w-full";
 
-    // Replace text with input
     valueEl.replaceWith(input);
     input.focus();
 
-    // Save on Enter or blur
     async function save() {
         const newValue = input.value.trim();
 
@@ -53,7 +61,6 @@ document.addEventListener("click", async (e) => {
             body: JSON.stringify({ [field]: newValue })
         });
 
-        // Reload customer info
         await loadCustomer();
     }
 
@@ -64,15 +71,13 @@ document.addEventListener("click", async (e) => {
     input.addEventListener("blur", save);
 });
 
-
 // ----------------------
-// RENDER REVENUE TREND CHART
+// CHARTS & METRICS
 // ----------------------
 function renderRevenueTrend() {
     const canvas = document.getElementById("revenue-line-chart");
     if (!canvas) return;
 
-    // Destroy old chart if re-rendered
     if (window.revenueChart) {
         window.revenueChart.destroy();
     }
@@ -123,8 +128,8 @@ function renderPerformanceMetrics() {
 
 function renderPerformanceChart() {
     const canvas = document.getElementById("artist-pie-chart");
+    if (!canvas) return;
 
-    // Destroy existing chart if it exists (prevents duplication on reload)
     if (window.artistChart) {
         window.artistChart.destroy();
     }
@@ -148,12 +153,14 @@ function renderPerformanceChart() {
     });
 }
 
-
+// ----------------------
+// INVOICES
+// ----------------------
 function renderInvoices(invoices) {
     const container = document.getElementById("invoice-grid");
     container.innerHTML = "";
 
-    if (!invoices.length) {
+    if (!invoices || !invoices.length) {
         container.innerHTML = `<p class="text-gray-400 text-sm">No invoices available.</p>`;
         return;
     }
@@ -182,9 +189,244 @@ function renderInvoices(invoices) {
     });
 }
 
+async function loadInvoices() {
+    try {
+        const resp = await fetch(`http://localhost:8080/api/invoices/customer/${customerId}`);
+        if (!resp.ok) {
+            console.error("Failed to load invoices:", await resp.text());
+            return;
+        }
 
+        const invoices = await resp.json();
+        renderInvoices(invoices);
 
-// Load customer and fill UI
+    } catch (err) {
+        console.error("Error fetching invoices:", err);
+    }
+}
+
+// ----------------------
+// CONTACTS – SIDEBAR (2 + "x more")
+// ----------------------
+function renderLinkedContacts(contacts) {
+    const container = document.getElementById("contacts-list");
+    container.innerHTML = "";
+
+    if (!contacts || contacts.length === 0) {
+        container.innerHTML = `<p class="text-gray-400 text-sm">No contacts linked.</p>`;
+        return;
+    }
+
+    const toShow = contacts.slice(0, 2);
+
+    toShow.forEach(c => {
+        const div = document.createElement("div");
+        div.className = "p-3 bg-gray-800 rounded-lg border border-gray-700";
+
+        div.innerHTML = `
+            <p class="font-semibold">${c.name}</p>
+            <p class="text-sm text-gray-400">${c.email ?? "-"}</p>
+            <p class="text-sm text-gray-400">${c.phone ?? "-"}</p>
+        `;
+        container.appendChild(div);
+    });
+
+    if (contacts.length > 2) {
+        const remaining = contacts.length - 2;
+
+        const moreDiv = document.createElement("div");
+        moreDiv.className = "text-blue-300 text-sm cursor-pointer underline";
+        moreDiv.textContent = `+ ${remaining} more`;
+
+        moreDiv.addEventListener("click", () => {
+            document.getElementById("open-contact-modal-btn").click();
+        });
+
+        container.appendChild(moreDiv);
+    }
+}
+
+// ----------------------
+// CONTACT MODAL – LIST
+// ----------------------
+function renderContactList() {
+    const container = document.getElementById("contact-list");
+    container.innerHTML = "";
+
+    let filtered = contactTab === "all"
+        ? allContacts
+        : allContacts.filter(c => linkedContacts.includes(c.id));
+
+    if (contactSearchQuery.trim() !== "") {
+        const q = contactSearchQuery.toLowerCase();
+        filtered = filtered.filter(c =>
+            c.name.toLowerCase().includes(q) ||
+            (c.email ?? "").toLowerCase().includes(q)
+        );
+    }
+
+    if (!filtered.length) {
+        container.innerHTML = `<p class="text-gray-400 text-sm">No contacts found.</p>`;
+        return;
+    }
+
+    filtered.forEach(c => {
+        const div = document.createElement("label");
+        div.className =
+            "flex items-center gap-3 bg-gray-800 p-3 rounded-lg border border-gray-700";
+
+        div.innerHTML = `
+            <input type="checkbox" value="${c.id}"
+                ${linkedContacts.includes(c.id) ? "checked" : ""}/>
+            <span>${c.name}
+                <span class="text-gray-400 text-sm">(${c.email ?? "-"})</span>
+            </span>
+        `;
+
+        container.appendChild(div);
+    });
+}
+
+function highlightContactTab() {
+    const tabAll = document.getElementById("contact-tab-all");
+    const tabLinked = document.getElementById("contact-tab-linked");
+
+    if (contactTab === "all") {
+        tabAll.className = "px-3 py-1 rounded bg-blue-600 text-white text-sm font-semibold";
+        tabLinked.className = "px-3 py-1 rounded bg-gray-700 text-gray-300 text-sm hover:bg-gray-600";
+    } else {
+        tabLinked.className = "px-3 py-1 rounded bg-blue-600 text-white text-sm font-semibold";
+        tabAll.className = "px-3 py-1 rounded bg-gray-700 text-gray-300 text-sm hover:bg-gray-600";
+    }
+}
+
+function closeContactModal() {
+    const modal = document.getElementById("contact-modal");
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+}
+
+// ----------------------
+// CONTACT MODAL – OPEN / SAVE / CREATE
+// ----------------------
+async function openContactModal() {
+    const modal = document.getElementById("contact-modal");
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+
+    // 1. Load all contacts
+    const allResp = await fetch(CONTACT_API);
+    allContacts = await allResp.json();
+
+    // 2. Load customer to get linked contacts
+    const custResp = await fetch(`${API_BASE}/${customerId}`);
+    const customer = await custResp.json();
+    linkedContacts = (customer.contacts ?? []).map(c => c.id);
+
+    contactTab = "all";
+    highlightContactTab();
+    renderContactList();
+}
+
+async function saveContacts() {
+    const checkboxes = Array.from(
+        document.querySelectorAll("#contact-list input[type='checkbox']")
+    );
+
+    linkedContacts = checkboxes
+        .filter(cb => cb.checked)
+        .map(cb => parseInt(cb.value));
+
+    await fetch(`${API_BASE}/${customerId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contactIds: linkedContacts })
+    });
+
+    closeContactModal();
+    await loadCustomer();
+}
+
+async function createNewContact() {
+    const name = document.getElementById("new-contact-name").value.trim();
+    const email = document.getElementById("new-contact-email").value.trim();
+    const phone = document.getElementById("new-contact-phone").value.trim();
+
+    if (!name) {
+        alert("Name is required");
+        return;
+    }
+
+    const resp = await fetch(CONTACT_API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, phone })
+    });
+
+    if (!resp.ok) {
+        console.error(await resp.text());
+        alert("Failed to create contact");
+        return;
+    }
+
+    const created = await resp.json();
+
+    // Update in-memory
+    allContacts.push(created);
+    if (!linkedContacts.includes(created.id)) {
+        linkedContacts.push(created.id);
+    }
+
+    // Persist link to customer
+    await fetch(`${API_BASE}/${customerId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contactIds: linkedContacts })
+    });
+
+    // Clear inputs
+    document.getElementById("new-contact-name").value = "";
+    document.getElementById("new-contact-email").value = "";
+    document.getElementById("new-contact-phone").value = "";
+
+    // Refresh lists
+    renderContactList();
+    await loadCustomer();
+}
+
+// ----------------------
+// ARTISTS (children)
+// ----------------------
+async function loadArtists(artistIds) {
+    const container = document.getElementById("artists-list");
+    container.innerHTML = "";
+
+    if (!artistIds || !artistIds.length) {
+        container.innerHTML = `<p class="text-gray-400 text-sm">No associated artists.</p>`;
+        return;
+    }
+
+    const artistPromises = artistIds.map(id =>
+        fetch(`${API_BASE}/${id}`).then(r => r.json())
+    );
+
+    const artists = await Promise.all(artistPromises);
+
+    artists.forEach(a => {
+        const div = document.createElement("div");
+        div.className = "bg-gray-800 p-3 rounded-lg border border-gray-700";
+
+        div.innerHTML = `
+            <p class="font-semibold">${a.name}</p>
+            <p class="text-gray-400 text-sm">${a.email ?? "-"}</p>
+        `;
+        container.appendChild(div);
+    });
+}
+
+// ----------------------
+// LOAD CUSTOMER
+// ----------------------
 async function loadCustomer() {
     const resp = await fetch(`${API_BASE}/${customerId}`);
     if (!resp.ok) {
@@ -204,26 +446,59 @@ async function loadCustomer() {
     document.getElementById("detail-email").textContent = c.email ?? "-";
     document.getElementById("detail-address").textContent = c.addressLine ?? "-";
     document.getElementById("detail-postalCode").textContent = c.postalCode ?? "-";
-}
-async function loadInvoices() {
-    try {
-        const resp = await fetch(`http://localhost:8080/api/invoices/customer/${customerId}`);
-        if (!resp.ok) {
-            console.error("Failed to load invoices:", await resp.text());
-            return;
-        }
 
-        const invoices = await resp.json();
-        renderInvoices(invoices);
+    // Contacts in sidebar (only first 2 + "x more")
+    renderLinkedContacts(c.contacts ?? []);
 
-    } catch (err) {
-        console.error("Error fetching invoices:", err);
+    // Artists: show only if this is a bureau (no parent)
+    const artistsSection = document.getElementById("artists-section");
+    if (!c.parentId) {
+        artistsSection.classList.remove("hidden");
+        await loadArtists(c.children ?? []);
+    } else {
+        artistsSection.classList.add("hidden");
     }
 }
 
+// ----------------------
+// INIT
+// ----------------------
+document.addEventListener("DOMContentLoaded", () => {
+    // Contact modal UI wiring
+    document.getElementById("contact-tab-all").addEventListener("click", () => {
+        contactTab = "all";
+        highlightContactTab();
+        renderContactList();
+    });
 
-loadCustomer();
-loadInvoices();
-renderPerformanceMetrics();
-renderPerformanceChart();
-renderRevenueTrend();
+    document.getElementById("contact-tab-linked").addEventListener("click", () => {
+        contactTab = "linked";
+        highlightContactTab();
+        renderContactList();
+    });
+
+    document.getElementById("contact-search").addEventListener("input", (e) => {
+        contactSearchQuery = e.target.value;
+        renderContactList();
+    });
+
+    document.getElementById("open-contact-modal-btn").addEventListener("click", () => {
+        openContactModal();
+    });
+
+    document.getElementById("contact-modal-close").addEventListener("click", closeContactModal);
+    document.getElementById("contact-save-btn").addEventListener("click", saveContacts);
+
+    document.getElementById("contact-modal").addEventListener("click", (e) => {
+        if (e.target === e.currentTarget) closeContactModal();
+    });
+
+    document.getElementById("create-contact-btn").addEventListener("click", createNewContact);
+
+    // Initial loads
+    loadCustomer();
+    loadInvoices();
+    renderPerformanceMetrics();
+    renderPerformanceChart();
+    renderRevenueTrend();
+});
