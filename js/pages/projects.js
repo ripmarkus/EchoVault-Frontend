@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:8080/api/projects";
+const API_BASE = "http://localhost:8080/api/parent-projects";
 const CUSTOMERS_API_BASE = "http://localhost:8080/api/customers";
 
 let projectsCache = [];
@@ -48,9 +48,9 @@ function formatPeriod(start, end) {
     const startText = formatDate(start);
     const endText = formatDate(end);
     if (!start && !end) return "-";
-    if (start && !end) return `${startText} → ?`;
-    if (!start && end) return `? → ${endText}`;
-    return `${startText} → ${endText}`;
+    if (start && !end) return `${startText}  ?`;
+    if (!start && end) return `?  ${endText}`;
+    return `${startText}  ${endText}`;
 }
 
 function statusBadge(status) {
@@ -104,10 +104,10 @@ function renderProjects(projects) {
             <td class="p-6">
               <div class="flex gap-2">
                 <button
-                  class="view-project px-3 py-1 text-xs rounded bg-[#55A5F8] hover:bg-[#3F8CE0] text-white"
+                  class="open-parent px-3 py-1 text-xs rounded bg-[#55A5F8] hover:bg-[#3F8CE0] text-white"
                   data-project-id="${project.id}"
                 >
-                  View
+                  Open
                 </button>
                 <button
                   class="edit-project px-3 py-1 text-xs rounded bg-gray-700 hover:bg-gray-600 text-white"
@@ -266,11 +266,9 @@ async function submitProjectForm(e) {
 
     const payload = {
         name: formName.value,
-        status: formStatus.value,
         customerId: formCustomer.value || null,
         startDate: formStart.value || null,
         endDate: formEnd.value || null,
-        shortages: formShortages.value ? Number(formShortages.value) : 0,
     };
 
     let url = API_BASE;
@@ -342,9 +340,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (tableBody) {
         tableBody.addEventListener("click", (e) => {
-            const viewBtn = e.target.closest(".view-project");
-            if (viewBtn) {
-                openProjectModal(viewBtn.dataset.projectId);
+            const openBtn = e.target.closest(".open-parent");
+            if (openBtn) {
+                window.location.href = `parent-project.html?id=${openBtn.dataset.projectId}`;
                 return;
             }
             const editBtn = e.target.closest(".edit-project");
@@ -397,4 +395,3 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
-

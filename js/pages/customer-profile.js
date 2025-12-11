@@ -166,7 +166,7 @@ function renderInvoices(invoices) {
             <div class="flex justify-between items-start">
                 <div>
                     <p class="font-semibold">${inv.invoiceNumber}</p>
-                    <p class="text-gray-400 text-sm">${inv.invoiceDate} → ${inv.dueDate}</p>
+                    <p class="text-gray-400 text-sm">${inv.invoiceDate} – ${inv.dueDate}</p>
                 </div>
                 <div class="text-right">
                     <p class="font-semibold">${inv.amount} ${inv.currency}</p>
