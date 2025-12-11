@@ -1,5 +1,3 @@
-import { showSkeleton, hideSkeleton, simulateLoading } from '../util/skeleton.js';
-
 // Project data from API
 let projectData = null;
 const API_BASE = "http://localhost:8080/api/projects";
@@ -183,7 +181,7 @@ async function loadProjectData(projectId) {
     try {
         projectData = await getProjectFromCacheOrAPI(projectId);
         populateProjectInfo();
-        loadProjectRelatedData();
+        await loadProjectRelatedData();
     } catch (error) {
         console.error("Error loading project data:", error);
         // Fall back to example data if API fails
@@ -299,22 +297,32 @@ function updateGanttChart() {
     if (rentalStart && rentalEnd) {
         const rentalPosition = calculateBarPosition(rentalStart, rentalEnd, timelineRange);
         updatePeriodBar('rental-period-bar', rentalPosition);
-        document.getElementById("rental-period-text").textContent = 
-            `${formatDateToEU(projectData.startDate)} - ${formatDateToEU(projectData.endDate)}`;
+        const rentalPeriodText = document.getElementById("rental-period-text");
+        if (rentalPeriodText) {
+            rentalPeriodText.textContent = 
+                `${formatDateToEU(projectData.startDate)} - ${formatDateToEU(projectData.endDate)}`;
+        }
     } else {
-        document.getElementById("rental-period-bar").style.display = "none";
-        document.getElementById("rental-period-text").textContent = "Not set";
+        const rentalBar = document.getElementById("rental-period-bar");
+        const rentalPeriodText = document.getElementById("rental-period-text");
+        if (rentalBar) rentalBar.style.display = "none";
+        if (rentalPeriodText) rentalPeriodText.textContent = "Not set";
     }
     
     // Update usage period
     if (usageStart && usageEnd) {
         const usagePosition = calculateBarPosition(usageStart, usageEnd, timelineRange);
         updatePeriodBar('usage-period-bar', usagePosition);
-        document.getElementById("usage-period-text").textContent = 
-            `${formatDateToEU(projectData.usageStartDate)} - ${formatDateToEU(projectData.usageEndDate)}`;
+        const usagePeriodText = document.getElementById("usage-period-text");
+        if (usagePeriodText) {
+            usagePeriodText.textContent = 
+                `${formatDateToEU(projectData.usageStartDate)} - ${formatDateToEU(projectData.usageEndDate)}`;
+        }
     } else {
-        document.getElementById("usage-period-bar").style.display = "none";
-        document.getElementById("usage-period-text").textContent = "Not set";
+        const usageBar = document.getElementById("usage-period-bar");
+        const usagePeriodText = document.getElementById("usage-period-text");
+        if (usageBar) usageBar.style.display = "none";
+        if (usagePeriodText) usagePeriodText.textContent = "Not set";
     }
 }
 
@@ -355,55 +363,15 @@ function updateTimelineHeader(startDate, endDate) {
     
     headerContainer.innerHTML = '';
     
-    // Add today marker calculation
-    const today = new Date();
-    const todayPosition = ((today - startDate) / (endDate - startDate)) * 100;
-    
-    for (let i = 1; i < 10; i++) {
+    for (let i = 0; i < 10; i++) {
         const currentDate = new Date(startDate);
         currentDate.setDate(startDate.getDate() + (i * interval));
         
         const div = document.createElement('div');
         div.className = 'text-center text-xs relative';
-        
-        // Highlight if this is close to today
-        const isToday = Math.abs(currentDate - today) < (24 * 60 * 60 * 1000);
-        if (isToday) {
-            div.className += ' text-yellow-400 font-semibold';
-        }
-        
         div.textContent = formatDateShort(currentDate);
         headerContainer.appendChild(div);
     }
-    
-    // Add today marker line if within range
-    if (todayPosition >= 0 && todayPosition <= 100) {
-        addTodayMarker(todayPosition);
-    }
-}
-
-// Add today marker line
-function addTodayMarker(position) {
-    const chartContainer = document.getElementById('gantt-chart');
-    if (!chartContainer) return;
-    
-    // Remove existing today marker
-    const existingMarker = chartContainer.querySelector('.today-marker');
-    if (existingMarker) {
-        existingMarker.remove();
-    }
-    
-    // Add new today marker
-    const marker = document.createElement('div');
-    marker.className = 'today-marker absolute bg-yellow-400 opacity-70 z-10 pointer-events-none';
-    marker.style.width = '2px';
-    marker.style.left = `calc(16.666% + ${position * 0.833}%)`;
-    marker.style.top = '60px';
-    marker.style.bottom = '0px';
-    marker.title = `Today (${formatDateToEU(new Date().toISOString().split('T')[0])})`;
-    
-    chartContainer.style.position = 'relative';
-    chartContainer.appendChild(marker);
 }
 
 // Format date for timeline header (shorter format)
@@ -470,18 +438,80 @@ function updateExampleGanttChart() {
     updatePeriodBar('rental-period-bar', rentalPosition);
     updatePeriodBar('usage-period-bar', usagePosition);
     
-    // Update text displays
-    document.getElementById("rental-period-text").textContent = 
-        `${formatDateToEU(rentalStart.toISOString().split('T')[0])} - ${formatDateToEU(rentalEnd.toISOString().split('T')[0])}`;
-    document.getElementById("usage-period-text").textContent = 
-        `${formatDateToEU(usageStart.toISOString().split('T')[0])} - ${formatDateToEU(usageEnd.toISOString().split('T')[0])}`;
+    // Update text displays - check if elements exist
+    const rentalPeriodText = document.getElementById("rental-period-text");
+    const usagePeriodText = document.getElementById("usage-period-text");
+    
+    if (rentalPeriodText) {
+        rentalPeriodText.textContent = 
+            `${formatDateToEU(rentalStart.toISOString().split('T')[0])} - ${formatDateToEU(rentalEnd.toISOString().split('T')[0])}`;
+    }
+    
+    if (usagePeriodText) {
+        usagePeriodText.textContent = 
+            `${formatDateToEU(usageStart.toISOString().split('T')[0])} - ${formatDateToEU(usageEnd.toISOString().split('T')[0])}`;
+    }
 }
 
 // Function to load related data (customers, contacts, etc.)
-function loadProjectRelatedData() {
-    // For now, use example data for related entities
-    // In a full implementation, you would fetch customers, contacts, orders, and activities from their respective APIs
-    loadExampleRelatedData();
+async function loadProjectRelatedData() {
+    try {
+        // Load real customer and contact data if project has customer
+        if (projectData && projectData.customer) {
+            await loadRealCustomerData(projectData.customer);
+        } else {
+            // Fall back to example data
+            loadExampleRelatedData();
+        }
+    } catch (error) {
+        console.error("Error loading project related data:", error);
+        // Fall back to example data
+        loadExampleRelatedData();
+    }
+}
+
+// Function to load real customer data from API
+async function loadRealCustomerData(customerData) {
+    try {
+        // Use customer data from project
+        const customers = [customerData];
+        
+        // Load contacts for the customer
+        let contacts = [];
+        if (customerData.id) {
+            try {
+                const contactsResponse = await fetch(`http://localhost:8080/api/customers/${customerData.id}/contacts`);
+                if (contactsResponse.ok) {
+                    contacts = await contactsResponse.json();
+                }
+            } catch (error) {
+                console.log("No contacts endpoint available, using customer contact person");
+                // If no contacts endpoint, create contact from customer contact person
+                if (customerData.contactPerson) {
+                    contacts = [{
+                        name: customerData.contactPerson,
+                        role: "Contact Person",
+                        email: customerData.email || "",
+                        phone: customerData.phone || ""
+                    }];
+                }
+            }
+        }
+        
+        // For now, use example data for orders and activities
+        const orders = [
+            { name: "Event Setup", totalPrice: "$500", usagePeriod: "1 Week", status: "Pending" },
+            { name: "Sound System Rental", totalPrice: "$1200", usagePeriod: "3 Days", status: "Completed" },
+        ];
+        
+        renderCustomers(customers);
+        renderContacts(contacts);
+        renderOrders(orders);
+        
+    } catch (error) {
+        console.error("Error loading real customer data:", error);
+        loadExampleRelatedData();
+    }
 }
 
 // Function to load example data (fallback or for related entities not yet implemented)
@@ -532,38 +562,28 @@ function loadExampleRelatedData() {
         { name: "Event Setup", totalPrice: "$500", usagePeriod: "1 Week", status: "Pending" },
         { name: "Sound System Rental", totalPrice: "$1200", usagePeriod: "3 Days", status: "Completed" },
     ];
-
-    const activities = [
-        { heading: "Meeting with Client", subtext: "Discuss event details", date: "2025-12-10" },
-        { heading: "Venue Inspection", subtext: "Check sound setup", date: "2025-12-12" },
-    ];
     
     renderCustomers(customers);
     renderContacts(contacts);
     renderOrders(orders);
-    renderActivities(activities);
 }
-
-// Get DOM elements
-const customersList = document.getElementById("customers-list");
-const contactList = document.getElementById("contact-list");
-const ordersList = document.getElementById("orders-list");
-const activitiesList = document.getElementById("activities-list");
-const equipmentList = document.getElementById("equipment-list");
-
-// Tab elements
-const orderSummaryTab = document.getElementById("order-summary-tab");
-const equipmentTab = document.getElementById("equipment-tab");
-const orderSummaryContent = document.getElementById("order-summary-content");
-const equipmentContent = document.getElementById("equipment-content");
-const rightColumn = document.getElementById("right-column");
-const mainGrid = document.getElementById("main-grid");
-
-// Show skeleton loaders initially
-[customersList, contactList, ordersList, activitiesList].forEach(container => showSkeleton(container, 3));
 
 // Initialize the page
 document.addEventListener('DOMContentLoaded', function() {
+    // Get DOM elements
+    const customersList = document.getElementById("customers-list");
+    const contactList = document.getElementById("contact-list");
+    const ordersList = document.getElementById("orders-list");
+    const equipmentList = document.getElementById("equipment-list");
+
+    // Tab elements
+    const orderSummaryTab = document.getElementById("order-summary-tab");
+    const equipmentTab = document.getElementById("equipment-tab");
+    const orderSummaryContent = document.getElementById("order-summary-content");
+    const equipmentContent = document.getElementById("equipment-content");
+    const rightColumn = document.getElementById("right-column");
+    const mainGrid = document.getElementById("main-grid");
+    
     const projectId = getProjectIdFromURL();
     
     if (projectId) {
@@ -573,36 +593,29 @@ document.addEventListener('DOMContentLoaded', function() {
         loadExampleData();
     }
     
-    setupTabFunctionality();
-    setupProjectInfoSkeleton();
+    setupTabFunctionality(orderSummaryTab, equipmentTab, orderSummaryContent, equipmentContent, rightColumn);
+    setupEditButton();
 });
 
-function setupProjectInfoSkeleton() {
-    const projectManager = document.getElementById("project-manager");
-    const projectType = document.getElementById("project-type");
-    const projectPhase = document.getElementById("project-phase");
-    const projectTitle = document.getElementById("project-title");
-    const projectTotal = document.getElementById("project-total");
-    const projectConfirmationDate = document.getElementById("project-confirmation-date");
-    const rentalStartDate = document.getElementById("project-rental-start");
-    const rentalEndDate = document.getElementById("project-rental-end");
-    const usageStartDate = document.getElementById("project-usage-start");
-    const usageEndDate = document.getElementById("project-usage-end");
-
-    // Show skeleton loaders for project info sections
-    [projectManager, projectType, projectPhase, projectTitle, projectTotal, projectConfirmationDate, rentalStartDate, rentalEndDate, usageStartDate, usageEndDate]
-        .filter(element => element) // Only process elements that exist
-        .forEach(element => showSkeleton(element, 1));
-
-    // Hide skeleton loaders after short delay
-    setTimeout(() => {
-        [projectManager, projectType, projectPhase, projectTitle, projectTotal, projectConfirmationDate, rentalStartDate, rentalEndDate, usageStartDate, usageEndDate]
-            .filter(element => element)
-            .forEach(element => hideSkeleton(element));
-    }, 1000);
+function setupEditButton() {
+    const editBtn = document.getElementById("edit-project-btn");
+    if (editBtn) {
+        editBtn.addEventListener("click", () => {
+            // Navigate to edit page or open edit modal
+            const projectId = getProjectIdFromURL();
+            if (projectId) {
+                // You can implement edit functionality here
+                console.log("Edit project:", projectId);
+                // Example: window.location.href = `edit-project.html?id=${projectId}`;
+            }
+        });
+    }
 }
 
-function setupTabFunctionality() {
+function setupTabFunctionality(orderSummaryTab, equipmentTab, orderSummaryContent, equipmentContent, rightColumn) {
+    if (!orderSummaryTab || !equipmentTab || !orderSummaryContent || !equipmentContent || !rightColumn) {
+        return; // Exit if any required elements are missing
+    }
 
 // Tab functionality
 function switchTab(activeTab, activeContent) {
@@ -653,7 +666,7 @@ function getTagColor(role) {
 // ---------- Customers ----------
 function renderCustomers(customers) {
     const customersList = document.getElementById("customers-list");
-    hideSkeleton(customersList);
+    if (!customersList) return;
     customersList.innerHTML = '';
     
     customers.forEach(customer => {
@@ -661,22 +674,34 @@ function renderCustomers(customers) {
         card.className = "bg-gray-700 rounded-lg p-4 flex items-center gap-4 border border-gray-400";
 
         const photoContainer = document.createElement("div");
-        photoContainer.className = "w-[82px] h-[82px] rounded-full overflow-hidden flex-shrink-0";
-        const img = document.createElement("img");
-        img.src = customer.photo;
-        img.alt = customer.name;
-        img.className = "w-full h-full object-cover scale-125";
-        photoContainer.appendChild(img);
+        photoContainer.className = "w-[82px] h-[82px] rounded-full overflow-hidden flex-shrink-0 bg-gray-600 flex items-center justify-center";
+        
+        if (customer.photo) {
+            const img = document.createElement("img");
+            img.src = customer.photo;
+            img.alt = customer.name;
+            img.className = "w-full h-full object-cover scale-125";
+            photoContainer.appendChild(img);
+        } else {
+            // Default avatar with initials
+            const initials = document.createElement("span");
+            initials.textContent = customer.name ? customer.name.charAt(0).toUpperCase() : "?";
+            initials.className = "text-white font-semibold text-sm";
+            photoContainer.appendChild(initials);
+        }
 
         const info = document.createElement("div");
         info.className = "flex flex-col space-y-1";
+        
         const name = document.createElement("a");
-        name.textContent = customer.name;
+        name.textContent = customer.name || "Unknown Customer";
         name.href = "#";
         name.className = "text-2xl text-blue-400 font-semibold hover:underline";
+        
         const tag = document.createElement("span");
-        tag.textContent = customer.role;
-        tag.className = `text-xs font-medium ${getTagColor(customer.role)} text-white px-2 py-1 rounded-full w-max`;
+        tag.textContent = customer.role || customer.type || "Customer";
+        tag.className = `text-xs font-medium ${getTagColor(customer.role || customer.type || "customer")} text-white px-2 py-1 rounded-full w-max`;
+        
         info.appendChild(name);
         info.appendChild(tag);
 
@@ -689,8 +714,16 @@ function renderCustomers(customers) {
 // ---------- Contacts ----------
 function renderContacts(contacts) {
     const contactList = document.getElementById("contact-list");
-    hideSkeleton(contactList);
+    if (!contactList) return;
     contactList.innerHTML = '';
+    
+    if (contacts.length === 0) {
+        const emptyState = document.createElement("div");
+        emptyState.className = "text-gray-400 text-sm text-center py-4";
+        emptyState.textContent = "No contacts available";
+        contactList.appendChild(emptyState);
+        return;
+    }
     
     contacts.forEach(contact => {
         const card = document.createElement("div");
@@ -700,35 +733,40 @@ function renderContacts(contacts) {
         info.className = "flex flex-col space-y-2";
 
         const nameTagRow = document.createElement("div");
-        nameTagRow.className = "flex items-center gap-4"; // horizontal row
+        nameTagRow.className = "flex items-center gap-4";
 
         const name = document.createElement("a");
-        name.textContent = contact.name;
+        name.textContent = contact.name || "Unknown Contact";
         name.href = "#";
         name.className = "text-2xl text-blue-400 font-semibold hover:underline";
 
         const tag = document.createElement("span");
-        tag.textContent = contact.role;
-        tag.className = `text-xs font-medium ${getTagColor(contact.role)} text-white px-2 py-1 rounded-full w-max mt-1`;
+        tag.textContent = contact.role || "Contact";
+        tag.className = `text-xs font-medium ${getTagColor(contact.role || "contact")} text-white px-2 py-1 rounded-full w-max mt-1`;
 
         nameTagRow.appendChild(name);
         nameTagRow.appendChild(tag);
 
-        const email = document.createElement("a");
-        email.textContent = contact.email;
-        email.href = `mailto:${contact.email}`;
-        email.className = "text-sm text-gray-400 font-semibold";
-
-        const phone = document.createElement("p");
-        phone.textContent = contact.phone;
-        phone.className = "text-sm text-gray-400 font-semibold";
-
         info.appendChild(nameTagRow);
-        info.appendChild(email);
-        info.appendChild(phone);
+
+        // Only add email if it exists and is not empty
+        if (contact.email && contact.email.trim()) {
+            const email = document.createElement("a");
+            email.textContent = contact.email;
+            email.href = `mailto:${contact.email}`;
+            email.className = "text-sm text-gray-400 font-semibold";
+            info.appendChild(email);
+        }
+
+        // Only add phone if it exists and is not empty
+        if (contact.phone && contact.phone.trim()) {
+            const phone = document.createElement("p");
+            phone.textContent = contact.phone;
+            phone.className = "text-sm text-gray-400 font-semibold";
+            info.appendChild(phone);
+        }
 
         card.appendChild(info);
-
         contactList.appendChild(card);
     });
 }
@@ -736,27 +774,35 @@ function renderContacts(contacts) {
 // ---------- Orders ----------
 function renderOrders(orders) {
     const ordersList = document.getElementById("orders-list");
-    hideSkeleton(ordersList);
+    if (!ordersList) return;
     ordersList.innerHTML = '';
+    
+    if (orders.length === 0) {
+        const emptyState = document.createElement("div");
+        emptyState.className = "text-gray-400 text-sm text-center py-4";
+        emptyState.textContent = "No orders available";
+        ordersList.appendChild(emptyState);
+        return;
+    }
     
     orders.forEach(order => {
         const card = document.createElement("div");
         card.className = "bg-gray-700 rounded-lg p-4 flex flex-col gap-2 border border-gray-400";
 
         const name = document.createElement("p");
-        name.textContent = `Name: ${order.name}`;
+        name.textContent = `Name: ${order.name || "Unnamed Order"}`;
         name.className = "text-lg font-semibold text-white";
 
         const price = document.createElement("p");
-        price.textContent = `Total Price: ${order.totalPrice}`;
+        price.textContent = `Total Price: ${order.totalPrice || "N/A"}`;
         price.className = "text-sm text-gray-400";
 
         const period = document.createElement("p");
-        period.textContent = `Usage Period: ${order.usagePeriod}`;
+        period.textContent = `Usage Period: ${order.usagePeriod || "N/A"}`;
         period.className = "text-sm text-gray-400";
 
         const status = document.createElement("span");
-        status.textContent = order.status;
+        status.textContent = order.status || "Unknown";
         status.className = "text-xs font-medium bg-green-500 text-white px-2 py-1 rounded-full w-max";
 
         card.appendChild(name);
@@ -768,33 +814,4 @@ function renderOrders(orders) {
     });
 }
 
-// ---------- Activities ----------
-function renderActivities(activities) {
-    const activitiesList = document.getElementById("activities-list");
-    hideSkeleton(activitiesList);
-    activitiesList.innerHTML = '';
-    
-    activities.forEach(act => {
-        const card = document.createElement("div");
-        card.className = "bg-gray-700 rounded-lg p-4 flex flex-col gap-1 border border-gray-400";
-
-        const heading = document.createElement("p");
-        heading.textContent = act.heading;
-        heading.className = "text-lg font-semibold text-white";
-
-        const subtext = document.createElement("p");
-        subtext.textContent = act.subtext;
-        subtext.className = "text-sm text-gray-400";
-
-        const date = document.createElement("p");
-        date.textContent = act.date;
-        date.className = "text-xs text-gray-400";
-
-        card.appendChild(heading);
-        card.appendChild(subtext);
-        card.appendChild(date);
-
-        activitiesList.appendChild(card);
-    });
-}
 

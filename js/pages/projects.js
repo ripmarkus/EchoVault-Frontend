@@ -78,78 +78,45 @@ function renderProjects(projects) {
 
   projects.forEach((project) => {
     const row = document.createElement("tr");
-    row.className = "border-b border-gray-700 hover:bg-gray-700/60 transition-colors";
+    row.className = "border-b border-gray-700 hover:bg-gray-700/60 transition-colors cursor-pointer";
+    
+    // Make entire row clickable to navigate to project detail
+    row.addEventListener("click", (e) => {
+      // Don't navigate if clicking on buttons or checkboxes
+      if (e.target.closest('button') || e.target.closest('input[type="checkbox"]')) {
+        return;
+      }
+      window.location.href = `project.html?id=${project.id}`;
+    });
 
     // Format dates
     const startDate = project.startDate ? new Date(project.startDate).toLocaleDateString() : "-";
     const endDate = project.endDate ? new Date(project.endDate).toLocaleDateString() : "-";
+    const usageStartDate = project.usageStartDate ? new Date(project.usageStartDate).toLocaleDateString() : "-";
+    const usageEndDate = project.usageEndDate ? new Date(project.usageEndDate).toLocaleDateString() : "-";
 
     // Status styling
     const statusClass = getStatusClass(project.status);
 
+    // Match table headers: ID, Name, Customer, Contact Person, Status, Rental Start Date, Rental End Date, Usage Start Date, Usage End Date
     row.innerHTML = `
-      <td class="p-7">
-        <input type="checkbox" value="${project.id}" />
-      </td>
-      <td class="p-7 text-left">
+      <td class="p-4 text-left font-medium">${project.id}</td>
+      <td class="p-4 text-left">${project.name || `Project ${project.id}`}</td>
+      <td class="p-4 text-left">${project.customer?.name || "-"}</td>
+      <td class="p-4 text-left">${project.customer?.contactPerson || project.contactPerson || "-"}</td>
+      <td class="p-4 text-left">
         <span class="px-2 py-1 text-xs rounded-full ${statusClass}">
           ${project.status || "UNKNOWN"}
         </span>
       </td>
-      <td class="p-7 text-left font-medium">${project.id}</td>
-      <td class="p-7 text-left">${project.customer?.name || "-"}</td>
-      <td class="p-7 text-left">
-        <div class="flex gap-2">
-          <button
-            class="view-project px-3 py-1 text-xs rounded bg-[#55A5F8] hover:bg-[#3F8CE0] text-white"
-            data-project-id="${project.id}"
-          >
-            View
-          </button>
-          <button
-            class="edit-project px-3 py-1 text-xs rounded bg-gray-700 hover:bg-gray-600 text-white"
-            data-project-id="${project.id}"
-          >
-            Edit
-          </button>
-          <button
-            class="delete-project px-3 py-1 text-xs rounded bg-red-600 hover:bg-red-500 text-white"
-            data-project-id="${project.id}"
-          >
-            Delete
-          </button>
-        </div>
-      </td>
-      <td class="p-7 text-left">${startDate}</td>
-      <td class="p-7 text-left">${endDate}</td>
+      <td class="p-4 text-left">${startDate}</td>
+      <td class="p-4 text-left">${endDate}</td>
+      <td class="p-4 text-left">${usageStartDate}</td>
+      <td class="p-4 text-left">${usageEndDate}</td>
     `;
 
     tableBody.appendChild(row);
   });
-
-  // Event delegation for buttons
-  tableBody.onclick = (e) => {
-    const viewBtn = e.target.closest(".view-project");
-    if (viewBtn) {
-      const id = viewBtn.dataset.projectId;
-      openProjectModal(id);
-      return;
-    }
-
-    const editBtn = e.target.closest(".edit-project");
-    if (editBtn) {
-      const id = editBtn.dataset.projectId;
-      openProjectFormModalForEdit(id);
-      return;
-    }
-
-    const deleteBtn = e.target.closest(".delete-project");
-    if (deleteBtn) {
-      const id = deleteBtn.dataset.projectId;
-      handleDeleteProject(id);
-      return;
-    }
-  };
 }
 
 // Get CSS class for project status
@@ -165,44 +132,6 @@ function getStatusClass(status) {
       return "bg-red-500 text-white";
     default:
       return "bg-gray-500 text-white";
-  }
-}
-
-// Open project details modal
-async function openProjectModal(id) {
-  const modal = document.getElementById("project-modal");
-  const titleEl = document.getElementById("project-modal-title");
-  const contentEl = document.getElementById("project-modal-content");
-
-  try {
-    const resp = await fetch(`${API_BASE}/${id}`);
-    if (!resp.ok) {
-      throw new Error(`HTTP ${resp.status}`);
-    }
-    const data = await resp.json();
-
-    titleEl.textContent = `Project: ${data.id}`;
-
-    const startDate = data.startDate ? new Date(data.startDate).toLocaleDateString() : "-";
-    const endDate = data.endDate ? new Date(data.endDate).toLocaleDateString() : "-";
-
-    contentEl.innerHTML = `
-      <div><span class="font-semibold">ID:</span> ${data.id}</div>
-      <div><span class="font-semibold">Customer:</span> ${data.customer?.name || data.customerId || "-"}</div>
-      <div><span class="font-semibold">Status:</span> ${data.status || "UNKNOWN"}</div>
-      <div><span class="font-semibold">Start Date:</span> ${startDate}</div>
-      <div><span class="font-semibold">End Date:</span> ${endDate}</div>
-      <div><span class="font-semibold">Created at:</span> ${data.createdAt || "-"}</div>
-    `;
-
-    modal.classList.remove("hidden");
-    modal.classList.add("flex");
-  } catch (err) {
-    console.error("Error loading project details:", err);
-    titleEl.textContent = "Error";
-    contentEl.innerHTML = `<div class="text-red-300 text-sm">Could not load project details.</div>`;
-    modal.classList.remove("hidden");
-    modal.classList.add("flex");
   }
 }
 
@@ -383,8 +312,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // Get DOM elements
   const searchBtn = document.getElementById("search-btn");
   const searchInput = document.getElementById("search-input");
-  const viewModal = document.getElementById("project-modal");
-  const viewModalClose = document.getElementById("project-modal-close");
   const filterBtn = document.getElementById("manage-status-btn");
   const filterModal = document.getElementById("status-form-modal");
   const filterModalClose = document.getElementById("status-form-close");
@@ -401,21 +328,6 @@ document.addEventListener("DOMContentLoaded", () => {
     searchInput.addEventListener("keypress", (e) => {
       if (e.key === "Enter") {
         loadProjectSearch(searchInput.value.trim());
-      }
-    });
-  }
-
-  // View modal close
-  if (viewModal && viewModalClose) {
-    viewModalClose.addEventListener("click", () => {
-      viewModal.classList.add("hidden");
-      viewModal.classList.remove("flex");
-    });
-
-    viewModal.addEventListener("click", (e) => {
-      if (e.target === viewModal) {
-        viewModal.classList.add("hidden");
-        viewModal.classList.remove("flex");
       }
     });
   }
@@ -450,10 +362,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // ESC key closes modals
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
-      if (viewModal && !viewModal.classList.contains("hidden")) {
-        viewModal.classList.add("hidden");
-        viewModal.classList.remove("flex");
-      }
       if (filterModal && !filterModal.classList.contains("hidden")) {
         closeFilterModal();
       }
