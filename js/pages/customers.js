@@ -68,25 +68,19 @@ function renderCustomers(customers) {
       <td class="text-left">${parentAddress}</td>
       <td class="text-left">
         <div class="flex gap-2">
-          <button
-            class="view-customer px-3 py-1 text-xs rounded bg-[#55A5F8] hover:bg-[#3F8CE0] text-white"
-            data-customer-id="${parent.id}"
-          >
-            View
-          </button>
-          <button
-            class="edit-customer px-3 py-1 text-xs rounded bg-gray-700 hover:bg-gray-600 text-white"
-            data-customer-id="${parent.id}"
-          >
-            Edit
-          </button>
+          <a
+  href="customer-profile.html?id=cust-${parent.id}"
+  class="px-3 py-1 text-xs rounded bg-[#55A5F8] hover:bg-[#3F8CE0] text-white"
+>
+  View
+</a>
 
-              <button
-      class="delete-customer px-3 py-1 text-xs rounded bg-red-600 hover:bg-red-500 text-white"
-      data-customer-id="${parent.id}"
-    >
-      Delete
-    </button>  
+<button
+  class="delete-customer px-3 py-1 text-xs rounded bg-red-600 hover:bg-red-500 text-white"
+  data-customer-id="${parent.id}"
+>
+  Delete
+</button>
           </div>
       </td>
     `;
