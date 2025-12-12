@@ -1,240 +1,235 @@
 <!DOCTYPE html>
 <html lang="en" class="h-full dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventory</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-        }
-    </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inventory</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: "class" };
+  </script>
 </head>
+
 <body class="h-full bg-[#181818] text-white">
 
 <div class="flex max-h-screen bg-[#181818]">
-    <div id="sidebar-container" class="flex-shrink-0"></div>
+  <div id="sidebar-container" class="flex-shrink-0"></div>
 
-    <!-- Main Content -->
-    <main class="flex-1 pt-8 pb-12 outline outline-2 outline-gray-400 rounded-2xl m-6 bg-[#121212]">
+  <!-- Main Content -->
+  <main class="flex-1 pt-8 pb-12 outline outline-2 outline-gray-400 rounded-2xl m-6 bg-[#121212]">
+    <section class="w-full px-6 md:px-8 space-y-8 mt-2">
 
-        <!-- Inventory Section -->
-        <section class="w-full px-6 md:px-8 space-y-8 mt-2">
+      <!-- Header -->
+      <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p class="text-sm uppercase tracking-wide text-gray-400">Overview</p>
+          <h1 class="text-6xl font-bold text-white">Inventory</h1>
+        </div>
+        <button id="create-equipment-btn"
+                class="px-4 py-2 rounded-lg bg-[#55A5F8] text-white font-semibold hover:bg-[#3F8CE0] transition">
+          + Add equipment
+        </button>
+      </div>
 
-            <!-- Header -->
-            <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                <div>
-                    <p class="text-sm uppercase tracking-wide text-gray-400">Overview</p>
-                    <h1 class="text-6xl font-bold text-white">Inventory</h1>
-                </div>
-                <button id="create-equipment-btn"
-                        class="px-4 py-2 rounded-lg bg-[#55A5F8] text-white font-semibold hover:bg-[#3F8CE0] transition">
-                    + Add equipment
-                </button>
-            </div>
+      <!-- Search -->
+      <div class="flex gap-3 items-center">
+        <input id="search-input" type="text" placeholder="Search by name, category, or ID"
+               class="flex-1 px-4 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <button id="search-btn"
+                class="px-4 py-2 rounded bg-gray-700 text-gray-200 hover:bg-gray-600">
+          Search
+        </button>
+        <button id="search-clear-btn"
+                class="px-4 py-2 rounded bg-gray-800 text-gray-200 hover:bg-gray-700">
+          Clear
+        </button>
+      </div>
 
-            <!-- Statistics Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="bg-gray-900 rounded-2xl p-5 border border-gray-800">
-                    <p class="text-sm text-gray-400">Repairs Needed</p>
-                    <p id="inventory-repairs-needed" class="text-3xl font-semibold text-white mt-2">-</p>
-                </div>
+      <!-- Statistics Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-gray-900 rounded-2xl p-5 border border-gray-800">
+          <p class="text-sm text-gray-400">Repairs Needed</p>
+          <p id="inventory-repairs-needed" class="text-3xl font-semibold text-white mt-2">-</p>
+        </div>
 
-                <div class="bg-gray-900 rounded-2xl p-5 border border-gray-800">
-                    <p class="text-sm text-gray-400">Shortages</p>
-                    <p id="inventory-shortages" class="text-3xl font-semibold text-white mt-2">-</p>
-                </div>
+        <div class="bg-gray-900 rounded-2xl p-5 border border-gray-800">
+          <p class="text-sm text-gray-400">Shortages</p>
+          <p id="inventory-shortages" class="text-3xl font-semibold text-white mt-2">-</p>
+        </div>
 
-                <div id="equipment-modal"
-                     class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 backdrop-blur-sm">
+        <div class="bg-gray-900 rounded-2xl p-5 border border-gray-800">
+          <p class="text-sm text-gray-400">Total Items</p>
+          <p id="inventory-total" class="text-3xl font-semibold text-white mt-2">-</p>
+        </div>
+      </div>
 
-                    <div class="bg-[#1a1a1a] rounded-3xl w-[95%] sm:w-[90%] md:w-[80%] lg:w-[70%] max-w-4xl shadow-2xl overflow-hidden transform transition-all text-lg max-h-[90vh] overflow-y-auto">
+      <!-- Table -->
+      <div class="overflow-x-auto rounded-xl shadow-lg">
+        <table id="equipment-table" class="min-w-full bg-gray-800 text-left text-white">
+          <thead class="bg-gray-700">
+          <tr>
+            <th class="px-6 py-3">Select</th>
+            <th class="px-6 py-3">ID</th>
+            <th class="px-6 py-3">Name</th>
+            <th class="px-6 py-3">Quantity</th>
+            <th class="px-6 py-3">Rental Price</th>
+            <th class="px-6 py-3">Category</th>
+            <th class="px-6 py-3">Actions</th>
+          </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
 
-                        <!-- IMAGE HEADER -->
-                        <div class="relative w-full h-[500px] bg-gray-800">
-                            <img id="equipment-modal-image"
-                                 class="w-full h-full object-contain opacity-100 p-6"
-                                 src=""
-                                 alt="Equipment Image">
+    </section>
+  </main>
+</div>
 
-                            <div class="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] to-transparent opacity-80"></div>
+<!-- DETAILS MODAL -->
+<div id="equipment-modal"
+     class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm">
+  <div class="bg-[#1a1a1a] rounded-3xl w-[95%] sm:w-[90%] md:w-[80%] lg:w-[70%] max-w-4xl shadow-2xl overflow-hidden text-lg max-h-[90vh] overflow-y-auto">
 
-                            <button id="equipment-modal-close"
-                                    class="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/40 hover:bg-black/60
-                    flex items-center justify-center text-gray-300 text-xl backdrop-blur">
-                                ✕
-                            </button>
+    <!-- IMAGE HEADER -->
+    <div class="relative w-full h-[500px] bg-gray-800">
+      <img id="equipment-modal-image"
+           class="w-full h-full object-contain opacity-100 p-6"
+           src=""
+           alt="Equipment Image" />
 
-                            <h3 id="equipment-modal-title"
-                                class="absolute bottom-6 left-8 text-3xl font-bold text-white drop-shadow-lg">
-                            </h3>
-                        </div>
+      <div class="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] to-transparent opacity-80"></div>
 
-                        <!-- CONTENT -->
-                        <div class="p-8 space-y-8">
+      <button id="equipment-modal-close"
+              class="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/40 hover:bg-black/60
+                     flex items-center justify-center text-gray-300 text-xl backdrop-blur">
+        ✕
+      </button>
 
-                            <!-- DETAILS -->
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-10 text-gray-300 text-lg">
+      <h3 id="equipment-modal-title"
+          class="absolute bottom-6 left-8 text-3xl font-bold text-white drop-shadow-lg"></h3>
+    </div>
 
-                                <div id="equipment-modal-details"
-                                     class="space-y-3">
-                                </div>
+    <!-- CONTENT -->
+    <div class="p-8 space-y-8">
 
-                                <div>
-                                    <h4 class="text-xl font-semibold text-white mb-2">Description</h4>
-                                    <p id="equipment-modal-description" class="text-gray-300 leading-relaxed">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-10 text-gray-300 text-lg">
+        <div id="equipment-modal-details" class="space-y-3"></div>
 
-                                    </p>
-                                </div>
-                            </div>
+        <div>
+          <h4 class="text-xl font-semibold text-white mb-2">Description</h4>
+          <p id="equipment-modal-description" class="text-gray-300 leading-relaxed"></p>
+        </div>
+      </div>
 
+      <hr class="border-gray-700"/>
 
-                            <hr class="border-gray-700"/>
+      <!-- ADD PIECE -->
+      <div class="space-y-4">
+        <button id="show-add-piece"
+                class="px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold transition">
+          + Add Piece
+        </button>
 
-                            <!-- ADD PIECE -->
-                            <div class="space-y-4">
-                                <button id="show-add-piece"
-                                        class="px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold transition">
-                                    + Add Piece
-                                </button>
+        <div id="add-piece-container" class="hidden flex gap-3">
+          <input id="new-piece-serial" type="text" placeholder="Serial number"
+                 class="flex-1 px-4 py-3 rounded-xl bg-gray-800 text-white
+                        focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg" />
+          <button id="add-piece-btn"
+                  class="px-5 py-3 rounded-xl bg-green-600 hover:bg-green-500 text-white font-semibold">
+            Save
+          </button>
+        </div>
+      </div>
 
-                                <div id="add-piece-container" class="hidden flex gap-3">
-                                    <input id="new-piece-serial" type="text" placeholder="Serial number"
-                                           class="flex-1 px-4 py-3 rounded-xl bg-gray-800 text-white
-                                  focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg">
-                                    <button id="add-piece-btn"
-                                            class="px-5 py-3 rounded-xl bg-green-600 hover:bg-green-500 text-white font-semibold">
-                                        Save
-                                    </button>
-                                </div>
-                            </div>
+      <hr class="border-gray-700"/>
 
-                            <hr class="border-gray-700"/>
+      <!-- PIECES LIST -->
+      <div>
+        <h4 class="text-2xl font-semibold text-white mb-3">Serial Numbers</h4>
+        <ul id="equipment-quantity-list"
+            class="space-y-3 max-h-64 overflow-y-auto pr-1 text-lg"></ul>
+      </div>
 
-                            <!-- PIECES LIST -->
-                            <div>
-                                <h4 class="text-2xl font-semibold text-white mb-3">Serial Numbers</h4>
+    </div>
+  </div>
+</div>
 
-                                <ul id="equipment-quantity-list"
-                                    class="space-y-3 max-h-64 overflow-y-auto pr-1 text-lg">
-                                </ul>
-                            </div>
+<!-- CREATE/UPDATE MODAL -->
+<div id="equipment-form-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60">
+  <div class="bg-gray-900 rounded-2xl shadow-xl w-full max-w-xl p-6">
+    <div class="flex items-center justify-between mb-4">
+      <h3 id="equipment-form-title" class="text-xl font-semibold text-white">New equipment</h3>
+      <button id="equipment-form-close"
+              class="w-8 h-8 flex items-center justify-center rounded bg-gray-800 hover:bg-gray-700 text-gray-300">
+        ✕
+      </button>
+    </div>
 
-                        </div>
-                    </div>
-                </div>
+    <form id="equipment-form" class="space-y-4">
+      <input type="hidden" id="equipment-form-mode" value="create" />
+      <input type="hidden" id="equipment-id" />
 
-                            <div id="equipment-modal-details" class="space-y-2 text-sm text-gray-200 mb-4"></div>
+      <div class="grid grid-cols-1 gap-4">
+        <div>
+          <label class="block text-sm text-gray-300 mb-1">Name</label>
+          <input id="form-name" type="text" required
+                 class="w-full px-3 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
 
-                            <div class="flex gap-2 w-full items-center mb-2">
-                                <input id="new-piece-serial" type="text" placeholder="Serial number"
-                                       class="flex-1 px-3 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-                                <button id="add-piece-btn"
-                                        class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-500">
-                                    Add Piece
-                                </button>
-                            </div>
+        <div>
+          <label class="block text-sm text-gray-300 mb-1">Category</label>
+          <input id="form-category" type="text"
+                 class="w-full px-3 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
 
-                            <ul id="equipment-quantity-list"
-                                class="w-full text-gray-200 text-sm space-y-1 max-h-40 overflow-y-auto"></ul>
-                        </div>
-                    </div>
+        <div>
+          <label class="block text-sm text-gray-300 mb-1">Description</label>
+          <input id="form-description" type="text"
+                 class="w-full px-3 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
 
-                    <!-- Create/Update Modal -->
-                    <div id="equipment-form-modal"
-                         class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60">
-                        <div class="bg-gray-900 rounded-2xl shadow-xl w-full max-w-xl p-6">
-                            <div class="flex items-center justify-between mb-4">
-                                <h3 id="equipment-form-title" class="text-xl font-semibold text-white">New equipment</h3>
-                                <button id="equipment-form-close"
-                                        class="w-8 h-8 flex items-center justify-center rounded bg-gray-800 hover:bg-gray-700 text-gray-300">
-                                    ✕
-                                </button>
-                            </div>
+        <div>
+          <label class="block text-sm text-gray-300 mb-1">Price Per Day</label>
+          <input id="form-priceperday" type="text"
+                 class="w-full px-3 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
 
-                            <form id="equipment-form" class="space-y-4">
-                                <input type="hidden" id="equipment-form-mode" value="create"/>
-                                <input type="hidden" id="equipment-id"/>
+        <div>
+          <label class="block text-sm text-gray-300 mb-1">Retail Price</label>
+          <input id="form-retailprice" type="text"
+                 class="w-full px-3 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
 
-                            <div class="grid grid-cols-1 gap-4">
-                                <div>
-                                    <label class="block text-sm text-gray-300 mb-1">Name</label>
-                                    <input id="form-name" type="text"
-                                           class="w-full px-3 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                           required>
-                                </div>
-                                <div>
-                                    <label class="block text-sm text-gray-300 mb-1">Category</label>
-                                    <input id="form-category" type="text"
-                                           class="w-full px-3 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                </div>
-                                <div>
-                                    <label class="block text-sm text-gray-300 mb-1">Description</label>
-                                    <input id="form-description" type="text"
-                                           class="w-full px-3 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                </div>
-                                <div>
-                                    <label class="block text-sm text-gray-300 mb-1">Price Per Day</label>
-                                    <input id="form-priceperday" type="text"
-                                           class="w-full px-3 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                </div>
-                                <div>
-                                    <label class="block text-sm text-gray-300 mb-1">Retail Price</label>
-                                    <input id="form-retailprice" type="text"
-                                           class="w-full px-3 jpy-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                </div>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label class="block text-sm text-gray-300 mb-1">Image-URL</label>
-                                        <input id="form-imageURL" type="text"
-                                               class="w-full px-3 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    </div>
-                                </div>
+        <div>
+          <label class="block text-sm text-gray-300 mb-1">Image-URL</label>
+          <input id="form-imageURL" type="text"
+                 class="w-full px-3 py-2 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
 
-                                <div class="flex justify-end gap-3 pt-4">
-                                    <button type="button" id="equipment-form-cancel"
-                                            class="px-4 py-2 rounded bg-gray-700 text-gray-200 hover:bg-gray-600">
-                                        Cancel
-                                    </button>
-                                    <button type="submit"
-                                            class="px-4 py-2 rounded bg-[#55A5F8] text-white font-semibold hover:bg-[#3F8CE0]">
-                                        Save
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-                <div class="overflow-x-auto rounded-xl shadow-lg">
-                    <table class="min-w-full bg-gray-800 text-left text-white">
-                        <thead class="bg-gray-700">
-                        <tr>
-                            <th class="px-6 py-3">Select</th>
-                            <th class="px-6 py-3">ID</th>
-                            <th class="px-6 py-3">Name</th>
-                            <th class="px-6 py-3">Quantity</th>
-                            <th class="px-6 py-3">Rental Price</th>
-                            <th class="px-6 py-3">Category</th>
-                            <th class="px-6 py-3">Actions</th>
-                        </tr>
-                        </thead>
-                    </table>
-                </div>
-            </div>
-        </section>
-    </main>
+        <div class="flex justify-end gap-3 pt-4">
+          <button type="button" id="equipment-form-cancel"
+                  class="px-4 py-2 rounded bg-gray-700 text-gray-200 hover:bg-gray-600">
+            Cancel
+          </button>
+          <button type="submit"
+                  class="px-4 py-2 rounded bg-[#55A5F8] text-white font-semibold hover:bg-[#3F8CE0]">
+            Save
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
 
 <script src="../js/main.js"></script>
 <script src="../js/pages/equipment.js" type="module"></script>
 
 <script type="module">
-    import { loadSidebar } from '/js/navigation/sidebar.js';
-
-    document.addEventListener("DOMContentLoaded", () => {
-        loadSidebar('sidebar-container');
-    });
+  import { loadSidebar } from "/js/navigation/sidebar.js";
+  document.addEventListener("DOMContentLoaded", () => {
+    loadSidebar("sidebar-container");
+  });
 </script>
 
 </body>
