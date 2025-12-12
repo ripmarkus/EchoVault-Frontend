@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="AutoImportSettings">
-    <option name="autoReloadType" value="SELECTIVE" />
-  </component>
   <component name="ChangeListManager">
-    <list default="true" id="9d09b0c5-26ea-494d-8c31-0edd2f879a97" name="Changes" comment="">
+    <list default="true" id="a2092ff4-972e-4c1b-bb61-a48615663264" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/html/customer-profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/html/customer-profile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/html/customers.html" beforeDir="false" afterPath="$PROJECT_DIR$/html/customers.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/html/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/html/home.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/html/inventory.html" beforeDir="false" afterPath="$PROJECT_DIR$/html/inventory.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/pages/equipment.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/pages/equipment.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/html/project-list.html" beforeDir="false" afterPath="$PROJECT_DIR$/html/project-list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/html/project.html" beforeDir="false" afterPath="$PROJECT_DIR$/html/project.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/login/login.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/login/login.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/navigation/sidebar.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/navigation/sidebar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/pages/project.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/pages/project.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/pages/projects.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/pages/projects.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,48 +22,57 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo">{
-  &quot;customColor&quot;: &quot;&quot;,
-  &quot;associatedIndex&quot;: 3
-}</component>
-  <component name="ProjectId" id="36bMwI06AjpwFc6t6dJZ6b9gAZ6" />
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/js/pages/projects.js" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 2
+}]]></component>
+  <component name="ProjectId" id="36hC7Jht9VKgrfPsQBljM3vkIkC" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
+    <option name="sortByType" value="true" />
+    <option name="sortKey" value="BY_TYPE" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;searchfunction&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "git-widget-placeholder": "feat/project-list-view",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/home/vss/Dropbox/Skole/KEA/Datamatiker/Semester 3/Java/EchoVault-Frontend/html",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/html" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-28b599e66164-intellij.indexing.shared.core-IU-242.22855.74" />
-        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-IU-242.22855.74" />
+        <option value="bundled-jdk-30f59d01ecdd-cffe25b9f5b3-intellij.indexing.shared.core-IU-253.28294.334" />
+        <option value="bundled-js-predefined-d6986cc7102b-c7e53b3be11b-JavaScript-IU-253.28294.334" />
       </set>
     </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="9d09b0c5-26ea-494d-8c31-0edd2f879a97" name="Changes" comment="" />
-      <created>1765271060258</created>
+      <changelist id="a2092ff4-972e-4c1b-bb61-a48615663264" name="Changes" comment="" />
+      <created>1765449248444</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1765271060258</updated>
-      <workItem from="1765271068954" duration="710000" />
-      <workItem from="1765272205448" duration="7061000" />
+      <updated>1765449248444</updated>
+      <workItem from="1765449249811" duration="18973000" />
     </task>
     <servers />
   </component>

@@ -16,10 +16,10 @@ const navbarHTML = `
             </div>
             <div class="flex items-center space-x-8">
                 <a href="#" class="text-blue-400 hover:font-bold transition-all">Calendar</a>
-                <button id="add-project-btn"
+                <a href="../html/create-new-project.html" id="add-project-btn"
                         class="px-6 py-3 rounded-lg font-semibold bg-[#55A5F8] text-white hover:bg-[#3F8CE0] focus:outline-none focus:ring-2 focus:ring-[#55A5F8] focus:ring-offset-gray-900 transition-all duration-200">
                     New Project
-                </button>
+                </a>
             </div>
         </div>
     </div>

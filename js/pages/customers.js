@@ -47,7 +47,7 @@ function renderCustomers(customers) {
     parentRow.dataset.rowId = parent.id;
 
     parentRow.innerHTML = `
-      <td class="p-7">
+      <td class="p-4">
         <div class="flex items-center gap-2">
           ${
             hasChildren
@@ -62,11 +62,11 @@ function renderCustomers(customers) {
           <input type="checkbox" value="${parent.id}" />
         </div>
       </td>
-      <td class="p-7 text-left font-medium">${parent.id}</td>
-      <td class="p-7 text-left">${parent.name}</td>
-      <td class="p-7 text-left">${parent.cvr ?? ""}</td>
-      <td class="p-7 text-left">${parentAddress}</td>
-      <td class="p-7 text-left">
+      <td class="text-left font-medium">${parent.id}</td>
+      <td class="text-left">${parent.name}</td>
+      <td class="text-left">${parent.cvr ?? ""}</td>
+      <td class="text-left">${parentAddress}</td>
+      <td class="text-left">
         <div class="flex gap-2">
           <a
   href="customer-profile.html?id=cust-${parent.id}"

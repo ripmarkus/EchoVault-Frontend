@@ -1,43 +1,49 @@
 // Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
-    // Button interactions
+    // Button interactions - only if elements exist
     const primaryBtn = document.getElementById('primary-btn');
     const secondaryBtn = document.getElementById('secondary-btn');
     
-    primaryBtn.addEventListener('click', () => {
-        showNotification('Getting started with EchoVault!', 'success');
-    });
+    if (primaryBtn) {
+        primaryBtn.addEventListener('click', () => {
+            showNotification('Getting started with EchoVault!', 'success');
+        });
+    }
     
-    secondaryBtn.addEventListener('click', () => {
-        showNotification('Learn more about our features', 'info');
-    });
+    if (secondaryBtn) {
+        secondaryBtn.addEventListener('click', () => {
+            showNotification('Learn more about our features', 'info');
+        });
+    }
     
-    // Demo functionality
+    // Demo functionality - only if elements exist
     const demoInput = document.getElementById('demo-input');
     const demoBtn = document.getElementById('demo-btn');
     const demoList = document.getElementById('demo-list');
     
-    demoBtn.addEventListener('click', addItem);
-    demoInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') addItem();
-    });
-    
-    function addItem() {
-        const value = demoInput.value.trim();
-        if (!value) return;
+    if (demoBtn && demoInput && demoList) {
+        demoBtn.addEventListener('click', addItem);
+        demoInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addItem();
+        });
         
-        const item = document.createElement('div');
-        item.className = 'list-item';
-        item.innerHTML = `
-            <span class="text-white">${escapeHtml(value)}</span>
-            <button class="text-red-500 hover:text-red-700 transition-colors" onclick="removeItem(this)">
-                Remove
-            </button>
-        `;
-        
-        demoList.appendChild(item);
-        demoInput.value = '';
-        showNotification('Item added successfully!', 'success');
+        function addItem() {
+            const value = demoInput.value.trim();
+            if (!value) return;
+            
+            const item = document.createElement('div');
+            item.className = 'list-item';
+            item.innerHTML = `
+                <span class="text-white">${escapeHtml(value)}</span>
+                <button class="text-red-500 hover:text-red-700 transition-colors" onclick="removeItem(this)">
+                    Remove
+                </button>
+            `;
+            
+            demoList.appendChild(item);
+            demoInput.value = '';
+            showNotification('Item added successfully!', 'success');
+        }
     }
     
     // Global function for removing items

@@ -3,182 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EchoVault – Customer Profile</title>
+    <title>Customer Profile</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { darkMode: "class" };
+        tailwind.config = {
+            darkMode: "class",
+            theme: { extend: { fontFamily: { sans: ["Inter", "sans-serif"] }}}
+        }
     </script>
 </head>
 
-<body class="h-full bg-[#121212] text-white">
-
-<!-- Navbar -->
-<div id="navbar-container"></div>
-
-<div class="flex max-h-screen bg-[#121212]">
+<body class="h-full bg-[#181818] text-white">
+<div class="flex max-h-screen bg-[#181818]">
     <!-- Sidebar -->
     <div id="sidebar-container" class="flex-shrink-0"></div>
 
     <!-- MAIN CONTENT -->
-    <main class="flex-1 pt-2 pb-20">
-        <section class="px-8 w-full">
+    <main class="flex-1 flex flex-col ml-6 mr-6 mt-6 mb-4">
+        <div class="flex-1 bg-[#121212] rounded-2xl outline outline-2 outline-gray-400 overflow-hidden flex flex-col">
 
-            <!-- PAGE TITLE -->
-            <div class="flex items-center justify-between mb-10">
-                <h1 id="customer-name-title" class="text-4xl font-bold"></h1>
-            </div>
+            <section class="flex-1 overflow-y-auto px-8 pt-8 pb-6">
 
-            <!-- ========================================================= -->
-            <!--  TOP GRID: DETAILS + CONTACTS                            -->
-            <!-- ========================================================= -->
-            <div class="grid grid-cols-1 xl:grid-cols-3 gap-3 mb-3">
+                <!-- PAGE TITLE -->
+                <div class="mb-8">
+                    <h1 id="customer-name-title" class="text-4xl font-bold"></h1>
+                </div>
 
-                <!-- DETAILS (left 2/3) -->
-                <div class="col-span-2 bg-gray-900 rounded-2xl border border-gray-700 p-6">
-                    <h2 class="text-2xl font-semibold mb-4">Details</h2>
+                <!-- TOP GRID -->
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-5 mb-5">
 
-                    <div class="grid grid-cols-2 gap-y-6 text-gray-300">
-
-                        <!-- NAME -->
-                        <div class="flex items-start justify-between group">
-                            <div>
-                                <p class="text-sm text-blue-300 underline">Name</p>
-                                <p id="detail-name" class="text-lg font-medium"></p>
+                    <!-- DETAILS -->
+                    <div class="xl:col-span-2 bg-gray-800 rounded-xl border border-gray-700 p-5">
+                        <h2 class="text-xl font-semibold mb-4">Details</h2>
+                        <div class="grid grid-cols-2 gap-x-8 gap-y-4 text-gray-300 text-sm">
+                            <div class="flex justify-between group">
+                                <div>
+                                    <p class="text-blue-300 underline text-xs">Name</p>
+                                    <p id="detail-name" class="font-medium mt-0.5"></p>
+                                </div>
+                                <button class="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-white text-lg"
+                                        data-edit-field="name">Edit</button>
                             </div>
-                            <button class="opacity-0 group-hover:opacity-100 transition text-gray-400 hover:text-white"
-                                    data-edit-field="name">✏️</button>
-                        </div>
-
-                        <!-- ADDRESS -->
-                        <div class="flex items-start justify-between group">
-                            <div>
-                                <p class="text-sm text-blue-300 underline">Address</p>
-                                <p id="detail-address"></p>
+                            <div class="flex justify-between group">
+                                <div>
+                                    <p class="text-blue-300 underline text-xs">Address</p>
+                                    <p id="detail-address" class="mt-0.5"></p>
+                                </div>
+                                <button class="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-white text-lg"
+                                        data-edit-field="addressLine">Edit</button>
                             </div>
-                            <button class="opacity-0 group-hover:opacity-100 transition text-gray-400 hover:text-white"
-                                    data-edit-field="addressLine">✏️</button>
-                        </div>
-
-                        <!-- CVR -->
-                        <div class="flex items-start justify-between group">
-                            <div>
-                                <p class="text-sm text-blue-300 underline">CVR</p>
-                                <p id="detail-cvr"></p>
+                            <div class="flex justify-between group">
+                                <div>
+                                    <p class="text-blue-300 underline text-xs">CVR</p>
+                                    <p id="detail-cvr" class="mt-0.5"></p>
+                                </div>
+                                <button class="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-white text-lg"
+                                        data-edit-field="cvr">Edit</button>
                             </div>
-                            <button class="opacity-0 group-hover:opacity-100 transition text-gray-400 hover:text-white"
-                                    data-edit-field="cvr">✏️</button>
-                        </div>
-
-                        <!-- PHONE -->
-                        <div class="flex items-start justify-between group">
-                            <div>
-                                <p class="text-sm text-blue-300 underline">Phone</p>
-                                <p id="detail-phone"></p>
+                            <div class="flex justify-between group">
+                                <div>
+                                    <p class="text-blue-300 underline text-xs">Phone</p>
+                                    <p id="detail-phone" class="mt-0.5"></p>
+                                </div>
+                                <button class="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-white text-lg"
+                                        data-edit-field="phone">Edit</button>
                             </div>
-                            <button class="opacity-0 group-hover:opacity-100 transition text-gray-400 hover:text-white"
-                                    data-edit-field="phone">✏️</button>
-                        </div>
-
-                        <!-- ZIP -->
-                        <div class="flex items-start justify-between group">
-                            <div>
-                                <p class="text-sm text-blue-300 underline">Zip code</p>
-                                <p id="detail-postalCode"></p>
+                            <div class="flex justify-between group">
+                                <div>
+                                    <p class="text-blue-300 underline text-xs">Zip code</p>
+                                    <p id="detail-postalCode" class="mt-0.5"></p>
+                                </div>
+                                <button class="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-white text-lg"
+                                        data-edit-field="postalCode">Edit</button>
                             </div>
-                            <button class="opacity-0 group-hover:opacity-100 transition text-gray-400 hover:text-white"
-                                    data-edit-field="postalCode">✏️</button>
-                        </div>
-
-                        <!-- EMAIL -->
-                        <div class="flex items-start justify-between group">
-                            <div>
-                                <p class="text-sm text-blue-300 underline">Email</p>
-                                <p id="detail-email"></p>
+                            <div class="flex justify-between group">
+                                <div>
+                                    <p class="text-blue-300 underline text-xs">Email</p>
+                                    <p id="detail-email" class="mt-0.5"></p>
+                                </div>
+                                <button class="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-white text-lg"
+                                        data-edit-field="email">Edit</button>
                             </div>
-                            <button class="opacity-0 group-hover:opacity-100 transition text-gray-400 hover:text-white"
-                                    data-edit-field="email">✏️</button>
                         </div>
+                    </div>
 
+                    <!-- CONTACTS -->
+                    <div class="bg-gray-800 rounded-xl border border-gray-700 p-5">
+                        <div class="flex justify-between items-center mb-3">
+                            <h2 class="text-lg font-semibold">Contacts</h2>
+                            <button class="text-blue-300 text-sm">+ Add</button>
+                        </div>
+                        <div id="contacts-list" class="space-y-2 text-sm text-gray-300"></div>
                     </div>
                 </div>
 
-                <!-- CONTACTS (right 1/3) -->
-                <div class="bg-gray-900 rounded-2xl border border-gray-700 p-6">
-                    <div class="flex justify-between mb-4">
-                        <h2 class="text-xl font-semibold">Contacts</h2>
-                        <button id="open-contact-modal-btn" class="text-blue-300 underline">+ Add</button>
+                <!-- SECOND GRID -->
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-5 mb-5">
+
+                    <!-- INVOICES -->
+                    <div class="xl:col-span-2 bg-gray-800 rounded-xl border border-gray-700 p-5">
+                        <h2 class="text-lg font-semibold mb-3">Invoices</h2>
+                        <div id="invoice-grid" class="grid grid-cols-2 gap-3 max-h-64 overflow-y-auto"></div>
+                        <button class="mt-3 text-blue-300 text-sm underline">See all</button>
                     </div>
-                    <div id="contacts-list" class="space-y-3 text-gray-300"></div>
+
+                    <!-- ARTISTS -->
+                    <div class="bg-gray-800 rounded-xl border border-gray-700 p-5">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-lg font-semibold">Associated Artists</h3>
+                            <button class="text-blue-300 text-sm">+ Add</button>
+                        </div>
+                        <div id="artists-list" class="space-y-3 text-sm"></div>
+                        <button class="text-blue-300 text-sm underline mt-3 block">See all</button>
+                    </div>
                 </div>
 
-            </div>
+                <!-- PERFORMANCE DATA - now fits! -->
+                <div class="bg-gray-800 rounded-xl border border-gray-700 p-5">
+                    <h2 class="text-xl font-semibold mb-5">Performance Data</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
 
-            <!-- ========================================================= -->
-            <!--  SECOND GRID: INVOICES (left 2/3) + ARTISTS (right 1/3)  -->
-            <!-- ========================================================= -->
-            <div class="grid grid-cols-1 xl:grid-cols-3 gap-3 mb-3">
+                        <!-- PIE -->
+                        <div class="bg-gray-700 rounded-lg p-4">
+                            <h3 class="text-blue-300 underline text-sm mb-2">Most Profitable Artists</h3>
+                            <canvas id="artist-pie-chart" height="140"></canvas>
+                        </div>
 
-                <!-- INVOICES (left 2/3, below Details) -->
-                <div class="col-span-2 bg-gray-900 rounded-2xl border border-gray-700 p-6">
-                    <h2 class="text-xl font-semibold mb-4">Invoices</h2>
+                        <!-- METRICS -->
+                        <div class="bg-gray-700 rounded-lg p-4 space-y-4">
+                            <div>
+                                <p class="text-blue-300 underline text-xs">Orders Fulfilled</p>
+                                <p id="metric-orders" class="text-2xl font-bold mt-1">–</p>
+                            </div>
+                            <div>
+                                <p class="text-blue-300 underline text-xs">Avg Turnaround Time</p>
+                                <p id="metric-turnaround" class="text-2xl font-bold mt-1">–</p>
+                            </div>
+                            <div>
+                                <p class="text-blue-300 underline text-xs">Revenue % of Year</p>
+                                <p id="metric-revenue" class="text-2xl font-bold mt-1">–%</p>
+                            </div>
+                        </div>
 
-                    <div id="invoice-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- JS inserts invoices -->
+                        <!-- REVENUE TREND -->
+                        <div class="bg-gray-700 rounded-lg p-4 lg:col-span-2">
+                            <h3 class="text-blue-300 underline text-sm mb-3">Revenue Trend</h3>
+                            <canvas id="revenue-line-chart" height="160"></canvas>
+                        </div>
                     </div>
-
-                    <button class="mt-3 text-blue-300 underline">See all</button>
                 </div>
 
-                <!-- ASSOCIATED ARTISTS (right, under Contacts) -->
-                <div id="artists-section"
-                     class="bg-gray-900 rounded-2xl border border-gray-700 p-6">
-                    <div class="flex justify-between mb-3">
-                        <h3 class="text-xl font-semibold">Associated Artists</h3>
-                        <button class="text-blue-300 underline">+ Add</button>
-                    </div>
-
-                    <div id="artists-list" class="space-y-3"></div>
-
-                    <button class="text-blue-300 underline mt-4">See all</button>
-                </div>
-
-            </div>
-
-            <!-- ========================================================= -->
-            <!--  PERFORMANCE DATA (full width)                           -->
-            <!-- ========================================================= -->
-            <div class="bg-gray-900 rounded-2xl border border-gray-700 p-6 mb-3">
-                <h2 class="text-2xl font-semibold mb-6">Performance Data</h2>
-
-                <div class="grid grid-cols-1 xl:grid-cols-3 gap-3">
-
-                    <!-- PIE CHART -->
-                    <div class="bg-gray-800 rounded-xl p-4">
-                        <h3 class="text-blue-300 underline mb-2">Most Profitable Artists</h3>
-                        <canvas id="artist-pie-chart" class="w-full h-60"></canvas>
-                    </div>
-
-                    <!-- METRICS -->
-                    <div class="bg-gray-800 rounded-xl p-4 space-y-4">
-                        <h3 class="text-blue-300 underline">Orders fulfilled</h3>
-                        <p id="metric-orders" class="text-xl font-semibold">–</p>
-                        <h3 class="text-blue-300 underline">Average turnaround time</h3>
-                        <p id="metric-turnaround" class="text-xl font-semibold">–</p>
-                        <h3 class="text-blue-300 underline">Revenue % of Year</h3>
-                        <p id="metric-revenue" class="text-xl font-semibold">–%</p>
-                    </div>
-
-                    <!-- EMPTY OR FUTURE MODULE -->
-                    <div class="bg-gray-800 rounded-xl p-4">
-                        <h3 class="text-blue-300 underline mb-2">Revenue Trend</h3>
-                        <canvas id="revenue-line-chart" class="w-full h-60"></canvas>
-                    </div>
-
-                </div>
-            </div>
-
-        </section>
+            </section>
+        </div>
     </main>
 </div>
 
