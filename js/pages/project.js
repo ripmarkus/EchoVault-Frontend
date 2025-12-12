@@ -192,7 +192,9 @@ async function loadProjectData(projectId) {
 // Function to populate project info from API data
 function populateProjectInfo() {
     if (!projectData) return;
-    
+
+    document.getElementById("page-title").textContent = `Project ${projectData.id}`;
+    document.getElementById("project-title").textContent = `Project ${projectData.id}`;
     document.getElementById("project-title").textContent = `Project ${projectData.id}`;
     document.getElementById("project-manager").textContent = projectData.projectManager ? projectData.projectManager.name : "Not assigned"; 
     document.getElementById("project-type").textContent = projectData.projectType || "Rental"; 
@@ -473,30 +475,28 @@ async function loadProjectRelatedData() {
 // Function to load real customer data from API
 async function loadRealCustomerData(customerData) {
     try {
-        // Use customer data from project
-        const customers = [customerData];
+        // Get full customer data from API to ensure we have contacts
+        const customerResponse = await fetch(`http://localhost:8080/api/customers/${customerData.id}`);
+        let fullCustomerData = customerData;
         
-        // Load contacts for the customer
-        let contacts = [];
-        if (customerData.id) {
-            try {
-                const contactsResponse = await fetch(`http://localhost:8080/api/customers/${customerData.id}/contacts`);
-                if (contactsResponse.ok) {
-                    contacts = await contactsResponse.json();
-                }
-            } catch (error) {
-                console.log("No contacts endpoint available, using customer contact person");
-                // If no contacts endpoint, create contact from customer contact person
-                if (customerData.contactPerson) {
-                    contacts = [{
-                        name: customerData.contactPerson,
-                        role: "Contact Person",
-                        email: customerData.email || "",
-                        phone: customerData.phone || ""
-                    }];
-                }
-            }
+        if (customerResponse.ok) {
+            fullCustomerData = await customerResponse.json();
         }
+        
+        const customers = [fullCustomerData];
+        
+        // Use contacts from customer data and deduplicate
+        let contacts = fullCustomerData.contacts || [];
+        
+        // Deduplicate contacts by name + email combination
+        const uniqueContacts = contacts.filter((contact, index, self) => 
+            index === self.findIndex(c => 
+                c.name === contact.name && 
+                c.email === contact.email && 
+                c.phone === contact.phone
+            )
+        );
+        contacts = uniqueContacts;
         
         // For now, use example data for orders and activities
         const orders = [
@@ -520,6 +520,7 @@ function loadExampleData() {
     
     // Example project info if API fails
     const exampleProjectInfo = {
+
         projectName: "Example Project",
         projectTotal: "22937,4 kr",
         projectManager: "Hjalte Larsen",
@@ -531,7 +532,7 @@ function loadExampleData() {
         usageStartDate: "11.12.2025",
         usageEndDate: "19.12.2025",
     };
-    
+    document.getElementById("page-title").textContent = 'Example Project';
     document.getElementById("project-title").textContent = exampleProjectInfo.projectName;
     document.getElementById("project-manager").textContent = exampleProjectInfo.projectManager;
     document.getElementById("project-type").textContent = exampleProjectInfo.type;
@@ -630,7 +631,7 @@ function switchTab(activeTab, activeContent) {
     });
     
     // Activate selected tab and content
-    activeTab.className = "tab-button px-4 py-2 text-blue-400 border-b-2 border-blue-400 font-semibold";
+    activeTab.className = "rounded-tl-xl rounded-tr-xl bg-gray-800 tab-button px-4 py-2 text-blue-400 border-b-2 border-blue-400 font-semibold";
     activeContent.classList.remove("hidden");
     
     // Handle layout transitions

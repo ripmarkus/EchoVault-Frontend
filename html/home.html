@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="h-full bg-[#181818] text-white">
+
+<div class="flex flex-col min-h-screen">
+    <!-- Navbar placeholder -->
+    <div id="navbar-container"></div>
+    <div class="flex flex-1">
+        <!-- Sidebar placeholder -->
+        <div id="sidebar-container" class="flex-shrink-0"></div>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6 space-y-6">
+
+            <!-- First Row -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                <!-- Welcome Card -->
+                <div class="lg:col-span-5 bg-gray-800 rounded-2xl shadow-lg p-5 flex flex-col justify-between h-[220px]">
+                    <h2 class="text-3xl font-bold text-blue-400 mb-2">John Doe - Welcome back.</h2>
+                    <p class="text-gray-300">Here’s a quick overview of your dashboard.</p>
+                </div>
+
+                <!-- Satisfaction Rate -->
+                <div class="lg:col-span-4 bg-gray-800 rounded-2xl shadow-lg p-5 flex flex-col h-[220px]">
+                    <h3 class="text-xl font-semibold text-blue-400 mb-3">Satisfaction Rate</h3>
+                    <canvas id="satisfaction-chart" height="130"></canvas>
+                </div>
+
+                <!-- Top 5 Customers (Line Chart) -->
+                <div class="lg:col-span-3 bg-gray-800 rounded-2xl shadow-lg p-5 flex flex-col h-[220px]">
+                    <h3 class="text-xl font-semibold text-blue-400 mb-3">Top 5 Customers</h3>
+                    <canvas id="top-customers-chart" height="130"></canvas>
+                </div>
+            </div>
+
+            <!-- Second Row -->
+            <div class="bg-gray-800 rounded-2xl shadow-lg p-5 h-[260px]">
+                <h3 class="text-xl font-semibold text-blue-400 mb-3">Sales Overview</h3>
+                <canvas id="sales-overview-chart" height="160"></canvas>
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<script type="module">
+    import { loadSidebar } from '../js/navigation/sidebar.js';
+    loadSidebar('sidebar-container');
+
+    // Satisfaction Chart
+    new Chart(document.getElementById('satisfaction-chart').getContext('2d'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Satisfied', 'Unsatisfied'],
+            datasets: [{
+                data: [80, 20],
+                backgroundColor: ['#3B82F6', '#EF4444']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { labels: { color: 'white' } }
+            }
+        }
+    });
+
+    // Top Customers Chart (Line)
+    new Chart(document.getElementById('top-customers-chart').getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: ['A', 'B', 'C', 'D', 'E'],
+            datasets: [{
+                label: 'Revenue ($)',
+                data: [1200, 980, 870, 750, 650],
+                borderColor: '#10B981',
+                backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                fill: true,
+                tension: 0.35,
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { labels: { color: 'white' } }
+            },
+            scales: {
+                x: { ticks: { color: 'white', font: { size: 10 } }, grid: { color: '#374151' } },
+                y: { ticks: { color: 'white', font: { size: 10 } }, grid: { color: '#374151' } }
+            }
+        }
+    });
+
+    // Sales Overview Chart
+    new Chart(document.getElementById('sales-overview-chart').getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'Sales ($)',
+                data: [1200, 1900, 1500, 2200, 2400, 2000],
+                borderColor: '#3B82F6',
+                backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                fill: true,
+                tension: 0.35,
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { labels: { color: 'white' } }
+            },
+            scales: {
+                x: { ticks: { color: 'white', font: { size: 10 } }, grid: { color: '#374151' } },
+                y: { ticks: { color: 'white', font: { size: 10 } }, grid: { color: '#374151' } }
+            }
+        }
+    });
+</script>
+</body>
+</html>

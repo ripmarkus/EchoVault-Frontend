@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title class="project-title"></title>
+    <title id="page-title"></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -12,13 +12,12 @@
         }
     </script>
 </head>
-<body class="h-full bg-[#121212] text-white">
+<body class="h-full bg-[#181818] text-white">
 
-<div id="navbar-container"></div>
-<div class="flex max-h-screen bg-[#121212]">
+<div class="flex max-h-screen bg-[#181818]">
     <div id="sidebar-container" class="flex-shrink-0"></div>
 <!-- Main Content -->
-<main class="flex-1 pt-2 pb-12">
+    <main class="flex-1 pt-8 pb-12 outline outline-2 outline-gray-400 rounded-2xl m-6 bg-[#121212]">
 
     <div class="grid gap-4 grid-cols-2 lg:grid-cols-[20%,auto,20%] p-6" id="main-grid">
 
@@ -64,7 +63,7 @@
                         <button data--field="usageEndDate" class="text-gray-400 hover:text-blue-400 text-sm"></button>
                     </div>
                     <p id="project-usage-end" class="mb-4">N/A</p>
-                    
+
                     <button id="-project-btn" class="absolute bottom-4 right-4 bg-white text-gray-800 px-3 py-1 rounded text-sm font-medium hover:bg-gray-100 transition-colors">
                         Edit
                     </button>
@@ -72,13 +71,15 @@
             </div>
 
             <!-- Column 2 (Orders/Equipment) -->
-        <div class="col-span-1" id="middle-column">
+        <div class="col-span-1  outline-2 outline-gray-800" id="middle-column">
             <!-- Tab navigation -->
-            <div class="flex border-b border-gray-600">
-                <button id="order-summary-tab" class="tab-button px-4 py-2 text-blue-400 border-b-2 border-blue-400 font-semibold">
+            <div class="rounded-tl-xl rounded-tr-xl flex border-b bg-[#181818] border-gray-600">
+                <button id="order-summary-tab"
+                        class="rounded-tl-xl rounded-tr-xl bg-gray-800 tab-button px-4 py-2 text-blue-400 border-b-2 border-blue-400 font-semibold">
                     Order Summary
                 </button>
-                <button id="equipment-tab" class="tab-button px-4 py-2 text-gray-400 hover:text-blue-400 font-semibold">
+                <button id="equipment-tab"
+                        class="tab-button px-4 py-2 text-gray-400 hover:text-blue-400 font-semibold">
                     Equipment View
                 </button>
             </div>
@@ -97,7 +98,7 @@
                 <!-- Timeline Card -->
                 <div class="bg-gray-800 rounded-lg shadow-lg p-8 min-h-[400px] flex flex-col">
                     <h3 class="text-xl font-semibold text-white mb-4">Project Timeline</h3>
-                    
+
                     <!-- Project Timeline Section -->
                     <div id="gantt-chart" class="overflow-x-auto">
                         <div class="min-w-[800px] flex flex-col gap-4">
@@ -185,7 +186,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Equipment Content -->
             <div id="equipment-content" class="tab-content hidden">
                 <div class="bg-gray-800 rounded-b-lg shadow-lg p-8 min-h-[1020px] flex flex-col">
@@ -233,6 +234,29 @@
         import {loadSidebar} from "../js/navigation/sidebar.js";
         loadNavbar('navbar-container');
         loadSidebar('sidebar-container')
+
+        const orderTab = document.getElementById('order-summary-tab');
+        const equipmentTab = document.getElementById('equipment-tab');
+        const orderContent = document.getElementById('order-summary-content');
+        const equipmentContent = document.getElementById('equipment-content');
+
+        orderTab.addEventListener('click', () => {
+            orderTab.classList.add('bg-[#121212]', 'border-[#121212]', 'text-blue-400');
+            equipmentTab.classList.remove('bg-[#121212]', 'border-[#121212]');
+            equipmentTab.classList.add('text-gray-400', 'border-transparent');
+
+            orderContent.classList.remove('hidden');
+            equipmentContent.classList.add('hidden');
+        });
+
+        equipmentTab.addEventListener('click', () => {
+            equipmentTab.classList.add('bg-[#121212]', 'border-[#121212]', 'text-blue-400');
+            orderTab.classList.remove('bg-[#121212]', 'border-[#121212]');
+            orderTab.classList.add('text-gray-400', 'border-transparent');
+
+            equipmentContent.classList.remove('hidden');
+            orderContent.classList.add('hidden');
+        });
     </script>
 </body>
 </html>

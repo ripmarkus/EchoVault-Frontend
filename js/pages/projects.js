@@ -1,8 +1,8 @@
-const API_BASE = "http://localhost:8080/api/projects";
-const CUSTOMERS_API_BASE = "http://localhost:8080/api/customers";
+const API_BASE = "http://localhost:8080/api/parent-projects";
 
 let allProjects = [];
-let allCustomers = [];
+
+console.log("Projects.js loaded - API_BASE:", API_BASE);
 
 // Cache implementation with Map for projects list
 let projectsCache = new Map();
@@ -37,9 +37,15 @@ async function fetchProjectsFromAPI() {
     // Clear existing cache
     projectsCache.clear();
     
-    // Convert Map response to array and update cache
+    // Convert array response and update cache
     let projectsArray;
-    if (typeof projectsData === 'object' && !Array.isArray(projectsData)) {
+    if (Array.isArray(projectsData)) {
+      projectsArray = projectsData;
+      // Populate Map cache from array
+      projectsArray.forEach(project => {
+        projectsCache.set(project.id, project);
+      });
+    } else if (typeof projectsData === 'object') {
       projectsArray = Object.values(projectsData);
       // Also populate the Map cache
       Object.entries(projectsData).forEach(([key, project]) => {
@@ -47,10 +53,6 @@ async function fetchProjectsFromAPI() {
       });
     } else {
       projectsArray = projectsData;
-      // Populate Map cache from array
-      projectsArray.forEach(project => {
-        projectsCache.set(project.id, project);
-      });
     }
     
     // Update cache timestamp
@@ -75,6 +77,9 @@ let currentFilters = {
 function renderProjects(projects) {
   const tableBody = document.getElementById("projects-table-body");
   tableBody.innerHTML = "";
+  
+  // Update statistics
+  updateStatistics(projects);
 
   projects.forEach((project) => {
     const row = document.createElement("tr");
@@ -90,20 +95,18 @@ function renderProjects(projects) {
     });
 
     // Format dates
-    const startDate = project.startDate ? new Date(project.startDate).toLocaleDateString() : "-";
-    const endDate = project.endDate ? new Date(project.endDate).toLocaleDateString() : "-";
-    const usageStartDate = project.usageStartDate ? new Date(project.usageStartDate).toLocaleDateString() : "-";
-    const usageEndDate = project.usageEndDate ? new Date(project.usageEndDate).toLocaleDateString() : "-";
+    const startDate = project.rentalStart ? new Date(project.rentalStart).toLocaleDateString() : "-";
+    const endDate = project.rentalEnd ? new Date(project.rentalEnd).toLocaleDateString() : "-";
 
     // Status styling
     const statusClass = getStatusClass(project.status);
 
-    // Match table headers: ID, Name, Customer, Contact Person, Status, Rental Start Date, Rental End Date, Usage Start Date, Usage End Date
+    // Match table headers: ID, Name, Customer, Contact Person, Status, Rental Start Date, Rental End Date
     row.innerHTML = `
       <td class="p-4 text-left font-medium">${project.id}</td>
       <td class="p-4 text-left">${project.name || `Project ${project.id}`}</td>
-      <td class="p-4 text-left">${project.customer?.name || "-"}</td>
-      <td class="p-4 text-left">${project.customer?.contactPerson || project.contactPerson || "-"}</td>
+      <td class="p-4 text-left">${project.customer || "-"}</td>
+      <td class="p-4 text-left">${project.contactPerson || "-"}</td>
       <td class="p-4 text-left">
         <span class="px-2 py-1 text-xs rounded-full ${statusClass}">
           ${project.status || "UNKNOWN"}
@@ -111,12 +114,25 @@ function renderProjects(projects) {
       </td>
       <td class="p-4 text-left">${startDate}</td>
       <td class="p-4 text-left">${endDate}</td>
-      <td class="p-4 text-left">${usageStartDate}</td>
-      <td class="p-4 text-left">${usageEndDate}</td>
     `;
 
     tableBody.appendChild(row);
   });
+}
+
+// Update statistics
+function updateStatistics(projects) {
+  const totalEl = document.getElementById("projects-total");
+  const confirmedEl = document.getElementById("projects-confirmed");
+  const requestedEl = document.getElementById("projects-requested");
+  
+  if (totalEl) totalEl.textContent = projects.length;
+  
+  const confirmedCount = projects.filter(p => p.status === "CONFIRMED" || p.status === "IN_PROGRESS" || p.status === "COMPLETED").length;
+  const requestedCount = projects.filter(p => p.status === "REQUESTED").length;
+  
+  if (confirmedEl) confirmedEl.textContent = confirmedCount;
+  if (requestedEl) requestedEl.textContent = requestedCount;
 }
 
 // Get CSS class for project status
@@ -142,9 +158,6 @@ function openFilterModal() {
   
   titleEl.textContent = "Filter Projects";
   
-  // Populate customer dropdown
-  populateCustomerDropdown();
-  
   // Set current filter values
   document.getElementById("form-customer").value = currentFilters.customer;
   document.getElementById("form-status").value = currentFilters.status;
@@ -153,28 +166,6 @@ function openFilterModal() {
 
   modal.classList.remove("hidden");
   modal.classList.add("flex");
-}
-
-// Populate customer dropdown
-function populateCustomerDropdown() {
-  const select = document.getElementById("form-customer");
-  if (!select) return;
-
-  select.innerHTML = "";
-
-  // Add "All customers" option
-  const allOpt = document.createElement("option");
-  allOpt.value = "";
-  allOpt.textContent = "All customers";
-  select.appendChild(allOpt);
-
-  // Add customer options
-  allCustomers.forEach((customer) => {
-    const opt = document.createElement("option");
-    opt.value = customer.id;
-    opt.textContent = customer.name;
-    select.appendChild(opt);
-  });
 }
 
 // Apply filters
@@ -192,7 +183,7 @@ function applyFilters(e) {
 
   if (currentFilters.customer) {
     filteredProjects = filteredProjects.filter(p => 
-      p.customer?.id == currentFilters.customer
+      p.customer && p.customer.toLowerCase().includes(currentFilters.customer.toLowerCase())
     );
   }
 
@@ -204,15 +195,15 @@ function applyFilters(e) {
 
   if (currentFilters.startDate) {
     filteredProjects = filteredProjects.filter(p => {
-      if (!p.startDate) return false;
-      return new Date(p.startDate) >= new Date(currentFilters.startDate);
+      if (!p.rentalStart) return false;
+      return new Date(p.rentalStart) >= new Date(currentFilters.startDate);
     });
   }
 
   if (currentFilters.endDate) {
     filteredProjects = filteredProjects.filter(p => {
-      if (!p.endDate) return false;
-      return new Date(p.endDate) <= new Date(currentFilters.endDate);
+      if (!p.rentalEnd) return false;
+      return new Date(p.rentalEnd) <= new Date(currentFilters.endDate);
     });
   }
 
@@ -231,24 +222,14 @@ function closeFilterModal() {
 
 // Load projects from API using cache
 async function loadProjects() {
+  console.log("loadProjects called");
   try {
     const projects = await getProjectsFromCacheOrAPI();
     allProjects = projects;
+    console.log("Projects loaded:", projects);
     renderProjects(allProjects);
   } catch (error) {
     console.error("Error loading projects:", error);
-  }
-}
-
-// Load customers from API
-async function loadCustomers() {
-  try {
-    const resp = await fetch(CUSTOMERS_API_BASE);
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const customers = await resp.json();
-    allCustomers = customers;
-  } catch (err) {
-    console.error("Error loading customers:", err);
   }
 }
 
@@ -269,7 +250,9 @@ async function loadProjectSearch(query = "") {
       const projectsData = await response.json();
       
       // Convert to array
-      if (typeof projectsData === 'object' && !Array.isArray(projectsData)) {
+      if (Array.isArray(projectsData)) {
+        projects = projectsData;
+      } else if (typeof projectsData === 'object') {
         projects = Object.values(projectsData);
       } else {
         projects = projectsData;
@@ -307,12 +290,11 @@ function handleDeleteProject(id) {
 document.addEventListener("DOMContentLoaded", () => {
   // Load data
   loadProjects();
-  loadCustomers();
 
   // Get DOM elements
   const searchBtn = document.getElementById("search-btn");
   const searchInput = document.getElementById("search-input");
-  const filterBtn = document.getElementById("manage-status-btn");
+  const filterBtn = document.getElementById("filter-btn");
   const filterModal = document.getElementById("status-form-modal");
   const filterModalClose = document.getElementById("status-form-close");
   const filterModalCancel = document.getElementById("status-form-cancel");
@@ -332,9 +314,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Filter button - update text to "Filter"
+  // Filter button
   if (filterBtn) {
-    filterBtn.textContent = "Filter";
     filterBtn.addEventListener("click", () => {
       openFilterModal();
     });

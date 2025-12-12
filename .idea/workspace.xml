@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a2092ff4-972e-4c1b-bb61-a48615663264" name="Changes" comment="" />
+    <list default="true" id="a2092ff4-972e-4c1b-bb61-a48615663264" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/html/customer-profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/html/customer-profile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/html/customers.html" beforeDir="false" afterPath="$PROJECT_DIR$/html/customers.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/html/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/html/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/html/inventory.html" beforeDir="false" afterPath="$PROJECT_DIR$/html/inventory.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/html/project-list.html" beforeDir="false" afterPath="$PROJECT_DIR$/html/project-list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/html/project.html" beforeDir="false" afterPath="$PROJECT_DIR$/html/project.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/login/login.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/login/login.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/navigation/sidebar.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/navigation/sidebar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/pages/project.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/pages/project.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/pages/projects.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/pages/projects.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -10,13 +22,33 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/js/pages/projects.js" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 2
+}]]></component>
+  <component name="ProjectId" id="36hC7Jht9VKgrfPsQBljM3vkIkC" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="sortByType" value="true" />
+    <option name="sortKey" value="BY_TYPE" />
+  </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "git-widget-placeholder": "feat/project-list-view",
-    "last_opened_file_path": "/home/vss/Dropbox/Skole/KEA/Datamatiker/Semester 3/Java/EchoVault-Frontend/html"
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/home/vss/Dropbox/Skole/KEA/Datamatiker/Semester 3/Java/EchoVault-Frontend/html",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -24,7 +56,26 @@
       <recent name="$PROJECT_DIR$/html" />
     </key>
   </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-cffe25b9f5b3-intellij.indexing.shared.core-IU-253.28294.334" />
+        <option value="bundled-js-predefined-d6986cc7102b-c7e53b3be11b-JavaScript-IU-253.28294.334" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a2092ff4-972e-4c1b-bb61-a48615663264" name="Changes" comment="" />
+      <created>1765449248444</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1765449248444</updated>
+      <workItem from="1765449249811" duration="18973000" />
+    </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
 </project>
