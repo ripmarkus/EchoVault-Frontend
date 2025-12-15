@@ -180,34 +180,53 @@ function renderWeekBars(container, projects) {
     // clear previous bars (if rerender)
     container.innerHTML = "";
 
-    projects.forEach(p => {
-        // no overlap with this week
-        if (p.endDate < weekStart || p.startDate > weekEnd) return;
+    // filter projects that overlap with this week
+    const weekProjects = projects.filter(p => !(p.endDate < weekStart || p.startDate > weekEnd));
 
+    if (weekProjects.length === 0) {
+        return; // nothing to render
+    }
+
+    const STATUS_ORDER = {
+        "CONFIRMED": 1,
+        "REQUESTED": 2,
+        "CANCELLED": 3
+    };
+
+    const ordered = (weekProjects.length === 1)
+        ? weekProjects
+        : weekProjects.slice().sort((a, b) => {
+            const sa = STATUS_ORDER[a.status] ?? 99;
+            const sb = STATUS_ORDER[b.status] ?? 99;
+            if (sa !== sb) return sa - sb;
+            return a.startDate - b.startDate;
+        });
+
+    // 3) Setup grid 7 cols x N rows
+    container.style.display = "grid";
+    container.style.gridTemplateColumns = "repeat(7, minmax(0, 1fr))";
+    container.style.gridAutoRows = "22px"; // højde pr række (justér)
+    container.style.alignItems = "start";
+
+    // 4) Place bars
+    ordered.forEach((p, index) => {
         const start = p.startDate < weekStart ? weekStart : p.startDate;
         const end = p.endDate > weekEnd ? weekEnd : p.endDate;
 
-        const startIdx = mondayIndex(start);            // 0..6
-        const span = mondayIndex(end) - startIdx + 1;   // 1..7
+        const startIdx = mondayIndex(start);          // 0..6
+        const span = mondayIndex(end) - startIdx + 1; // 1..7
 
         const bar = document.createElement("div");
 
-        // Use GRID styles directly (so Tailwind CDN doesn't break span)
         bar.style.gridColumnStart = String(startIdx + 1);
         bar.style.gridColumnEnd = `span ${span}`;
+        bar.style.gridRowStart = String(index + 1); // ✅ +1 because CSS grid rows are 1-based
 
-        bar.className =
-            "px-2 py-1 text-[10px] rounded truncate cursor-pointer select-none";
-
+        bar.className = "px-2 py-1 text-[10px] rounded truncate cursor-pointer select-none";
         bar.classList.add(...statusClasses(p.status));
 
-        // fallback title if name is null
         const title = displayName(p);
         bar.textContent = title;
-
-        bar.title = `${title} (${toDateKey(p.startDate)} → ${toDateKey(p.endDate)})`;
-
-        bar.addEventListener("click", () => console.log("Project clicked:", p));
 
         container.appendChild(bar);
     });
