@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EchoVault - Calender</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+</head>
+<body class="h-full bg-[#121212] text-white">
+
+<div id="navbar-container"></div>
+
+<div class="flex max-h-screen bg-[#121212]">
+    <div id="sidebar-container" class="flex-shrink-0"></div>
+
+    <main class="flex-1 pt-8 pb-12">
+
+        <!-- Calendar Section -->
+        <section class="w-full pl-8 pr-8 mb-16">
+            <div class="flex items-center justify-between mb-6">
+                <h1 class="text-4xl font-bold text-center mb-10">Project Calendar</h1>
+
+                <!-- Controls: view and navigation -->
+                <div class="flex flex-wrap items-center gap-3">
+                    <div class="px-3 py-2 rounded-lg bg-gray-800 text-sm text-gray-200">
+                        <span id="calendar-current-range">Loading...</span>
+                    </div>
+
+                    <!-- View switch -->
+                    <div class="flex rounded-lg overflow-hidden border border-gray-700">
+                        <button id="view-month-btn"
+                                class="px-4 py-2 text-sm bg-gray-800 text-gray-200 hover:bg-gray-700">
+                            Month
+                        </button>
+                        <button id="view-week-btn"
+                                class="px-4 py-2 text-sm bg-gray-900 text-gray-400 hover:bg-gray-700">
+                            Week
+                        </button>
+                    </div>
+
+                    <!-- Navigation buttons -->
+                    <div class="flex rounded-lg overflow-hidden border border-gray-700">
+                        <button id="calendar-prev-btn"
+                                class="px-3 py-2 text-sm bg-gray-800 hover:bg-gray-700">
+                            <
+                        </button>
+                        <button id="calendar-today-btn"
+                                class="px-4 py-2 text-sm bg-gray-900 hover:bg-gray-800">
+                            Today
+                        </button>
+                        <button id="calendar-next-btn"
+                                class="px-3 py-2 text-sm bg-gray-800 hover:bg-gray-700">
+                            >
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-900 rounded-2x1 shadow-lg p-6 space-y-6">
+
+                <!-- Filters -->
+                <div class="flex flex-wrap gap-4 items-center">
+                    <div class="flex">
+                        <input id="calendar-search-input" type="text" placeholder="Search projects..."
+                               class="px-4 py-2 rounded-l-lg bg-gray-700 text-white
+                                      focus:outline-none focus:ring-2 focus:ring-blue-400 w-64 text-sm">
+                        <button id="calendar-search-btn"
+                                class="px-4 py-2 rounded-r-lg bg-[#55A5F8] text-white hover:bg-[#3F8CE0] transition-all text-sm">
+                            Search
+                        </button>
+                    </div>
+
+                    <select id="calendar-status-filter"
+                            class="px-3 py-2 rounded-lg bg-gray-800 text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        <option value="all">All Statuses</option>
+                        <option value="REQUESTED">Requested</option>
+                        <option value="CONFIRMED">Confirmed</option>
+                        <option value="CANCELLED">Cancelled</option>
+                    </select>
+                </div>
+
+                <!-- -->
+                <div class="flex flex-wrap gap-4 text-xs text-gray-300">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 bg-blue-500 rounded-full"></span>
+                        <span>Confirmed project</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-sm bg-yellow-500"></span>
+                        <span>Requested project</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-sm bg-red-500"></span>
+                        <span>Cancelled project</span>
+                    </div>
+                </div>
+
+                <div id="calendar-container"
+                     class="mt-4 bg-gray-800 rounded-2xl p-4 min-h-[550px]">
+
+                    <!-- Weekday header -->
+                    <div id="calendar-weekdays"
+                         class="grid grid-cols-7 text-center text-xs md:text-sm text-gray-300 mb-2">
+                        <div>Mon</div>
+                        <div>Tue</div>
+                        <div>Wed</div>
+                        <div>Thu</div>
+                        <div>Fri</div>
+                        <div>Sat</div>
+                        <div>Sun</div>
+                    </div>
+
+                    <!-- Days / events grid – JS will populate -->
+                    <div id="calendar-grid"
+                         class="grid space-y-3">
+                        <!-- JS will insert day cells here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- Not module (unless main.js uses import/export) -->
+<script src="../js/main.js"></script>
+
+<!-- Module file for calendar page -->
+<script src="../js/pages/calendar.js" type="module"></script>
+
+<!-- Inline module for navigation -->
+<script type="module">
+    import { loadNavbar } from '../js/navigation/navbar.js';
+    import { loadSidebar } from '../js/navigation/sidebar.js';
+
+    document.addEventListener("DOMContentLoaded", () => {
+        loadNavbar('navbar-container');
+        loadSidebar('sidebar-container');
+    });
+</script>
+</body>
+</html>
