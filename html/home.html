@@ -14,7 +14,7 @@
 </head>
 <body class="h-full bg-[#181818] text-white">
 
-<div class="flex flex-col min-h-screen">
+<div class="flex flex-col min-h-screen max-w-screen">
     <!-- Navbar placeholder -->
     <div id="navbar-container"></div>
     <div class="flex flex-1">
@@ -25,28 +25,28 @@
         <main class="flex-1 p-6 space-y-6">
 
             <!-- First Row -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 max-w-[1600px]">
                 <!-- Welcome Card -->
-                <div class="lg:col-span-5 bg-gray-800 rounded-2xl shadow-lg p-5 flex flex-col justify-between h-[220px]">
+                <div class="lg:col-span-5 bg-gray-800 rounded-2xl shadow-lg p-5 flex flex-col justify-between h-[420px]">
                     <h2 class="text-3xl font-bold text-blue-400 mb-2">John Doe - Welcome back.</h2>
                     <p class="text-gray-300">Here’s a quick overview of your dashboard.</p>
                 </div>
 
                 <!-- Satisfaction Rate -->
-                <div class="lg:col-span-4 bg-gray-800 rounded-2xl shadow-lg p-5 flex flex-col h-[220px]">
+                <div class="lg:col-span-4 bg-gray-800 rounded-2xl shadow-lg p-5 flex flex-col h-[420px]">
                     <h3 class="text-xl font-semibold text-blue-400 mb-3">Satisfaction Rate</h3>
-                    <canvas id="satisfaction-chart" height="130"></canvas>
+                    <canvas id="satisfaction-chart" height="30"></canvas>
                 </div>
 
                 <!-- Top 5 Customers (Line Chart) -->
-                <div class="lg:col-span-3 bg-gray-800 rounded-2xl shadow-lg p-5 flex flex-col h-[220px]">
+                <div class="lg:col-span-3 bg-gray-800 rounded-2xl shadow-lg p-5 flex flex-col h-[420px]">
                     <h3 class="text-xl font-semibold text-blue-400 mb-3">Top 5 Customers</h3>
                     <canvas id="top-customers-chart" height="130"></canvas>
                 </div>
             </div>
 
             <!-- Second Row -->
-            <div class="bg-gray-800 rounded-2xl shadow-lg p-5 h-[260px]">
+            <div class="bg-gray-800 rounded-2xl shadow-lg p-5 h-[460px] max-w-[1600px]">
                 <h3 class="text-xl font-semibold text-blue-400 mb-3">Sales Overview</h3>
                 <canvas id="sales-overview-chart" height="160"></canvas>
             </div>

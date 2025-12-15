@@ -3,16 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="a2092ff4-972e-4c1b-bb61-a48615663264" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/html/customer-profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/html/customer-profile.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/html/customers.html" beforeDir="false" afterPath="$PROJECT_DIR$/html/customers.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/html/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/html/home.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/html/inventory.html" beforeDir="false" afterPath="$PROJECT_DIR$/html/inventory.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/html/project-list.html" beforeDir="false" afterPath="$PROJECT_DIR$/html/project-list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/html/project.html" beforeDir="false" afterPath="$PROJECT_DIR$/html/project.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/login/login.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/login/login.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/navigation/sidebar.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/navigation/sidebar.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/pages/project.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/pages/project.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/pages/projects.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/pages/projects.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/html/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/html/home.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,10 +17,10 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/js/pages/projects.js" root0="SKIP_INSPECTION" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 2
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 2
+}</component>
   <component name="ProjectId" id="36hC7Jht9VKgrfPsQBljM3vkIkC" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -45,7 +37,7 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "feat/project-list-view",
+    "git-widget-placeholder": "development",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/home/vss/Dropbox/Skole/KEA/Datamatiker/Semester 3/Java/EchoVault-Frontend/html",
     "vue.rearranger.settings.migration": "true"
