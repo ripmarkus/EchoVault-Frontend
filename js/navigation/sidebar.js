@@ -1,6 +1,6 @@
 const sidebarHTML = `
-<div class="flex max-h-screen  bg-[#181818] p-2">
-  <aside class="w-[240px] text-white rounded-2xl flex flex-col p-4 space-y-6 min-h-[1300px] max-h-[90vh] overflow-y-auto">
+<div class="flex max-h-page bg-[#181818] p-2">
+  <aside class="w-[240px] text-white rounded-2xl flex flex-col p-4 space-y-6 min-h-[1300px] max-h-[90vh] overflow-y-hidden">
 
     <!-- Top: EchoVault + New Project -->
     <div class="flex flex-col space-y-4">
@@ -101,7 +101,7 @@ const sidebarHTML = `
 
     </nav>
 
-    <div class="flex-grow"></div>
+    <div class="flex-grow max-h-[400px]"></div>
 
     <!-- Bottom Links: Help + Logout -->
     <a href="#" class="flex items-center gap-6 text-yellow-400 hover:text-yellow-300 font-semibold transition-colors text-xl mb-2">
