@@ -1,13 +1,12 @@
 const API_BASE = "http://localhost:8080/api/customers";
-
-const CONTACTS_API_BASE = "http://localhost:8080/api/contacts"; // tilpas hvis dit endpoint hedder noget andet
+const CONTACTS_API_BASE = "http://localhost:8080/api/contacts";
 
 let allCustomers = []; // alle kunder (eksterne)
+let allContacts = [];  // alle interne users
 
-
-let allContacts = []; // alle interne users
-   // alle interne users
-
+// ----------------------
+// GROUPING
+// ----------------------
 
 // Gruppér kunder efter parent (string som "cust-1")
 function groupCustomers(customers) {
@@ -16,7 +15,6 @@ function groupCustomers(customers) {
 
   customers.forEach((c) => {
     if (!c.parent) {
-      // ingen parent -> hovedkunde
       parents.push(c);
     } else {
       if (!childrenByParent[c.parent]) {
@@ -29,9 +27,13 @@ function groupCustomers(customers) {
   return { parents, childrenByParent };
 }
 
-// Renderer hele tabellen med grupperinger
+// ----------------------
+// RENDER
+// ----------------------
 function renderCustomers(customers) {
   const tableBody = document.getElementById("customers-table-body");
+  if (!tableBody) return;
+
   tableBody.innerHTML = "";
 
   const { parents, childrenByParent } = groupCustomers(customers);
@@ -40,7 +42,7 @@ function renderCustomers(customers) {
     const hasChildren = !!childrenByParent[parent.id]?.length;
     const parentAddress = parent.address ?? "";
 
-    // Parent-række
+    // Parent row
     const parentRow = document.createElement("tr");
     parentRow.className =
       "border-b border-gray-700 hover:bg-gray-700/60 transition-colors";
@@ -69,25 +71,25 @@ function renderCustomers(customers) {
       <td class="text-left">
         <div class="flex gap-2">
           <a
-  href="customer-profile.html?id=cust-${parent.id}"
-  class="px-3 py-1 text-xs rounded bg-[#55A5F8] hover:bg-[#3F8CE0] text-white"
->
-  View
-</a>
+            href="customer-profile.html?id=${encodeURIComponent(parent.id)}"
+            class="px-3 py-1 text-xs rounded bg-[#55A5F8] hover:bg-[#3F8CE0] text-white"
+          >
+            View
+          </a>
 
-<button
-  class="delete-customer px-3 py-1 text-xs rounded bg-red-600 hover:bg-red-500 text-white"
-  data-customer-id="${parent.id}"
->
-  Delete
-</button>
-          </div>
+          <button
+            class="delete-customer px-3 py-1 text-xs rounded bg-red-600 hover:bg-red-500 text-white"
+            data-customer-id="${parent.id}"
+          >
+            Delete
+          </button>
+        </div>
       </td>
     `;
 
     tableBody.appendChild(parentRow);
 
-    // Subkunder (children) – skjult som udgangspunkt
+    // Sub customers (hidden by default)
     if (hasChildren) {
       childrenByParent[parent.id].forEach((child) => {
         const childAddress = child.address ?? "";
@@ -97,6 +99,7 @@ function renderCustomers(customers) {
           "subcustomer-row hidden border-b border-gray-800 bg-gray-900/80 hover:bg-gray-800";
         childRow.dataset.parentId = parent.id;
 
+        // SUB-CUSTOMERS NOW HAVE THE SAME ACTION BUTTONS AS PARENT
         childRow.innerHTML = `
           <td class="p-7">
             <div class="flex items-center gap-2 pl-8">
@@ -110,25 +113,19 @@ function renderCustomers(customers) {
           <td class="p-7 text-left">${childAddress}</td>
           <td class="p-7 text-left">
             <div class="flex gap-2">
-              <button
-                class="view-customer px-3 py-1 text-xs rounded bg-[#55A5F8] hover:bg-[#3F8CE0] text-white"
-                data-customer-id="${child.id}"
+              <a
+                href="customer-profile.html?id=${encodeURIComponent(child.id)}"
+                class="px-3 py-1 text-xs rounded bg-[#55A5F8] hover:bg-[#3F8CE0] text-white"
               >
                 View
-              </button>
+              </a>
+
               <button
-                class="edit-customer px-3 py-1 text-xs rounded bg-gray-700 hover:bg-gray-600 text-white"
+                class="delete-customer px-3 py-1 text-xs rounded bg-red-600 hover:bg-red-500 text-white"
                 data-customer-id="${child.id}"
               >
-                Edit
+                Delete
               </button>
-    <button
-      class="delete-customer px-3 py-1 text-xs rounded bg-red-600 hover:bg-red-500 text-white"
-      data-customer-id="${child.id}"
-    >
-      Delete
-    </button>
-
             </div>
           </td>
         `;
@@ -138,54 +135,34 @@ function renderCustomers(customers) {
     }
   });
 
-  // Event delegation til toggle + view + edit
+  // Event delegation: delete + toggle
   tableBody.onclick = (e) => {
-    // View-knap
-    const viewBtn = e.target.closest(".view-customer");
-    if (viewBtn) {
-      const id = viewBtn.dataset.customerId; // fx "cust-1"
-      openCustomerModal(id);
-      return;
-    }
-
-    // Edit-knap
-    const editBtn = e.target.closest(".edit-customer");
-    if (editBtn) {
-      const id = editBtn.dataset.customerId;
-      openCustomerFormModalForEdit(id);
-      return;
-    }
-
-
-    //delete knap
+    // Delete
     const deleteBtn = e.target.closest(".delete-customer");
-    if(deleteBtn){
+    if (deleteBtn) {
       const id = deleteBtn.dataset.customerId;
       handleDeleteCustomer(id);
-      return; 
+      return;
     }
 
-    // Toggle subkunder
+    // Toggle subcustomers
     const btn = e.target.closest("[data-toggle-children]");
     if (btn) {
       const parentId = btn.dataset.toggleChildren;
-      const rows = tableBody.querySelectorAll(
-        `tr[data-parent-id="${parentId}"]`
-      );
+      const rows = tableBody.querySelectorAll(`tr[data-parent-id="${parentId}"]`);
       if (!rows.length) return;
 
       const shouldShow = rows[0].classList.contains("hidden");
 
-      rows.forEach((row) => {
-        row.classList.toggle("hidden", !shouldShow);
-      });
-
+      rows.forEach((row) => row.classList.toggle("hidden", !shouldShow));
       btn.textContent = shouldShow ? "▼" : "▶";
     }
   };
 }
 
-// Hent /api/customers/{id} og åbn view-modal
+// ----------------------
+// VIEW MODAL (kept as-is)
+// ----------------------
 async function openCustomerModal(id) {
   const modal = document.getElementById("customer-modal");
   const titleEl = document.getElementById("customer-modal-title");
@@ -193,18 +170,13 @@ async function openCustomerModal(id) {
 
   try {
     const resp = await fetch(`${API_BASE}/${id}`);
-    if (!resp.ok) {
-      throw new Error(`HTTP ${resp.status}`);
-    }
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const data = await resp.json();
 
-    const addressParts = [data.addressLine, data.postalCode, data.city].filter(
-      Boolean
-    );
+    const addressParts = [data.addressLine, data.postalCode, data.city].filter(Boolean);
     const fullAddress = addressParts.join(", ");
 
     titleEl.textContent = `Customer: ${data.name}`;
-
     contentEl.innerHTML = `
       <div><span class="font-semibold">ID:</span> ${data.id}</div>
       <div><span class="font-semibold">Type:</span> ${data.type ?? "-"}</div>
@@ -212,21 +184,13 @@ async function openCustomerModal(id) {
       <div><span class="font-semibold">Name:</span> ${data.name}</div>
       <div><span class="font-semibold">Phone:</span> ${data.phone ?? "-"}</div>
       <div><span class="font-semibold">Email:</span> ${data.email ?? "-"}</div>
-      <div><span class="font-semibold">Address:</span> ${
-        fullAddress || "-"
-      }</div>
-      <div><span class="font-semibold">Created at:</span> ${
-        data.createdAt ?? "-"
-      }</div>
-      <div><span class="font-semibold">Parent:</span> ${
-        data.parent ?? "-"
-      }</div>
+      <div><span class="font-semibold">Address:</span> ${fullAddress || "-"}</div>
+      <div><span class="font-semibold">Created at:</span> ${data.createdAt ?? "-"}</div>
+      <div><span class="font-semibold">Parent:</span> ${data.parent ?? "-"}</div>
       <div><span class="font-semibold">Children:</span> ${
         data.children && data.children.length ? data.children.join(", ") : "-"
       }</div>
-      <div><span class="font-semibold">Contact person ID:</span> ${
-        data.contact?.id ?? "-"
-      }</div>
+      <div><span class="font-semibold">Contact person ID:</span> ${data.contact?.id ?? "-"}</div>
     `;
 
     modal.classList.remove("hidden");
@@ -240,13 +204,15 @@ async function openCustomerModal(id) {
   }
 }
 
+// ----------------------
+// FORM MODAL
+// ----------------------
 function openCustomerFormModalForCreate() {
   const modal = document.getElementById("customer-form-modal");
   document.getElementById("customer-form-title").textContent = "New customer";
   document.getElementById("customer-form-mode").value = "create";
   document.getElementById("customer-form-id").value = "";
 
-  // nulstil felter
   document.getElementById("form-name").value = "";
   document.getElementById("form-cvr").value = "";
   document.getElementById("form-phone").value = "";
@@ -255,7 +221,6 @@ function openCustomerFormModalForCreate() {
   document.getElementById("form-postalCode").value = "";
   document.getElementById("form-city").value = "";
 
-  // dropdowns
   populateParentDropdown(null, null);
   populateContactDropdown(null);
 
@@ -282,7 +247,6 @@ async function openCustomerFormModalForEdit(id) {
     document.getElementById("form-postalCode").value = data.postalCode ?? "";
     document.getElementById("form-city").value = data.city ?? "";
 
-    // udfyld dropdowns med korrekt selected values
     populateParentDropdown(data.id, data.parent ?? null);
     populateContactDropdown(data.contact?.id ?? null);
 
@@ -293,16 +257,12 @@ async function openCustomerFormModalForEdit(id) {
   }
 }
 
-
-
-
 async function submitCustomerForm(e) {
   e.preventDefault();
 
   const mode = document.getElementById("customer-form-mode").value;
   const id = document.getElementById("customer-form-id").value;
 
-  // Payload matcher CustomerRequest i backend
   const payload = {
     name: document.getElementById("form-name").value,
     phone: document.getElementById("form-phone").value || null,
@@ -311,28 +271,23 @@ async function submitCustomerForm(e) {
     addressLine: document.getElementById("form-addressLine").value || null,
     postalCode: document.getElementById("form-postalCode").value || null,
     city: document.getElementById("form-city").value || null,
-
-    // NU hentes de rigtigt fra formularen
     parentId: document.getElementById("form-parentId")?.value || null,
-    contactId: document.getElementById("form-contactId")?.value || null,
+    contactId: document.getElementById("form-contactId")?.value || null
   };
 
   let url = API_BASE;
   let method = "POST";
 
   if (mode === "edit" && id) {
-    // Backend: @PatchMapping("/{id}")
-    url = `${API_BASE}/${id}`; // fx /api/customers/cust-1
+    url = `${API_BASE}/${id}`;
     method = "PATCH";
   }
 
   try {
     const resp = await fetch(url, {
       method,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
     });
 
     if (!resp.ok) {
@@ -340,16 +295,12 @@ async function submitCustomerForm(e) {
       throw new Error(`HTTP ${resp.status}`);
     }
 
-    // Luk modal og reload liste
     closeCustomerFormModal();
     await loadCustomers();
   } catch (err) {
     console.error("Error saving customer:", err);
-    // Her kan du evt. vise en fejlmeddelelse i modal'en.
   }
 }
-
-
 
 function closeCustomerFormModal() {
   const modal = document.getElementById("customer-form-modal");
@@ -359,19 +310,17 @@ function closeCustomerFormModal() {
   modal.classList.remove("flex");
 }
 
+// ----------------------
+// DELETE
+// ----------------------
 async function handleDeleteCustomer(id) {
-  const confirmed = window.confirm(
-    "Are you sure you want to delete this customer?"
-  );
+  const confirmed = window.confirm("Are you sure you want to delete this customer?");
   if (!confirmed) return;
 
   try {
-    const resp = await fetch(`${API_BASE}/${id}`, {
-      method: "DELETE",
-    });
+    const resp = await fetch(`${API_BASE}/${id}`, { method: "DELETE" });
 
     if (resp.status === 400 || resp.status === 409) {
-      // Fx hvis backend siger "Cannot delete customer with sub-customers"
       const msg = await resp.text();
       console.error("Delete failed:", msg);
       alert("Could not delete customer.\n" + msg);
@@ -383,7 +332,6 @@ async function handleDeleteCustomer(id) {
       throw new Error(`HTTP ${resp.status}`);
     }
 
-    // Genindlæs liste
     await loadCustomers();
   } catch (err) {
     console.error("Error deleting customer:", err);
@@ -391,49 +339,41 @@ async function handleDeleteCustomer(id) {
   }
 }
 
-
+// ----------------------
+// CONTACTS / DROPDOWNS
+// ----------------------
 async function loadContacts() {
   try {
     const resp = await fetch(CONTACTS_API_BASE);
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const contacts = await resp.json();
-    allContacts = contacts;
+    allContacts = await resp.json();
   } catch (err) {
     console.error("Error loading contacts:", err);
   }
 }
 
-
-function populateParentDropdown(
-  currentCustomerId = null,
-  selectedParentId = null
-) {
+function populateParentDropdown(currentCustomerId = null, selectedParentId = null) {
   const select = document.getElementById("form-parentId");
   if (!select) return;
 
-  // ryd eksisterende options
   select.innerHTML = "";
 
-  // Første option: ingen parent
   const noneOpt = document.createElement("option");
   noneOpt.value = "";
   noneOpt.textContent = "No parent customer";
   select.appendChild(noneOpt);
 
-  // Tilføj alle kunder som kan være parent
   allCustomers.forEach((cust) => {
-    // valgfrit: undgå at en kunde bliver parent til sig selv
     if (currentCustomerId && cust.id === currentCustomerId) return;
 
     const opt = document.createElement("option");
-    opt.value = cust.id; // det er ID, vi sender til backend
-    opt.textContent = cust.name; // det er navn, vi viser i UI
-    if (selectedParentId && selectedParentId === cust.id) {
-      opt.selected = true;
-    }
+    opt.value = cust.id;
+    opt.textContent = cust.name;
+    if (selectedParentId && selectedParentId === cust.id) opt.selected = true;
     select.appendChild(opt);
   });
 }
+
 function populateContactDropdown(selectedContactId = null) {
   const select = document.getElementById("form-contactId");
   if (!select) return;
@@ -447,31 +387,33 @@ function populateContactDropdown(selectedContactId = null) {
 
   allContacts.forEach((contact) => {
     const opt = document.createElement("option");
-    opt.value = contact.id; // Long id fra ContactDto
+    opt.value = contact.id;
     opt.textContent = contact.name || contact.email || contact.id;
-    if (selectedContactId && selectedContactId === contact.id) {
+
+    // normalize compare (string vs number)
+    if (selectedContactId != null && String(selectedContactId) === String(contact.id)) {
       opt.selected = true;
     }
+
     select.appendChild(opt);
   });
 }
 
-
-
+// ----------------------
+// LOAD CUSTOMERS
+// ----------------------
 async function loadCustomers() {
   try {
     const response = await fetch(API_BASE);
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
+    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
     const customers = await response.json();
-    allCustomers = customers; // cache alle kunder til dropdown
+    allCustomers = customers; // cache for dropdown
     renderCustomers(customers);
   } catch (error) {
     console.error("Error loading customers:", error);
   }
 }
-
 
 // Loader kunder med søgning
 async function loadCustomerSearch(query = "") {
@@ -487,12 +429,12 @@ async function loadCustomerSearch(query = "") {
   }
 }
 
-// Init
+// ----------------------
+// INIT
+// ----------------------
 document.addEventListener("DOMContentLoaded", () => {
-  // Load all initially
   loadCustomers();
   loadContacts();
-
 
   const searchBtn = document.getElementById("search-btn");
   const searchInput = document.getElementById("search-input");
@@ -507,14 +449,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (searchBtn && searchInput) {
     searchBtn.addEventListener("click", () => {
-      const query = searchInput.value.trim();
-      loadCustomerSearch(query);
+      loadCustomerSearch(searchInput.value.trim());
     });
 
     searchInput.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") {
-        loadCustomerSearch(searchInput.value.trim());
-      }
+      if (e.key === "Enter") loadCustomerSearch(searchInput.value.trim());
     });
   }
 
@@ -535,9 +474,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Form modal open (create)
   if (createBtn) {
-    createBtn.addEventListener("click", () => {
-      openCustomerFormModalForCreate();
-    });
+    createBtn.addEventListener("click", () => openCustomerFormModalForCreate());
   }
 
   // Form modal close
@@ -548,9 +485,7 @@ document.addEventListener("DOMContentLoaded", () => {
     formModalCancel.addEventListener("click", close);
 
     formModal.addEventListener("click", (e) => {
-      if (e.target === formModal) {
-        closeCustomerFormModal();
-      }
+      if (e.target === formModal) closeCustomerFormModal();
     });
   }
 
@@ -559,7 +494,7 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener("submit", submitCustomerForm);
   }
 
-  // ESC lukker begge modals
+  // ESC closes modals
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       if (viewModal && !viewModal.classList.contains("hidden")) {
