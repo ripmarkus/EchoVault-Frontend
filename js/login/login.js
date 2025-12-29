@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     AuthManager.getCurrentUser().then(user => {
-        if (user) window.location.href = '../../html/home.html';
+        if (user) window.location.href = '/home.html';
     });
 
     // Auto-fill remembered email
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             await AuthManager.loginUser(email, password, rememberMe);
             showSuccess('Login successful!');
-            setTimeout(() => window.location.href = '../../html/home.html', 1000);
+            setTimeout(() => window.location.href = '/home.html', 1000);
         } catch (error) {
             showError(error.message || 'Login failed');
             submitBtn.disabled = false;

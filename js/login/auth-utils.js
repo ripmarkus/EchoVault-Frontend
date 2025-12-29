@@ -20,7 +20,7 @@ class AuthManager {
         } finally {
             // Clear remembered email if user logs out
             localStorage.removeItem('rememberedEmail');
-            window.location.href = '/login';
+            window.location.href = '/login.html';
         }
     }
 
