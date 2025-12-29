@@ -1,9 +1,8 @@
 // Simple auth utilities for Spring Security/OAuth2
 class AuthManager {
     static getBaseURL() {
-        return window.location.hostname === 'localhost' && window.location.port === '63342' 
-            ? 'http://localhost:8080' 
-            : '';
+        // Use relative paths for API calls - they will use the current origin
+        return '';
     }
 
     static async getCurrentUser() {

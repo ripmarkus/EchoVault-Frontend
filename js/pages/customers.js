@@ -1,5 +1,5 @@
-const API_BASE = "http://localhost:8080/api/customers";
-const CONTACTS_API_BASE = "http://localhost:8080/api/contacts";
+const API_BASE = "/api/customers";
+const CONTACTS_API_BASE = "/api/contacts";
 
 let allCustomers = []; // alle kunder (eksterne)
 let allContacts = [];  // alle interne users

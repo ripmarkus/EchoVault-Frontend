@@ -1,4 +1,4 @@
-const PROJECTS_API = "http://localhost:8080/api/projects";
+const PROJECTS_API = "/api/projects";
 
 let currentView = "month";          // "month" | "week"
 let currentDate = new Date();       // reference date for current view

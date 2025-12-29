@@ -1,6 +1,6 @@
 // Project data from API
 let projectData = null;
-const API_BASE = "http://localhost:8080/api/projects";
+const API_BASE = "/api/projects";
 
 // Cache for individual project data
 let projectCache = new Map();
@@ -245,7 +245,7 @@ function convertEUToISO(euDateString) {
 // Load users for dropdown in inline editing
 async function loadUsersForDropdown(selectElement, currentValue) {
     try {
-        const response = await fetch('http://localhost:8080/api/users');
+        const response = await fetch('/api/users');
         if (!response.ok) throw new Error('Failed to fetch users');
         
         const users = await response.json();
@@ -476,7 +476,7 @@ async function loadProjectRelatedData() {
 async function loadRealCustomerData(customerData) {
     try {
         // Get full customer data from API to ensure we have contacts
-        const customerResponse = await fetch(`http://localhost:8080/api/customers/${customerData.id}`);
+        const customerResponse = await fetch(`/api/customers/${customerData.id}`);
         let fullCustomerData = customerData;
         
         if (customerResponse.ok) {

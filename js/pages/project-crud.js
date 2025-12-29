@@ -1,10 +1,10 @@
 // Project CRUD functionality
 const API_BASE = {
-    projects: "http://localhost:8080/api/projects",
-    customers: "http://localhost:8080/api/customers", 
-    contacts: "http://localhost:8080/api/contacts",
-    equipment: "http://localhost:8080/api/equipment",
-    users: "http://localhost:8080/api/users"
+    projects: "/api/projects",
+    customers: "/api/customers", 
+    contacts: "/api/contacts",
+    equipment: "/api/equipment",
+    users: "/api/users"
 };
 
 // State management

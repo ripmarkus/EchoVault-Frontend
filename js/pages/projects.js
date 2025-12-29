@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:8080/api/parent-projects";
+const API_BASE = "/api/parent-projects";
 
 let allProjects = [];
 

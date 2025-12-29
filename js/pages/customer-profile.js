@@ -1,5 +1,5 @@
-const API_BASE = "http://localhost:8080/api/customers";
-const CONTACT_API = "http://localhost:8080/api/contacts";
+const API_BASE = "/api/customers";
+const CONTACT_API = "/api/contacts";
 
 let allContacts = [];
 let linkedContacts = [];
@@ -229,7 +229,7 @@ async function loadInvoices() {
   if (!customerId) return;
 
   try {
-    const resp = await fetch(`http://localhost:8080/api/invoices/customer/${customerId}`);
+    const resp = await fetch(`/api/invoices/customer/${customerId}`);
     if (!resp.ok) {
       console.error("Failed to load invoices:", await resp.text());
       return;

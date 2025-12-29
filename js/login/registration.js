@@ -114,7 +114,7 @@ const registrationContainer =
             <form id="register-form" class="space-y-4">
                 <!-- Google Registration -->
                 <div class="space-y-4">
-                    <a href="http://localhost:8080/oauth2/authorization/google"
+                    <a href="/oauth2/authorization/google"
                        class="flex items-center bg-gray-700 border border-gray-600 overflow-hidden
               px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-gray-600 transition-all duration-200">
                         <!-- Icon -->

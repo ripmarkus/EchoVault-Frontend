@@ -1,5 +1,5 @@
-const API_BASE = "http://localhost:8080/api/equipment";
-const PIECES_BASE = "http://localhost:8080/api/pieces";
+const API_BASE = "/api/equipment";
+const PIECES_BASE = "/api/pieces";
 
 document.addEventListener("DOMContentLoaded", () => {
   loadEquipment().catch(console.error);
